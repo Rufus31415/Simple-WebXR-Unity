@@ -1,6 +1,8 @@
 
 See the simple demo : https://rufus31415.github.io/sandbox/simple-webxr-unity/
 
+More about WebXR : https://rufus31415.github.io/tag/WebXR/
+
 
 Unity version : 2018.4.21f1
 
