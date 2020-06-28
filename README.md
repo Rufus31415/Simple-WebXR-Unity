@@ -20,6 +20,8 @@ Tested on:
 - Firefox Reality on Hololens 2
 - Firefox and Chrome WebXR emulator on Windows
 - Chrome on Android
+
+Working on controllers and hand support...
  
 Here are the resources that allowed me to move forward with this project:
 - [https://immersive-web.github.io/](https://immersive-web.github.io/) : Many useful examples
@@ -28,3 +30,5 @@ Here are the resources that allowed me to move forward with this project:
 
 ![](https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/simple-webxr1.gif)
 ![](https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/simple-webxr2.gif)
+
+Feel free to open issues :)
