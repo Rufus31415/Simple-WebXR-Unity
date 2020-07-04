@@ -22,27 +22,39 @@ public class SimpleWebXR : MonoBehaviour
     // [46], [47], [48], [49] : RX, RY, RZ, RW rotation (quaternion)  of view 2
     // [50] -> [53] : Viewport X, Y, width, height  of view 2
     // [54] -> [60] : Left input x, y, z, rx, ry, rz, rw
-    // [61] -> [67] : right input x, y, z, rx, ry, rz, rw
-    private readonly float[] _dataArray = new float[68];
+    // [61] -> [68] : left input axes
+    // [69] -> [76] : left gamepad value
+    // [77] -> [83] : right input x, y, z, rx, ry, rz, rw
+    // [84] -> [91] : right input axes
+    // [92] -> [99] : right gamepad value
+    private readonly float[] _dataArray = new float[100];
 
     // Shared float array with javascript.
     // [0] : number of views (0 : session is stopped)
     // [1] : left controller events
-    // [2] : left controller events
+    // [2] : right controller events
     // [3] : input change event
     // [4] : left input has position info
-    // [5] : left input gamepad axes count
-    // [6] : left input gamepad buttons count
-    // [7] : right input has position info
-    // [8] : right input gamepad axes count
-    // [9] : right input gamepad buttons count
-    private readonly byte[] _byteArray = new byte[10];
+    // [5] : left input target ray mode
+    // [6] : left input gamepad axes count
+    // [7] : left input gamepad buttons count
+    // [8] -> [15] : left inputs touched
+    // [16] -> [23] : left inputs pressed
+    // [24] : right input has position info
+    // [25] : right input target ray mode
+    // [26] : right input gamepad axes count
+    // [27] : right input gamepad buttons count
+    // [28] -> [35] : right inputs touched
+    // [36] -> [43] : right inputs pressed
+    // [44] : Left controller active
+    // [45] : Right controller active
+    private readonly byte[] _byteArray = new byte[46];
 
     // Number of views (i.e. cameras)
     private WebXRViewEyes ViewEye => (WebXRViewEyes)_byteArray[0];
 
     // A session is running
-    public bool InSession => _byteArray[0] != 0;
+    private bool InternalInSession => _byteArray[0] != 0;
 
     public readonly WebXRInput LeftInput = new WebXRInput(WebXRHandedness.Left);
     public readonly WebXRInput RightInput = new WebXRInput(WebXRHandedness.Right);
@@ -58,6 +70,15 @@ public class SimpleWebXR : MonoBehaviour
         return handedness == WebXRHandedness.Left ? LeftInput : RightInput;
     }
 
+    public bool InSession { get; private set; }
+
+    public bool HideStartButton;
+
+    public static SimpleWebXR GetInstance()
+    {
+        return FindObjectOfType<SimpleWebXR>();
+    }
+
 
 #if UNITY_WEBGL && !UNITY_EDITOR // If executed in browser
     [DllImport("__Internal")]
@@ -70,11 +91,11 @@ public class SimpleWebXR : MonoBehaviour
     private static extern void InitWebXR(float[] dataArray, int length, byte[] _byteArray, int _byteArrayLength);
 
     [DllImport("__Internal")]
-    private static extern bool IsArSupported();
+    public static extern bool IsArSupported();
 
 
     [DllImport("__Internal")]
-    private static extern bool IsVrSupported();
+    public static extern bool IsVrSupported();
 
 #else // if executed with Unity editor
     private static void InternalStartSession() { }
@@ -84,12 +105,12 @@ public class SimpleWebXR : MonoBehaviour
 
     private static void InitWebXR(float[] dataArray, int length, byte[] _byteArray, int _byteArrayLength) { }
 
-    private static bool IsArSupported()
+    public static bool IsArSupported()
     {
         return true; // always display "Enter AR" button for debug purpose
     }
 
-    private static bool IsVrSupported()
+    public static bool IsVrSupported()
     {
         return true; // always display "Enter VR" button for debug purpose
     }
@@ -104,7 +125,9 @@ public class SimpleWebXR : MonoBehaviour
     // Display "Enter AR" button if WebXR immersive AR is supported
     private void OnGUI()
     {
-        if (ViewEye == WebXRViewEyes.None && (IsArSupported() || IsVrSupported()))
+        if (HideStartButton) return;
+
+        if (!InternalInSession && (IsArSupported() || IsVrSupported()))
         {
             var width = 120;
             var height = 60;
@@ -114,10 +137,17 @@ public class SimpleWebXR : MonoBehaviour
             }
         }
 
+        /*
         var style = GUI.skin.label;
         style.fontSize = 40;
 
-        GUI.Label(new Rect(0, 0, Screen.width, Screen.height), "\r\n C:" + Camera.main.transform.position.ToString() + "\r\n L:" + LeftInput.Position.ToString() + "\r\n R:" + RightInput.Position.ToString(), style);
+        GUI.Label(new Rect(0, 0, Screen.width, Screen.height), 
+            $"C:{Camera.main.transform.position}\r\n" +
+            $"L:{LeftInput.Position} - {LeftInput.Rotation.eulerAngles}\r\n" +
+            $"R:{RightInput.Position} - {RightInput.Rotation.eulerAngles}\r\n" +
+            $"L:{LeftInput.AxesCount} - {LeftInput.ButtonsCount} : {LeftInput.Buttons[0].Pressed} {LeftInput.Buttons[0].Pressed} {LeftInput.Buttons[0].Value} /  {LeftInput.Buttons[1].Pressed} {LeftInput.Buttons[1].Pressed} {LeftInput.Buttons[1].Value}\r\n" +
+            $"R:{RightInput.AxesCount} - {RightInput.ButtonsCount} : {RightInput.Buttons[0].Pressed} {RightInput.Buttons[0].Pressed} {RightInput.Buttons[0].Value} / {RightInput.Buttons[1].Pressed} {RightInput.Buttons[1].Pressed} {RightInput.Buttons[1].Value}\r\n"
+            , style);*/
     }
 
     // Starts a new session
@@ -131,7 +161,7 @@ public class SimpleWebXR : MonoBehaviour
     // Ends the session
     public void EndSession()
     {
-        if (!InSession) return;
+        if (!InternalInSession) return;
 
         InternalEndSession();
     }
@@ -219,8 +249,8 @@ public class SimpleWebXR : MonoBehaviour
 
     private void UpdateInput(WebXRInput inputSource)
     {
-        var floatStartId = (int)inputSource.Handedness * 7 + 54;
-        var byteStartId = (int)inputSource.Handedness * 3 + 4;
+        var floatStartId = (int)inputSource.Handedness * 23 + 54;
+        var byteStartId = (int)inputSource.Handedness * 20 + 4;
 
         inputSource.Position = ToUnityPosition(_dataArray[floatStartId + 0], _dataArray[floatStartId + 1], _dataArray[floatStartId + 2]);
         inputSource.Rotation = ToUnityRotation(_dataArray[floatStartId + 3], _dataArray[floatStartId + 4], _dataArray[floatStartId + 5], _dataArray[floatStartId + 6]);
@@ -239,6 +269,23 @@ public class SimpleWebXR : MonoBehaviour
 
             _byteArray[eventId] = 0;
         }
+
+        inputSource.TargetRayMode = (WebXRTargetRayModes)_byteArray[byteStartId + 1];
+
+        inputSource.AxesCount = _byteArray[byteStartId + 2];
+        for(int i=0;i< WebXRInput.AXES_BUTTON_COUNT;i++)
+        {
+            inputSource.Axes[i] = _dataArray[floatStartId + 7 + i];
+        }
+
+        inputSource.ButtonsCount = _byteArray[byteStartId + 3];
+        for (int i = 0; i < WebXRInput.AXES_BUTTON_COUNT; i++)
+        {
+            var button = inputSource.Buttons[i];
+            button.Value = _dataArray[floatStartId + 15 + i];
+            button.Touched = _byteArray[byteStartId + 4 + i] != 0;
+            button.Pressed = _byteArray[byteStartId + 12 + i] != 0;
+        }
     }
 
     private void RaiseInputSourceEvent(byte mask, WebXRInputSourceEventTypes type, WebXRInputEvent webxrInputEvent, UnityEvent unityEvent, WebXRInput inputSource)
@@ -247,11 +294,11 @@ public class SimpleWebXR : MonoBehaviour
         {
             unityEvent.Invoke();
             webxrInputEvent.Invoke(inputSource);
+
+            Debug.Log($"{inputSource.Handedness} : {type}");
         }
     }
 
-    private string infoStrLeft = "L";
-    private string infoStrRight = "R";
 
     private static Vector3 ToUnityPosition(float x, float y, float z)
     {
@@ -282,12 +329,31 @@ public class SimpleWebXR : MonoBehaviour
         UpdateInput(LeftInput);
         UpdateInput(RightInput);
 
+        LeftInput.Available = _byteArray[44] != 0;
+        RightInput.Available = _byteArray[45] != 0;
+
+        // Input source change event
         if (_byteArray[3] != 0)
         {
             InputSourcesChange.Invoke();
             _byteArray[3] = 0;
         }
+
+        // Session state changed invoked when all gamepads and cameras are updated
+        if (InternalInSession && !InSession) //New session detected
+        {
+            InSession = true;
+            SessionStart.Invoke();
+        }
+        else if (InSession && !InternalInSession) // End of session detected
+        {
+            InSession = false;
+            SessionEnd.Invoke();
+        }
     }
+
+    public readonly UnityEvent SessionStart = new UnityEvent();
+    public readonly UnityEvent SessionEnd = new UnityEvent();
 
 
 #if UNITY_EDITOR
@@ -337,19 +403,75 @@ public class SimpleWebXR : MonoBehaviour
         Select = 16,
         SelectEnd = 32
     }
+
+    public override string ToString()
+    {
+        var sb = new StringBuilder();
+        sb.Append("In session : ");
+        sb.AppendLine(InSession ? "Yes" : "No");
+
+        sb.Append("AR supported : ");
+        sb.AppendLine(IsArSupported() ? "Yes" : "No");
+
+        sb.Append("VR supported : ");
+        sb.AppendLine(IsVrSupported() ? "Yes" : "No");
+
+        sb.AppendLine(StringifyEye(LeftEye, "left"));
+        sb.AppendLine(StringifyEye(RightEye, "right"));
+
+        sb.Append(LeftInput.ToString());
+        sb.Append(RightInput.ToString());
+
+        return sb.ToString();
+    }
+
+    private string StringifyEye(Camera camera, string name)
+    {
+        if (camera)
+        {
+            var sb = new StringBuilder();
+            sb.Append(name);
+            sb.AppendLine("eye : ");
+            sb.Append("  Position :");
+            sb.AppendLine(camera.transform.position.ToString());
+            sb.Append("  Rotation :");
+            sb.AppendLine(camera.transform.rotation.eulerAngles.ToString());
+            sb.Append("  FOV :");
+            sb.AppendLine(camera.fieldOfView.ToString("0.0"));
+            
+            return sb.ToString();
+        }
+        else return $"No {name} eye";
+    }
+
 }
 
-public enum WebXRHandedness { Left, Right }
+public enum WebXRHandedness { Left = 0, Right = 1 }
 
 public class WebXRInput
 {
-    public WebXRInput(WebXRHandedness handedness) { Handedness = handedness; }
+    public const int AXES_BUTTON_COUNT = 8;
+
+    public WebXRInput(WebXRHandedness handedness)
+    {
+        Handedness = handedness;
+        for (int i = 0; i < AXES_BUTTON_COUNT; i++) Buttons[i] = new WebXRGamepadButton();
+    }
+
+    public bool Available;
 
     public readonly WebXRHandedness Handedness;
     public Vector3 Position;
     public Quaternion Rotation;
-    public bool IsPositionValid;
-    public float[] Axes;
+    public bool IsPositionValid = false;
+
+    public int AxesCount = 0;
+    public readonly float[] Axes = new float[AXES_BUTTON_COUNT];
+
+    public int ButtonsCount = 0;
+    public readonly WebXRGamepadButton[] Buttons = new WebXRGamepadButton[AXES_BUTTON_COUNT];
+
+    public WebXRTargetRayModes TargetRayMode = WebXRTargetRayModes.None;
 
     public readonly UnityEvent Select = new UnityEvent();
     public readonly UnityEvent SelectStart = new UnityEvent();
@@ -358,6 +480,77 @@ public class WebXRInput
     public readonly UnityEvent SqueezeStart = new UnityEvent();
     public readonly UnityEvent SqueezeEnd = new UnityEvent();
 
+    public override string ToString()
+    {
+        var sb = new StringBuilder();
+        sb.Append(Handedness);
+        sb.AppendLine("controller");
+
+        sb.Append("  Available : ");
+        sb.AppendLine(Available ? "Yes" : "No");
+
+        sb.Append("  Mode : ");
+        sb.AppendLine(TargetRayMode.ToString());
+
+        if (IsPositionValid)
+        {
+            sb.Append("  Position : ");
+            sb.AppendLine(Position.ToString());
+
+            sb.Append("  Rotation : ");
+            sb.AppendLine(Rotation.eulerAngles.ToString());
+        }
+        else sb.AppendLine("  No position info");
+
+        sb.AppendLine("  Axes :");
+        if (AxesCount > 0)
+        {
+            for (int i = 0; i < Math.Min(AxesCount, Axes.Length); i++)
+            {
+                sb.Append("    [");
+                sb.Append(i);
+                sb.Append("] : ");
+                sb.Append(100 * (int)Axes[i]);
+                sb.AppendLine("%");
+            }
+        }
+        else sb.AppendLine("    None");
+
+        sb.AppendLine("  Buttons :");
+        if (ButtonsCount > 0)
+        {
+            for (int i = 0; i < Math.Min(ButtonsCount, Buttons.Length); i++)
+            {
+                sb.Append("    [");
+                sb.Append(i);
+                sb.Append("] : ");
+                sb.AppendLine(Buttons[i].ToString());
+            }
+        }
+        else sb.AppendLine("    None");
+
+        return sb.ToString();
+    }
+}
+
+public class WebXRGamepadButton
+{
+    public float Value;
+    public bool Touched;
+    public bool Pressed;
+
+    public override string ToString()
+    {
+        return $"{(Touched ? (Pressed ? "Touched and pressed" : "Touched") : (Pressed ? "Pressed" : "Released"))} - {(int)(100 * Value)}%";
+    }
+}
+
+public enum WebXRTargetRayModes
+{
+    None = 0,
+    TrackedPointer = 1,
+    Screen = 2,
+    Gaze = 3,
 }
 
 public class WebXRInputEvent : UnityEvent<WebXRInput> { }

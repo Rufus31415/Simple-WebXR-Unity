@@ -4,7 +4,7 @@
  */
 
 mergeInto(LibraryManager.library, {
-
+  /****************************************************************************/
   // Makes the background of the canvas transparent (see : https://support.unity3d.com/hc/en-us/articles/208892946-How-can-I-make-the-canvas-transparent-on-WebGL-)
   glClear: function (mask) {
     if (mask == 0x00004000) {
@@ -15,7 +15,7 @@ mergeInto(LibraryManager.library, {
     GLctx.clear(mask);
   },
 
-
+  /****************************************************************************/
   // Initialize WebXR features and check if browser is compatible
   InitWebXR: function (dataArray, dataArrayLength, byteArray, byteArrayLength) {
     _isVrSupported = false;
@@ -33,15 +33,11 @@ mergeInto(LibraryManager.library, {
       _isVrSupported = supported;
     });
 
-    // Initialize a pointer to the shared array that contains camera settings (projection matrix, position, orientation)
+    // Initialize pointers to shared arrays that contains data (projection matrix, position, orientation, input sources)
     _dataArray = new Float32Array(buffer, dataArray, dataArrayLength);
-
     _byteArray = new Uint8Array(buffer, byteArray, byteArrayLength);
 
-    // Set view ete mask in shared buffer
-    _dataArraySetViewEye = function (mask) { _byteArray[0] = mask; }
-
-    // Copy poses data in shared buffer
+    // copy camera data in shared buffer
     _dataArraySetView = function (view, id) {
       var floatStartId = id * 27;
 
@@ -74,59 +70,98 @@ mergeInto(LibraryManager.library, {
       }
     }
 
+    // copy input sources data in shared buffer
     _dataArraySetInputSource = function (inputSource, id, frame) {
-      var floatStartId = id * 7 + 54;
+      var floatStartId = id * 23 + 54;
+      var byteStartId = id * 20 + 4;
 
-      var byteStartId = 3 * id + 4;
-
+      // Get input source pose
       if (_arSession.localFloorSpace) {
         var targetRayPose = frame.getPose(inputSource.targetRaySpace, _arSession.localFloorSpace);
 
-        if(!targetRayPose) frame.getPose(inputSource.targetRaySpace, _arSession.localSpace);
-
         if (targetRayPose) {
-          _byteArray[byteStartId + 0] = 1;
-          _dataArray[floatStartId + 0] = targetRayPose.transform.position.x;
+          _byteArray[byteStartId] = 1;
+          _dataArray[floatStartId] = targetRayPose.transform.position.x;
           _dataArray[floatStartId + 1] = targetRayPose.transform.position.y;
           _dataArray[floatStartId + 2] = targetRayPose.transform.position.z;
           _dataArray[floatStartId + 3] = targetRayPose.transform.orientation.x;
           _dataArray[floatStartId + 4] = targetRayPose.transform.orientation.y;
           _dataArray[floatStartId + 5] = targetRayPose.transform.orientation.z;
           _dataArray[floatStartId + 6] = targetRayPose.transform.orientation.w;
-         // str = str + "\r\n Position : " + JSON.stringify(targetRayPose.transform.position);
         }
         else {
-          _byteArray[byteArray] = 0;
+          _byteArray[byteStartId] = 0;
         }
       }
       else {
-        _byteArray[byteArray] = 0;
+        _byteArray[byteStartId] = 0;
       }
 
-      // JSON.stringify(inputSource.profiles); // generic-hand, generic-hand-
       if (inputSource.gamepad) {
-        _byteArray[byteStartId + 1] = inputSource.gamepad.axes.length;
-        _byteArray[byteStartId + 2] = inputSource.gamepad.buttons.length;
+        // Get input source axes
+        if (inputSource.gamepad.axes) {
+          _byteArray[byteStartId + 2] = inputSource.gamepad.axes.length;
 
-        //str = str + "\r\n Axes : " + JSON.stringify(inputSource.gamepad.axes);
-        //str = str + "\r\n Buttons : " + JSON.stringify(inputSource.gamepad.buttons);
+          for (var i = 0; i < inputSource.gamepad.axes.length; i++) {
+            if (i >= 8) break;
+            _dataArray[floatStartId + 7 + i] = inputSource.gamepad.axes[i];
+          }
+        }
+        else {
+          _byteArray[byteStartId + 2] = 0;
+        }
+
+        // Get input source buttons
+        if (inputSource.gamepad.buttons) {
+          _byteArray[byteStartId + 3] = inputSource.gamepad.buttons.length;
+
+          for (var i = 0; i < inputSource.gamepad.buttons.length; i++) {
+            if (i >= 8) break;
+
+            var button = inputSource.gamepad.buttons[i];
+            _byteArray[byteStartId + 4 + i] = +button.touched;
+            _byteArray[byteStartId + 12 + i] = +button.pressed;
+
+            _dataArray[floatStartId + 15 + i] = button.value;
+          }
+        }
+        else {
+          _byteArray[byteStartId + 3] = 0
+        }
+      }
+      else {
+        _byteArray[byteStartId + 2] = 0;
+        _byteArray[byteStartId + 3] = 0;
+      }
+
+      // get input source target ray mode
+      if (inputSource.targetRayMode) {
+        switch (inputSource.targetRayMode) {
+          case "tracked-pointer":
+            _byteArray[byteStartId + 1] = 1;
+            break;
+          case "screen":
+            _byteArray[byteStartId + 1] = 2;
+            break;
+          case "gaze":
+            _byteArray[byteStartId + 1] = 3;
+            break;
+          default:
+            _byteArray[byteStartId + 1] = 0;
+        }
       }
       else {
         _byteArray[byteStartId + 1] = 0;
-        _byteArray[byteStartId + 2] = 0;
       }
-
-      if (inputSource.targetRayMode) {
-
-      }
-
-      //stringToUTF8(str, _stringArray, lengthBytesUTF8(str) + 1);
     }
 
     // Declare a pointer to the session (set in StartSession())
     _arSession = null;
 
+    // bit mask that contains controller events to propagate
     var _controllerEvents = [0, 0];
+
+    // flag that indicates input source change
     _inputSourcesChangeEvent = 0;
 
 
@@ -145,9 +180,9 @@ mergeInto(LibraryManager.library, {
       // Render !
       GLctx.bindFramebuffer(GLctx.FRAMEBUFFER, glLayer.framebuffer);
 
-      if (_arSession.localSpace) {
+      if (_arSession.localFloorSpace) {
         // Get position of camera
-        var pose = frame.getViewerPose(_arSession.localSpace);
+        var pose = frame.getViewerPose(_arSession.localFloorSpace);
         if (pose) {
 
           // Bit mask that indicates which view to render
@@ -164,8 +199,8 @@ mergeInto(LibraryManager.library, {
             }
           }
 
-          // Flag for available data
-          _dataArraySetViewEye(viewEye);
+          // Indicate which eyes should be considered
+          _byteArray[0] = viewEye;
         }
       }
 
@@ -177,19 +212,29 @@ mergeInto(LibraryManager.library, {
       _controllerEvents[1] = 0;
       _inputSourcesChangeEvent = 0;
 
+      var hasLeftInput = 0;
+      var hasRightInput = 0;
 
+      // copy input sources data
       for (var i = 0; i < _arSession.inputSources.length; i++) {
         var inputSource = _arSession.inputSources[i];
 
         if (inputSource.handedness === "right") {
           _dataArraySetInputSource(inputSource, 1, frame);
+          hasRightInput = 1;
         }
         else {
           _dataArraySetInputSource(inputSource, 0, frame);
+          hasLeftInput = 1;
         }
       }
+
+      // Set input validity
+      _byteArray[44] = hasLeftInput;
+      _byteArray[45] = hasRightInput;
     }
 
+    // input source event handler
     _onSessionEvent = function (event) {
       if (event.type && event.inputSource && event.inputSource.handedness) {
 
@@ -222,9 +267,6 @@ mergeInto(LibraryManager.library, {
       }
     };
 
-    // get the current module. Works only if there is 1 Unity WebGL app in this page. I need to think of a better way to do this...
-    //var module = window.UnityLoader.Blobs[Object.keys(window.UnityLoader.Blobs)[0]].Module;
-
     // Access Unity internal Browser and override its requestAnimationFrame
     // It's a good idea found by Mozilla : https://github.com/MozillaReality/unity-webxr-export/blob/c8a6a4ee71a3d890b513fc4cd950ccd238973844/Assets/WebGLTemplates/WebXR/webxr.js#L144
     Module.InternalBrowser.requestAnimationFrame = function (func) {
@@ -253,18 +295,19 @@ mergeInto(LibraryManager.library, {
     }(GLctx.bindFramebuffer);
   },
 
+  /****************************************************************************/
   // Return true if immersive AR is supported. InitWebXR must have been called first.
   IsArSupported: function () {
     return _isArSupported;
   },
 
-
+  /****************************************************************************/
   // Return true if immersive VR is supported. InitWebXR must have been called first.
   IsVrSupported: function () {
     return _isVrSupported;
   },
 
-
+  /****************************************************************************/
   // Starts the WebXR session.
   InternalStartSession: function () {
     if (!_isVrSupported && !_isArSupported) return;
@@ -272,24 +315,27 @@ mergeInto(LibraryManager.library, {
     console.log("Start WebXR session...");
 
     // Request the WebXR session and create the WebGL layer
-    navigator.xr.requestSession(_isVrSupported ? 'immersive-vr' : 'immersive-ar', { optionalFeatures: ['local-floor'] }).then(function (session) {
+    navigator.xr.requestSession(_isVrSupported ? 'immersive-vr' : 'immersive-ar', { requiredFeatures: ['local-floor'] }).then(function (session) {
       _arSession = session;
       _canvasWidth = GLctx.canvas.width;
       _canvasHeight = GLctx.canvas.height;
 
-      session.isInSession = true;
+      session.isInSession = true; // add field in session to indicate that a session in running
 
       var glLayer = new XRWebGLLayer(session, GLctx);
 
       session.updateRenderState({ baseLayer: glLayer });
 
+      // reinitialize canvas when session end
       session.addEventListener('end', function () {
         _byteArray[0] = 0;
+        _arSession.isInSession = false;
         _arSession = null;
         GLctx.canvas.width = _canvasWidth;
         GLctx.canvas.height = _canvasHeight;
       });
 
+      // handle input sources events
       session.addEventListener('select', _onSessionEvent);
       session.addEventListener('selectstart', _onSessionEvent);
       session.addEventListener('selectend', _onSessionEvent);
@@ -297,6 +343,7 @@ mergeInto(LibraryManager.library, {
       session.addEventListener('squeezestart', _onSessionEvent);
       session.addEventListener('squeezeend', _onSessionEvent);
 
+      // Raise flag when input sources change
       session.addEventListener('inputsourceschange', function () {
         _inputSourcesChangeEvent = 1;
       });
@@ -304,18 +351,14 @@ mergeInto(LibraryManager.library, {
       GLctx.canvas.width = glLayer.framebufferWidth;
       GLctx.canvas.height = glLayer.framebufferHeight;
 
-
+      // get working reference space
       session.requestReferenceSpace('local-floor').then(function (space) {
         _arSession.localFloorSpace = space;
       });
-
-      session.requestReferenceSpace('local').then(function (space) {
-        _arSession.localSpace = space;
-      });
-
     });
   },
 
+  /****************************************************************************/
   // Ends the session
   InternalEndSession: function () {
     if (_arSession) _arSession.end();
