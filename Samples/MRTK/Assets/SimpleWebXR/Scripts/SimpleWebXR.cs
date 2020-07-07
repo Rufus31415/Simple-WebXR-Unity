@@ -48,7 +48,7 @@ public class SimpleWebXR : MonoBehaviour
     // [36] -> [43] : right inputs pressed
     // [44] : Left controller active
     // [45] : Right controller active
-    private readonly byte[] _byteArray = new byte[46];
+    private readonly byte[] _byteArray = new byte[46]; //--> TODO : left inputs touched sur 8 octets!!
 
     // Number of views (i.e. cameras)
     private WebXRViewEyes ViewEye => (WebXRViewEyes)_byteArray[0];

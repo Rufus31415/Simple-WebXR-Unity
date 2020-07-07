@@ -362,5 +362,28 @@ mergeInto(LibraryManager.library, {
   // Ends the session
   InternalEndSession: function () {
     if (_arSession) _arSession.end();
+  },
+
+  /****************************************************************************/
+  // Poll device orientation
+  InternalGetDeviceOrientation: function (orientationArray, orientationInfo) {
+    _orientationArray = new Float32Array(buffer, orientationArray, 3);
+    _orientationInfo = new Uint8Array(buffer, orientationInfo, 1);
+
+    // Request permission 
+    if (DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function") {
+      DeviceMotionEvent.requestPermission();
+    }
+
+    _orientationInfo[0] = 0;
+
+    _onDeviceOrientation = function (event) {
+      _orientationInfo[0] = 1;
+      _orientationArray[0] = event.alpha;
+      _orientationArray[1] = event.beta;
+      _orientationArray[2] = event.gamma;
+    }
+
+    window.addEventListener("deviceorientation", _onDeviceOrientation);
   }
 });
