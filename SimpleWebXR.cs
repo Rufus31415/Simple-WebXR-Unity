@@ -93,9 +93,11 @@ public class SimpleWebXR : MonoBehaviour
     [DllImport("__Internal")]
     public static extern bool IsArSupported();
 
-
     [DllImport("__Internal")]
     public static extern bool IsVrSupported();
+
+    [DllImport("__Internal")]
+    public static extern void InternalGetDeviceOrientation(float[] orientationArray, byte[] orientationInfo);
 
 #else // if executed with Unity editor
     private static void InternalStartSession() { }
@@ -113,6 +115,11 @@ public class SimpleWebXR : MonoBehaviour
     public static bool IsVrSupported()
     {
         return true; // always display "Enter VR" button for debug purpose
+    }
+
+    public static  void InternalGetDeviceOrientation(float[] orientationArray, byte[] orientationInfo)
+    {
+
     }
 #endif
 
@@ -444,6 +451,33 @@ public class SimpleWebXR : MonoBehaviour
         else return $"No {name} eye";
     }
 
+
+    #region Device orientation sensor
+    // Orientation info
+    // 
+    private readonly float[] _orientationArray = new float[3];
+    private readonly byte[] _orientationInfo = new byte[1];
+    private bool _orientationDeviceStarted = false;
+
+    // Returns device orientation
+    // see : https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Orientation_and_motion_data_explained#About_rotation
+    public bool GetDeviceOrientation(out float alpha, out float beta, out float gamma)
+    {
+        if (!_orientationDeviceStarted)
+        {
+            InternalGetDeviceOrientation(_orientationArray, _orientationInfo);
+            _orientationDeviceStarted = true;
+        }
+
+        alpha = _orientationArray[0];
+        beta = _orientationArray[1];
+        gamma = _orientationArray[2];
+
+        return _orientationInfo[0] != 0;
+    }
+
+    #endregion
+
 }
 
 public enum WebXRHandedness { Left = 0, Right = 1 }
@@ -531,6 +565,7 @@ public class WebXRInput
 
         return sb.ToString();
     }
+
 }
 
 public class WebXRGamepadButton

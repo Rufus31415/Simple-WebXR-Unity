@@ -463,7 +463,11 @@ public class SimpleWebXR : MonoBehaviour
     // see : https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Orientation_and_motion_data_explained#About_rotation
     public bool GetDeviceOrientation(out float alpha, out float beta, out float gamma)
     {
-        if (!_orientationDeviceStarted) InternalGetDeviceOrientation(_orientationArray, _orientationInfo);
+        if (!_orientationDeviceStarted)
+        {
+            InternalGetDeviceOrientation(_orientationArray, _orientationInfo);
+            _orientationDeviceStarted = true;
+        }
 
         alpha = _orientationArray[0];
         beta = _orientationArray[1];

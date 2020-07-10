@@ -370,11 +370,6 @@ mergeInto(LibraryManager.library, {
     _orientationArray = new Float32Array(buffer, orientationArray, 3);
     _orientationInfo = new Uint8Array(buffer, orientationInfo, 1);
 
-    // Request permission 
-    if (DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function") {
-      DeviceMotionEvent.requestPermission();
-    }
-
     _orientationInfo[0] = 0;
 
     _onDeviceOrientation = function (event) {
@@ -382,6 +377,10 @@ mergeInto(LibraryManager.library, {
       _orientationArray[0] = event.alpha;
       _orientationArray[1] = event.beta;
       _orientationArray[2] = event.gamma;
+    }
+
+    if(CustomEvent && DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function"){
+      document.dispatchEvent(new CustomEvent("SimpleWebXRNeedMotionPermission"));
     }
 
     window.addEventListener("deviceorientation", _onDeviceOrientation);

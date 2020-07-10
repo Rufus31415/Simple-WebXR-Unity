@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL Player | Simple-WebXR-Unity</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <script src="TemplateData/UnityProgress.js"></script>
+    <script src="Build/UnityLoader.js"></script>
+    <script>
+      UnityLoader.SystemInfo.mobile = false;  // workaround to prevent the warning popup from opening on mobile phone
+	  
+      if(["Edge","Firefox","Chrome","Safari"].indexOf(UnityLoader.SystemInfo.browser)==-1){
+		UnityLoader.SystemInfo.browser = "Firefox"; // another workaround to prevent the warning popup from opening on unknown browsers
+      }
+
+      var gameInstance = UnityLoader.instantiate("gameContainer", "Build/build56.json", {onProgress: UnityProgress});
+    </script>
+  </head>
+  <body>
+    <div class="webgl-content">
+      <div id="gameContainer" style="width: 960px; height: 600px"></div>
+      <div class="footer">
+        <div class="webgl-logo"></div>
+        <div class="fullscreen" onclick="gameInstance.SendMessage('WebXR', 'StartSession')"></div>
+        <div class="title">Simple-WebXR-Unity</div>
+      </div>
+    </div>
+  </body>
+</html>
