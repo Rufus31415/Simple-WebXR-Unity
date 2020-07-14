@@ -3,9 +3,9 @@
     "references": [
         "Microsoft.MixedReality.Toolkit",
         "Microsoft.MixedReality.Toolkit.Async",
-        "Unity.XR.ARFoundation",
-        "UnityEngine.SpatialTracking"
+        "Unity.XR.ARFoundation"
     ],
+    "optionalUnityReferences": [],
     "includePlatforms": [
         "Android",
         "Editor",
@@ -16,7 +16,5 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+    "defineConstraints": []
 }
