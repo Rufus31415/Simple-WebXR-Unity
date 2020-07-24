@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/DeviceOrientation.unity
-    guid: 84f58350ef4d2d74784d709ed59d3591
+    path: Assets/Samples/Paint/SimpleWebXR-Paint.unity
+    guid: b0c2a2f3bf2cde1498f54d06929a1761
   m_configObjects: {}

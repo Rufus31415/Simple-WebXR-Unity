@@ -27,7 +27,8 @@ public class SimpleWebXR : MonoBehaviour
     // [77] -> [83] : right input x, y, z, rx, ry, rz, rw
     // [84] -> [91] : right input axes
     // [92] -> [99] : right gamepad value
-    private readonly float[] _dataArray = new float[100];
+    // [100] : user height
+    private readonly float[] _dataArray = new float[101];
 
     // Shared float array with javascript.
     // [0] : number of views (0 : session is stopped)
@@ -64,6 +65,11 @@ public class SimpleWebXR : MonoBehaviour
 
     // Cameras created for each eyes ([0]:left, [1]:right)
     private readonly Camera[] _cameras = new Camera[2];
+
+    /// <summary>
+    /// User height in meter (startup distance from floor to device)
+    /// </summary>
+    public float UserHeight => _dataArray[100];
 
     public WebXRInput GetInput(WebXRHandedness handedness)
     {
@@ -422,6 +428,9 @@ public class SimpleWebXR : MonoBehaviour
 
         sb.Append("VR supported : ");
         sb.AppendLine(IsVrSupported() ? "Yes" : "No");
+
+        sb.Append("User height : ");
+        sb.AppendLine(UserHeight.ToString("0.0"));
 
         sb.AppendLine(StringifyEye(LeftEye, "left"));
         sb.AppendLine(StringifyEye(RightEye, "right"));

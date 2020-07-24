@@ -37,6 +37,8 @@ mergeInto(LibraryManager.library, {
     _dataArray = new Float32Array(buffer, dataArray, dataArrayLength);
     _byteArray = new Uint8Array(buffer, byteArray, byteArrayLength);
 
+    _useLocalSpaceForInput = true;
+
     // copy camera data in shared buffer
     _dataArraySetView = function (view, id) {
       var floatStartId = id * 27;
@@ -46,6 +48,7 @@ mergeInto(LibraryManager.library, {
 
       // Share position
       var position = view.transform.position;
+
       _dataArray[floatStartId + 16] = position.x;
       _dataArray[floatStartId + 17] = position.y;
       _dataArray[floatStartId + 18] = position.z;
@@ -76,13 +79,19 @@ mergeInto(LibraryManager.library, {
       var byteStartId = id * 20 + 4;
 
       // Get input source pose
-      if (_arSession.localFloorSpace) {
-        var targetRayPose = frame.getPose(inputSource.targetRaySpace, _arSession.localFloorSpace);
+      if (_arSession.localSpace) {
+
+        var targetRayPose = frame.getPose(inputSource.targetRaySpace, _useLocalSpaceForInput ? _arSession.localSpace : _arSession.localFloorSpace);
+
+        if (!targetRayPose) {
+          _useLocalSpaceForInput = false;
+          targetRayPose = frame.getPose(inputSource.targetRaySpace, _arSession.localFloorSpace);
+        }
 
         if (targetRayPose) {
           _byteArray[byteStartId] = 1;
           _dataArray[floatStartId] = targetRayPose.transform.position.x;
-          _dataArray[floatStartId + 1] = targetRayPose.transform.position.y;
+          _dataArray[floatStartId + 1] = targetRayPose.transform.position.y - (_useLocalSpaceForInput ? 0 : _dataArray[100]);
           _dataArray[floatStartId + 2] = targetRayPose.transform.position.z;
           _dataArray[floatStartId + 3] = targetRayPose.transform.orientation.x;
           _dataArray[floatStartId + 4] = targetRayPose.transform.orientation.y;
@@ -96,6 +105,7 @@ mergeInto(LibraryManager.library, {
       else {
         _byteArray[byteStartId] = 0;
       }
+
 
       if (inputSource.gamepad) {
         // Get input source axes
@@ -159,7 +169,7 @@ mergeInto(LibraryManager.library, {
     _arSession = null;
 
     // bit mask that contains controller events to propagate
-    var _controllerEvents = [0, 0];
+    _controllerEvents = [0, 0];
 
     // flag that indicates input source change
     _inputSourcesChangeEvent = 0;
@@ -180,11 +190,10 @@ mergeInto(LibraryManager.library, {
       // Render !
       GLctx.bindFramebuffer(GLctx.FRAMEBUFFER, glLayer.framebuffer);
 
-      if (_arSession.localFloorSpace) {
+      if (_arSession.localSpace) {
         // Get position of camera
-        var pose = frame.getViewerPose(_arSession.localFloorSpace);
+        var pose = frame.getViewerPose(_arSession.localSpace);
         if (pose) {
-
           // Bit mask that indicates which view to render
           var viewEye = 0;
 
@@ -201,6 +210,12 @@ mergeInto(LibraryManager.library, {
 
           // Indicate which eyes should be considered
           _byteArray[0] = viewEye;
+        }
+
+        // Estimate user height
+        if (_dataArray[100] == 0 && _arSession.localFloorSpace) {
+          var poseFloor = frame.getViewerPose(_arSession.localFloorSpace);
+          if (poseFloor) _dataArray[100] = poseFloor.views[0].transform.position.y - pose.views[0].transform.position.y;
         }
       }
 
@@ -315,7 +330,7 @@ mergeInto(LibraryManager.library, {
     console.log("Start WebXR session...");
 
     // Request the WebXR session and create the WebGL layer
-    navigator.xr.requestSession(_isVrSupported ? 'immersive-vr' : 'immersive-ar', { requiredFeatures: ['local-floor'] }).then(function (session) {
+    navigator.xr.requestSession(_isVrSupported ? 'immersive-vr' : 'immersive-ar', { optionalFeatures: ['local-floor'] }).then(function (session) {
       _arSession = session;
       _canvasWidth = GLctx.canvas.width;
       _canvasHeight = GLctx.canvas.height;
@@ -355,6 +370,9 @@ mergeInto(LibraryManager.library, {
       session.requestReferenceSpace('local-floor').then(function (space) {
         _arSession.localFloorSpace = space;
       });
+      session.requestReferenceSpace('local').then(function (space) {
+        _arSession.localSpace = space;
+      });
     });
   },
 
@@ -379,7 +397,7 @@ mergeInto(LibraryManager.library, {
       _orientationArray[2] = event.gamma;
     }
 
-    if(CustomEvent && DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function"){
+    if (CustomEvent && DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function") {
       document.dispatchEvent(new CustomEvent("SimpleWebXRNeedMotionPermission"));
     }
 
