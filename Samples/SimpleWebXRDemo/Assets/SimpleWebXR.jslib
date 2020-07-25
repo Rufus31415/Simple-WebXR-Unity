@@ -39,6 +39,8 @@ mergeInto(LibraryManager.library, {
 
     _useLocalSpaceForInput = true;
 
+    _rAFCB = null;
+
     // copy camera data in shared buffer
     _dataArraySetView = function (view, id) {
       var floatStartId = id * 27;
@@ -287,6 +289,8 @@ mergeInto(LibraryManager.library, {
     // Access Unity internal Browser and override its requestAnimationFrame
     // It's a good idea found by Mozilla : https://github.com/MozillaReality/unity-webxr-export/blob/c8a6a4ee71a3d890b513fc4cd950ccd238973844/Assets/WebGLTemplates/WebXR/webxr.js#L144
     Browser.requestAnimationFrame = function (func) {
+      if(!_rAFCB) _rAFCB = func;
+
       if (_arSession && _arSession.isInSession) {
         return _arSession.requestAnimationFrame(function (time, xrFrame) {
           _requestAnimationFrame(xrFrame);
@@ -328,7 +332,6 @@ mergeInto(LibraryManager.library, {
   // Starts the WebXR session.
   InternalStartSession: function () {
     if (!_isVrSupported && !_isArSupported) return;
-
     console.log("Start WebXR session...");
 
     // Request the WebXR session and create the WebGL layer
@@ -374,6 +377,9 @@ mergeInto(LibraryManager.library, {
       });
       session.requestReferenceSpace('local').then(function (space) {
         _arSession.localSpace = space;
+
+        // requestAnimationFrame should be call to make in work on Quest
+        Browser.requestAnimationFrame(_rAFCB);
       });
     });
   },
