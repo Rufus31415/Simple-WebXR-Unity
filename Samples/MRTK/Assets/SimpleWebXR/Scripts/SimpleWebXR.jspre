@@ -10,8 +10,6 @@ if(!WebGLRenderingContext.prototype.isContextLost) WebGLRenderingContext.prototy
  // It also allows to add the XRCompatible attribute to true. (we could also do this via makeXRCompatible())
  // https://github.com/MozillaReality/unity-webxr-export/blob/75d4f429f7b53fe719f3f52c82c739fcc1740d08/Assets/WebXR/Plugins/WebGL/webxr.jspre
 setTimeout(function () {
-  Module['InternalBrowser'] = Browser || {};
-
   if (GL && GL.createContext) {
     GL.createContextOld = GL.createContext;
     GL.createContext = function (canvas, webGLContextAttributes) {

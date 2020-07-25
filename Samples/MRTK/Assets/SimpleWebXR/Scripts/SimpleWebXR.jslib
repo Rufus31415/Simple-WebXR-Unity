@@ -23,14 +23,14 @@ mergeInto(LibraryManager.library, {
 
     if (!navigator.xr) return;
 
+    // Check if WebXR immersive VR is supported (check immersive-vr before immersive-ar to make it work on Oculus Quest Browser)
+    navigator.xr.isSessionSupported('immersive-vr').then(function (supported) {
+      _isVrSupported = supported;
+    });
+
     // Check if WebXR immersive AR is supported
     navigator.xr.isSessionSupported('immersive-ar').then(function (supported) {
       _isArSupported = supported;
-    });
-
-    // Check if WebXR immersive VR is supported
-    navigator.xr.isSessionSupported('immersive-vr').then(function (supported) {
-      _isVrSupported = supported;
     });
 
     // Initialize pointers to shared arrays that contains data (projection matrix, position, orientation, input sources)
@@ -83,6 +83,8 @@ mergeInto(LibraryManager.library, {
 
         var targetRayPose = frame.getPose(inputSource.targetRaySpace, _useLocalSpaceForInput ? _arSession.localSpace : _arSession.localFloorSpace);
 
+        // On Firefox Reality on Hololens 2 targetRayPose is undefined so we use local-floor and substract UserHeight to position.y.
+        // We toggle _useLocalSpaceForInput so we only get one call to getPose() next time.
         if (!targetRayPose) {
           _useLocalSpaceForInput = false;
           targetRayPose = frame.getPose(inputSource.targetRaySpace, _arSession.localFloorSpace);
@@ -212,7 +214,7 @@ mergeInto(LibraryManager.library, {
           _byteArray[0] = viewEye;
         }
 
-        // Estimate user height
+        // Estimate user height at first frame
         if (_dataArray[100] == 0 && _arSession.localFloorSpace) {
           var poseFloor = frame.getViewerPose(_arSession.localFloorSpace);
           if (poseFloor) _dataArray[100] = poseFloor.views[0].transform.position.y - pose.views[0].transform.position.y;
@@ -284,7 +286,7 @@ mergeInto(LibraryManager.library, {
 
     // Access Unity internal Browser and override its requestAnimationFrame
     // It's a good idea found by Mozilla : https://github.com/MozillaReality/unity-webxr-export/blob/c8a6a4ee71a3d890b513fc4cd950ccd238973844/Assets/WebGLTemplates/WebXR/webxr.js#L144
-    Module.InternalBrowser.requestAnimationFrame = function (func) {
+    Browser.requestAnimationFrame = function (func) {
       if (_arSession && _arSession.isInSession) {
         return _arSession.requestAnimationFrame(function (time, xrFrame) {
           _requestAnimationFrame(xrFrame);
