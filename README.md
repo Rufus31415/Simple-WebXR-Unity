@@ -77,6 +77,10 @@ Work in progress for :
 
 See the [license file](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/LICENSE) for details.
 
----
-
-Feel free to open issues :)
+# Any questions ?
+Feel free to contact me :
+- Slack : https://holodevelopers.slack.com/team/U0120CVDUCV
+- Discord : Rufus31415#2440
+- Twitter : https://twitter.com/rufus31415
+- Mail : rufus31415@gmail.com
+- Open issue : https://github.com/Rufus31415/Simple-WebXR-Unity/issues
