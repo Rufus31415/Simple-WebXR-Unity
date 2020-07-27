@@ -1,8 +1,11 @@
 ![SimpleWebXR](/images/banner.png)
 
+
 # What is SimpleWebXR ?
 SimpleWebXR is a lightweight library that exposes the WebXR javascript API in your C# Unity code.
 Thus, after a Unity WebGL build, your app can do augmented or virtual reality in the browser.
+
+:warning::warning::warning: **This project is under development...** :warning::warning::warning:
 
 # Try it
 ## Paint
@@ -19,6 +22,7 @@ Sources are [here](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/
 Unity version : 2018.4.21f1
 
 ## CAD file viewer
+Open 45+ 3D CAD formats (FBX, STEP, OBJ, Collada, GLTF, OnShape, ...) and view them in VR/AR with WebXR !
 [work in progress...](https://github.com/Rufus31415/react-webgl-3d-viewer-demo)
 
 ## MRTK
@@ -30,7 +34,7 @@ LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-mrtk/](htt
 
 Fun simulation features in browser :
 
-| Mouse interaction | Hand simulation | Scene navigation |
+| Mouse interaction | Hand simulation (MAJ/SPACE and T/Y) | Scene navigation |
 |:-------------------------:|:-------------------------:|:-------------------------:|
 |<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-mouse.gif"> |  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-hand-simulation.gif">|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-move.gif">|
 
@@ -63,6 +67,9 @@ Work in progress for :
 - [Firefox Reality](https://www.oculus.com/experiences/quest/2180252408763702/?locale=fr_FR) on Oculus Quest
 - don't hesitate to tell me about browsers you've tried...
 
+# Unity version 
+I've noticed that big scenes like MRTK don't work on mobile anymore when compiled with Unity 2019.4. That's why I recommend Unity 2018.4.
+I haven't dug into the reason yet.
 
 # Useful WebXR content
 - [https://immersive-web.github.io/](https://immersive-web.github.io/) : Many useful examples
@@ -76,6 +83,10 @@ Work in progress for :
 
 See the [license file](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/LICENSE) for details.
 
----
-
-Feel free to open issues :)
+# Any questions ?
+Feel free to contact me :
+- Slack : https://holodevelopers.slack.com/team/U0120CVDUCV
+- Discord : Rufus31415#2440
+- Twitter : https://twitter.com/rufus31415
+- Mail : rufus31415@gmail.com
+- Open issue : https://github.com/Rufus31415/Simple-WebXR-Unity/issues
