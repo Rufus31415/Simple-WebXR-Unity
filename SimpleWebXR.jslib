@@ -335,7 +335,8 @@ mergeInto(LibraryManager.library, {
     console.log("Start WebXR session...");
 
     // Request the WebXR session and create the WebGL layer
-    navigator.xr.requestSession(_isVrSupported ? 'immersive-vr' : 'immersive-ar', { optionalFeatures: ['local-floor'] }).then(function (session) {
+    // In first approach, AR is prioritary over VR
+    navigator.xr.requestSession(_isArSupported ? 'immersive-ar' : 'immersive-vr', { optionalFeatures: ['local-floor'] }).then(function (session) {
       _arSession = session;
       _canvasWidth = GLctx.canvas.width;
       _canvasHeight = GLctx.canvas.height;
