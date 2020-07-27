@@ -31,7 +31,7 @@ LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-mrtk/](htt
 
 Fun simulation features in browser :
 
-| Mouse interaction | Hand simulation | Scene navigation |
+| Mouse interaction | Hand simulation (MAJ/SPACE and T/Y) | Scene navigation |
 |:-------------------------:|:-------------------------:|:-------------------------:|
 |<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-mouse.gif"> |  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-hand-simulation.gif">|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-move.gif">|
 
