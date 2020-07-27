@@ -22,7 +22,9 @@ Sources are [here](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/
 Unity version : 2018.4.21f1
 
 ## CAD file viewer
-Open 45+ 3D CAD formats (FBX, STEP, OBJ, Collada, GLTF, OnShape, ...) and view them in VR/AR with WebXR !
+LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/3d-viewer](https://rufus31415.github.io/sandbox/3d-viewer)
+
+Opens 45+ 3D CAD formats (FBX, STEP, OBJ, Collada, GLTF, OnShape, ...) and view them in VR/AR with WebXR !
 [work in progress...](https://github.com/Rufus31415/react-webgl-3d-viewer-demo)
 
 ## MRTK
@@ -45,9 +47,15 @@ Sources are [here](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/
 Unity version : 2018.4.21f1
 
 ## XRTK
+LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-xrtk-solvers/](https://rufus31415.github.io/sandbox/simple-webxr-xrtk-solvers)
+| Android | Hololens 2 | iOS | Quest | Emulator |
+|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
+|<img src=""> |  <img src="">|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/xrtk-solvers-ios.gif" height="225px">|<img src="">  |  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/xrtk-solvers-simulator.gif" height="225px">|
+
 [work in progress...](https://github.com/Rufus31415/WebXR)
 
-
+## Unity XR Plugin
+[Later...]
 
 # Library files
 - [SimpleWebXR.cs](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/SimpleWebXR.cs): Mono Behaviour that displays the "Start AR" button and communicates with javascript. This behavior should be in your scene.
