@@ -1,8 +1,11 @@
 ![SimpleWebXR](/images/banner.png)
 
+
 # What is SimpleWebXR ?
 SimpleWebXR is a lightweight library that exposes the WebXR javascript API in your C# Unity code.
 Thus, after a Unity WebGL build, your app can do augmented or virtual reality in the browser.
+
+:warning::warning::warning: **This project is under development...** :warning::warning::warning:
 
 # Try it
 ## Paint
@@ -64,6 +67,9 @@ Work in progress for :
 - [Firefox Reality](https://www.oculus.com/experiences/quest/2180252408763702/?locale=fr_FR) on Oculus Quest
 - don't hesitate to tell me about browsers you've tried...
 
+# Unity version 
+I've noticed that big scenes like MRTK don't work on mobile anymore when compiled with Unity 2019.4. That's why I recommend Unity 2018.4.
+I haven't dug into the reason yet.
 
 # Useful WebXR content
 - [https://immersive-web.github.io/](https://immersive-web.github.io/) : Many useful examples
