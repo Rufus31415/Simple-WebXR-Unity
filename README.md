@@ -19,6 +19,7 @@ Sources are [here](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/
 Unity version : 2018.4.21f1
 
 ## CAD file viewer
+Open 45+ 3D CAD formats (FBX, STEP, OBJ, Collada, GLTF, OnShape, ...) and view them in VR/AR with WebXR !
 [work in progress...](https://github.com/Rufus31415/react-webgl-3d-viewer-demo)
 
 ## MRTK
