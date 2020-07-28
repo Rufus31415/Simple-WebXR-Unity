@@ -7,7 +7,11 @@ Thus, after a Unity WebGL build, your app can do augmented or virtual reality in
 
 :warning::warning::warning: **This project is under development...** :warning::warning::warning:
 
+---
+
 # Try it
+
+
 ## Paint
 LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-paint/](https://rufus31415.github.io/sandbox/simple-webxr-paint/)
 
@@ -15,17 +19,25 @@ LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-paint/](ht
 |:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
 |<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/paint-android.gif"> |  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/paint-hololens.gif">|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/paint-ios.gif">|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/paint-quest.gif">  |  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/paint-simulator.gif">|
 
-
+<p align="center">
+  <a href="https://youtu.be/cUkAdI4lJOA">
+    <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/paint-youtube.png" height="150px"/>
+  </a>
+</p>
 
 Sources are [here](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/Samples/SimpleWebXRDemo/Assets/Samples/Paint/PenController.cs)
 
 Unity version : 2018.4.21f1
+
+---
 
 ## CAD file viewer
 LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/3d-viewer](https://rufus31415.github.io/sandbox/3d-viewer)
 
 Opens 45+ 3D CAD formats (FBX, STEP, OBJ, Collada, GLTF, OnShape, ...) and view them in VR/AR with WebXR !
 [work in progress...](https://github.com/Rufus31415/react-webgl-3d-viewer-demo)
+
+---
 
 ## MRTK
 LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-mrtk/](https://rufus31415.github.io/sandbox/simple-webxr-mrtk/)
@@ -46,6 +58,8 @@ Sources are [here](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/
 
 Unity version : 2018.4.21f1
 
+---
+
 ## XRTK
 LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-xrtk-solvers/](https://rufus31415.github.io/sandbox/simple-webxr-xrtk-solvers)
 | Android | Hololens 2 | iOS | Quest | Emulator |
@@ -54,8 +68,12 @@ LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-xrtk-solve
 
 [work in progress...](https://github.com/Rufus31415/WebXR)
 
+---
+
 ## Unity XR Plugin
 [Later...]
+
+---
 
 # Library files
 - [SimpleWebXR.cs](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/SimpleWebXR.cs): Mono Behaviour that displays the "Start AR" button and communicates with javascript. This behavior should be in your scene.
