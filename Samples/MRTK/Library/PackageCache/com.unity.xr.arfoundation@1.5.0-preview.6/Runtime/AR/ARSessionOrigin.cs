@@ -1,7 +1,5 @@
 using System;
-#if !UNITY_WEBGL
 using UnityEngine.SpatialTracking;
-#endif
 
 namespace UnityEngine.XR.ARFoundation
 {
@@ -170,7 +168,6 @@ namespace UnityEngine.XR.ARFoundation
         /// </remarks>
         public void MakeContentAppearAt(Transform content, Quaternion rotation)
         {
-
             if (content == null)
                 throw new ArgumentNullException("content");
 
@@ -183,8 +180,6 @@ namespace UnityEngine.XR.ARFoundation
 
         void Awake()
         {
-#if !UNITY_WEBGL
-
             // This will be the parent GameObject for any trackables (such as planes) for which
             // we want a corresponding GameObject.
             trackablesParent = (new GameObject("Trackables")).transform;
@@ -222,13 +217,10 @@ namespace UnityEngine.XR.ARFoundation
                     }
                 }
             }
-#endif
         }
 
         Pose GetCameraOriginPose()
         {
-#if !UNITY_WEBGL
-
             var trackedPoseDriver = camera.GetComponent<TrackedPoseDriver>();
             if (trackedPoseDriver != null)
             {
@@ -240,7 +232,6 @@ namespace UnityEngine.XR.ARFoundation
 
                 return parent.TransformPose(localOriginPose);
             }
-#endif
 
             return Pose.identity;
         }

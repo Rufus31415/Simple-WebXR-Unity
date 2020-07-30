@@ -672,7 +672,7 @@ PlayerSettings:
     1: 
     4: ARFOUNDATION_PRESENT
     7: ARFOUNDATION_PRESENT
-    14: 
+    14: master
   platformArchitecture:
     iOS: 1
   scriptingBackend:
@@ -687,18 +687,18 @@ PlayerSettings:
   additionalIl2CppArgs: 
   scriptingRuntimeVersion: 1
   apiCompatibilityLevelPerPlatform:
-    Metro: 3
+    Metro: 6
     Standalone: 3
     WebGL: 6
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
   metroPackageName: Microsoft.MixedReality.Toolkit
-  metroPackageVersion: 2.4.0.0
+  metroPackageVersion: 2.4.3.0
   metroCertificatePath: Assets/WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: Microsoft
   metroCertificateIssuer: Microsoft
-  metroCertificateNotAfter: 80b15b7b5218d601
+  metroCertificateNotAfter: 804f6220a985d701
   metroApplicationDescription: Microsoft.MixedReality.Toolkit
   wsaImages: {}
   metroTileShortName: MixedRealityToolkit
@@ -728,7 +728,7 @@ PlayerSettings:
       HumanInterfaceDevice: False
       InputInjectionBrokered: False
       InternetClient: True
-      InternetClientServer: False
+      InternetClientServer: True
       Location: False
       LowLevelDevices: False
       Microphone: True
@@ -739,7 +739,7 @@ PlayerSettings:
       PhoneCallHistoryPublic: False
       PicturesLibrary: False
       PointOfService: False
-      PrivateNetworkClientServer: False
+      PrivateNetworkClientServer: True
       Proximity: False
       RecordedCallsFolder: False
       RemoteSystem: False
