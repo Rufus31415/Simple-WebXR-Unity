@@ -27,6 +27,8 @@ public class SpectatorViewClient : MonoBehaviour
 
         Host = PlayerPrefs.GetString("ip", "localhost");
 
+        _lowQuality = PlayerPrefs.GetInt("Low quality", 1) != 0;
+
         StartCoroutine(PollImage());
     }
 
@@ -34,11 +36,20 @@ public class SpectatorViewClient : MonoBehaviour
 
     private bool _followMode = true;
 
+    private bool _lowQuality = true;
+
     private void OnGUI()
     {
         if (_texture)
         {
             GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), _texture);
+        }
+
+        if( GUI.Toggle(new Rect(300, 0, 100, 40), _lowQuality, "Low quality") != _lowQuality)
+        {
+            _lowQuality = !_lowQuality;
+            PlayerPrefs.SetInt("lowQuality", _lowQuality ? 1 : 0);
+            PlayerPrefs.Save();
         }
 
         if (_xr.InSession) return;
@@ -59,6 +70,7 @@ public class SpectatorViewClient : MonoBehaviour
         {
             _followMode = true;
         }
+
     }
 
     private int _iDeltaT = 0;
@@ -85,8 +97,17 @@ public class SpectatorViewClient : MonoBehaviour
 
                 var data = new RequestImageJSon();
 
-                data.w = w;
-                data.h = h;
+                if (_lowQuality)
+                {
+                    data.w = w/4;
+                    data.h = h/4;
+                }
+                else
+                {
+                    data.w = w;
+                    data.h = h;
+                }
+
                 data.p = Camera.main.transform.position;
                 data.r = Camera.main.transform.eulerAngles;
                 data.m = Camera.main.projectionMatrix;

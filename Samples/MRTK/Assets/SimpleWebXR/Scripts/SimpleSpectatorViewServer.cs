@@ -99,6 +99,8 @@ public class SimpleSpectatorViewServer : MonoBehaviour
     private Vector3 _offsetRotation;
     private Vector3 _offsetPosition;
 
+    private Texture2D _streamingTexture;
+
     public IEnumerator RenderInTexture()
     {
         Camera _camera = gameObject.EnsureComponent<Camera>();
@@ -123,9 +125,10 @@ public class SimpleSpectatorViewServer : MonoBehaviour
 
             if (data != null)
             {
-                if (!_camera.targetTexture || _camera.targetTexture.width != data.w || _camera.targetTexture.height != data.h)
+                if (!_camera.targetTexture || !_streamingTexture  || _camera.targetTexture.width != data.w || _camera.targetTexture.height != data.h)
                 {
                     if (_camera.targetTexture) Destroy(_camera.targetTexture);
+                    if (_streamingTexture) Destroy(_streamingTexture);
 
                     var descr = new RenderTextureDescriptor();
                     descr.autoGenerateMips = true;
@@ -147,6 +150,7 @@ public class SimpleSpectatorViewServer : MonoBehaviour
 
 
                     _camera.targetTexture = new RenderTexture(descr);
+                    _streamingTexture = new Texture2D(data.w, data.h);
                 }
 
                 _camera.transform.position = data.f ? Camera.main.transform.position : data.p + _offsetPosition;
@@ -162,13 +166,13 @@ public class SimpleSpectatorViewServer : MonoBehaviour
             _camera.Render();
 
             //110fps
-            Texture2D tempTex = new Texture2D(tex.width, tex.height);
-            tempTex.ReadPixels(new Rect(0, 0, tex.width, tex.height), 0, 0);
+            _streamingTexture.ReadPixels(new Rect(0, 0, tex.width, tex.height), 0, 0);
             //50fps
-            tempTex.Apply();
+            _streamingTexture.Apply();
 
             //22fps
-            _png = tempTex.EncodeToPNG();
+            _png = _streamingTexture.EncodeToPNG();
+
 
             _waitRender.Set();
 
