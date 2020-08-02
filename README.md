@@ -47,7 +47,7 @@ Unity project for Mobile (WebGL) : [Simple-WebXR-Unity/Samples/SpectatorViewClie
 
 Unity version : 2018.4.21f1
 
-| Mobile | Move in Hololens space or Follow user head |
+| Mobile | Move in Hololens space with mouse/keyboard or Follow user head |
 |:-------------------------:|:-------------------------:|
 |<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/spectator-view-ios.gif" height="150px"/>|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/spectator-view-desktop.gif" height="150px"/>|
 
@@ -62,8 +62,6 @@ Comparison with Microsoft solution :
 |FPS| 10 | 60 |
 |Calibration| Touch the screen | Scan a QR Code |
 |Experimental| YES | NO |
-
-
 
 
 ## Paint example
@@ -116,10 +114,53 @@ Unity has a unified plug-in framework that enables direct integrations or XR for
 
 ---
 
-# Library files
+# How to use
+# Installation
+Just add these 3 files in your Unity Asset folder, then add SimpleWebXR MonoBehavior on a game object in your scene.
 - [SimpleWebXR.cs](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/SimpleWebXR.cs): Mono Behaviour that displays the "Start AR" button and communicates with javascript. This behavior should be in your scene.
 - [SimpleWebXR.jslib](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/SimpleWebXR.jslib): Javascript plugin that is included in the application and that makes the link between the Unity engine and the WebXR session. It displays the rendering and obtains the positions and characteristics of the camera.
 - [SimpleWebXR.jspre](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/SimpleWebXR.jspre): Javascript plugin executed before the application that initializes a number of things.
+
+# Compilation
+The project must be compiled in WebGL, otherwise SimpleWebXR will has no effect.
+I've noticed that big scenes like MRTK don't work on mobile anymore when compiled with Unity 2019.4. That's why I recommend Unity 2018.4.
+I haven't dug into the reason yet.
+
+# Runtime
+When compiled as a WebGL app, if the browser is WebXR compatible, it will display a "Start AR" button on your canvas.
+You don't need a specific WebGL Template, so your can keep using yours.
+
+# Code example
+## Get WebXR session anywhere 
+``` cs
+private SimpleWebXR _xr;
+
+void Start()
+{
+  _xr = SimpleWebXR.GetInstance();
+}
+```
+
+## Start immersive session
+By default, SimpleWebXR displays a "Start AR" or "Start VR" GUI button. When the user presses it, the session starts.
+
+But you can hide this button by checking "Hide Start Button", and executing the following code: 
+``` cs
+_xr.StartSession();
+```
+<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/monobehavior.png"/>
+
+
+## Check AR/VR supported
+``` cs
+bool isARSupported = _xr.IsARSupported();
+bool isVRSupported = _xr.IsVRSupported();
+```
+
+## Check if a WebXR Session is running
+``` cs
+bool isInWebXRSession = _xr.InSession;
+```
 
 # Tested browsers
 Works on :
@@ -133,10 +174,6 @@ Works on :
 Work in progress for :
 - [Firefox Reality](https://www.oculus.com/experiences/quest/2180252408763702/?locale=fr_FR) on Oculus Quest
 - don't hesitate to tell me about browsers you've tried...
-
-# Unity version 
-I've noticed that big scenes like MRTK don't work on mobile anymore when compiled with Unity 2019.4. That's why I recommend Unity 2018.4.
-I haven't dug into the reason yet.
 
 # Useful WebXR content
 - [https://immersive-web.github.io/](https://immersive-web.github.io/) : Many useful examples
