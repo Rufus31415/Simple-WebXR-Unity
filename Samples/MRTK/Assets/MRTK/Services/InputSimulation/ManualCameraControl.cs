@@ -65,15 +65,15 @@ namespace Microsoft.MixedReality.Toolkit.Input
             // Support fly up/down keypresses if the current project maps it. This isn't a standard
             // Unity InputManager mapping, so it has to gracefully fail if unavailable.
             if (this.isFlyKeypressEnabled)
-            {
+            {/*
                 try
                 {
                     deltaPosition += InputCurve(UnityEngine.Input.GetAxis("Fly")) * transform.up;
                 }
                 catch (System.Exception)
-                {
+                {*/
                     this.isFlyKeypressEnabled = false;
-                }
+                //}
             }
             else
             {

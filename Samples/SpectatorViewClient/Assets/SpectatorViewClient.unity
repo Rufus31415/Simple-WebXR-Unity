@@ -142,6 +142,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Host: 
+  SimulateTouch: 0
 --- !u!4 &252895469
 Transform:
   m_ObjectHideFlags: 0

@@ -16,10 +16,8 @@ project.json
 project.lock.json
 *.package
 /.vs
-/Builds/SpectatorViewHololens2/WSAPlayer/Il2CppOutputProject
-/Builds/SpectatorViewHololens2/WSAPlayer/MixedRealityToolkit
-/Builds/SpectatorViewHololens2/WSAPlayer/UnityCommon.props
-/Builds/SpectatorViewHololens2/WSAPlayer/build
+/Builds/SpectatorViewHololens2/WSAPlayer/
+
 
 
 # ============ #

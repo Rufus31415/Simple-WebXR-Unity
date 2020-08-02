@@ -2,6 +2,10 @@
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Linq;
+using NativeWebSocket;
+using TMPro;
+using System;
+using System.Threading.Tasks;
 
 public class SpectatorViewClient : MonoBehaviour
 {
@@ -21,7 +25,68 @@ public class SpectatorViewClient : MonoBehaviour
 
     private SimpleWebXR _xr;
 
-    private void Start()
+    WebSocket websocket;
+
+    private async Task InitWebSocket()
+    {
+        if(websocket != null)
+        {
+            await websocket.Close();
+        }
+
+        websocket = new WebSocket($"ws://{Host}:8090");
+
+        websocket.OnOpen += () =>
+        {
+            Debug.Log("Connection open!");
+        };
+
+        websocket.OnError += (e) =>
+        {
+            Debug.Log("Error! " + e);
+        };
+
+        websocket.OnClose += (e) =>
+        {
+            _ = websocket.Connect();
+        };
+
+        websocket.OnMessage += (bytes) =>
+        {
+            try
+            {
+                if (bytes.Length == 7 && bytes[0] == 0x12 && bytes[1] == 0x06 && bytes[2] == 0x92)
+                {
+                    var imageLength = bytes[3] + (bytes[4] << 8) + (bytes[5] << 16) + (bytes[6] << 24);
+
+                    //  Debug.Log("image Length:" + imageLength);
+                    _tempPng = new byte[imageLength];
+                    _tempPngId = 0;
+                }
+                else
+                {
+                    Array.Copy(bytes, 0, _tempPng, _tempPngId, bytes.Length);
+                    _tempPngId += bytes.Length;
+
+                    if (_tempPngId >= _tempPng.Length)
+                    {
+                        _png = _tempPng;
+                        _tmpPngAvailable = true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+        };
+
+        // waiting for messages
+        await websocket.Connect();
+    }
+
+
+    private async void Start()
     {
         _xr = SimpleWebXR.GetInstance();
 
@@ -29,23 +94,62 @@ public class SpectatorViewClient : MonoBehaviour
 
         _lowQuality = PlayerPrefs.GetInt("Low quality", 1) != 0;
 
+
         StartCoroutine(PollImage());
+
+        await InitWebSocket();
     }
+
+    private bool _tmpPngAvailable;
+    private int _tempPngId;
+    private byte[] _tempPng;
 
     private Texture2D _texture;
 
     private bool _followMode = true;
 
-    private bool _lowQuality = true;
+    private bool _lowQuality;
 
-    private void OnGUI()
+    private byte[] _png;
+
+    private float _fpsStartT;
+
+    private async void OnGUI()
     {
-        if (_texture)
+        var w = Screen.width;
+        var h = Screen.height;
+
+        int buttonW = w / 8;
+        int buttonH = buttonW / 2;
+
+        if (_png != null && _tmpPngAvailable)
         {
-            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), _texture);
+            try
+            {
+                if (!_texture || _texture.width != w || _texture.height != h)
+                {
+                    if (_texture) Destroy(_texture);
+
+                    _texture = new Texture2D(w, h);
+                }
+
+                _texture.LoadImage(_png);
+
+                _tmpPngAvailable = false;
+
+                _deltaT[_iDeltaT++] = Time.time - _fpsStartT;
+                if (_iDeltaT >= _deltaT.Length) _iDeltaT = 0;
+                _fpsStartT = Time.time;
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
         }
 
-        if( GUI.Toggle(new Rect(300, 0, 100, 40), _lowQuality, "Low quality") != _lowQuality)
+        if (_texture) GUI.DrawTexture(new Rect(0, 0, w, h), _texture);
+
+        if (GUI.Toggle(new Rect(3 * buttonW, 0, buttonW, buttonH), _lowQuality, "Low quality") != _lowQuality)
         {
             _lowQuality = !_lowQuality;
             PlayerPrefs.SetInt("lowQuality", _lowQuality ? 1 : 0);
@@ -56,19 +160,21 @@ public class SpectatorViewClient : MonoBehaviour
         var deltaTAvg = _deltaT.Average();
         var fps = deltaTAvg == 0 ? 0 : 1 / deltaTAvg;
 
-        GUI.TextArea(new Rect(0, 0, 100, 40), $"{(int)fps} FPS\r\n{Host ?? ""}");
+        GUI.TextArea(new Rect(0, 0, buttonW, buttonH), $"{(int)fps} FPS\r\n{Host ?? ""}");
 
-        if (GUI.Button(new Rect(100, 0, 100, 40), "Set headset\r\nIP nor name"))
+        if (GUI.Button(new Rect(2 * buttonW, 0, buttonW, buttonH), _followMode ? "[FOLLOWING]" : "Start follow...\r\n[)-)"))
+        {
+            _followMode = true;
+        }
+
+        if (GUI.Button(new Rect(buttonW, 0, buttonW, buttonH), "Set headset\r\nIP nor name"))
         {
             var value = Prompt("Enter Headset IP or name", Host);
             PlayerPrefs.SetString("ip", value);
             PlayerPrefs.Save();
             Host = value;
-        }
 
-        if (GUI.Button(new Rect(200, 0, 100, 40), _followMode ? "[FOLLOWING]" : "Start follow...\r\n[)-)"))
-        {
-            _followMode = true;
+           await InitWebSocket();
         }
 
     }
@@ -78,10 +184,6 @@ public class SpectatorViewClient : MonoBehaviour
 
     IEnumerator PollImage()
     {
-        yield return null;
-
-        var i = 0;
-
         while (true)
         {
             if (string.IsNullOrEmpty(Host))
@@ -90,22 +192,17 @@ public class SpectatorViewClient : MonoBehaviour
             }
             else
             {
-                var startT = Time.time;
-
-                var w = Screen.width;
-                var h = Screen.height;
-
                 var data = new RequestImageJSon();
 
                 if (_lowQuality)
                 {
-                    data.w = w/4;
-                    data.h = h/4;
+                    data.w = Screen.width / 4;
+                    data.h = Screen.height / 4;
                 }
                 else
                 {
-                    data.w = w;
-                    data.h = h;
+                    data.w = Screen.width;
+                    data.h = Screen.height;
                 }
 
                 data.p = Camera.main.transform.position;
@@ -121,38 +218,13 @@ public class SpectatorViewClient : MonoBehaviour
 
                 var json = JsonUtility.ToJson(data);
 
-                using (var req = UnityWebRequest.Post($"http://{Host}:8090/?t={i}", json))
+                if (websocket != null && websocket.State == WebSocketState.Open)
                 {
-                    req.timeout = 1;
-                    yield return req.SendWebRequest();
-
-                    if (string.IsNullOrEmpty(req.error))
-                    {
-                        if (req.downloadHandler.data.Length == 0)
-                        {
-                            Debug.LogWarning("Image with size 0 received");
-                        }
-                        else
-                        {
-                            if (!_texture || _texture.width != w || _texture.height != h)
-                            {
-                                if (_texture) DestroyImmediate(_texture);
-
-                                _texture = new Texture2D(w, h);
-                            }
-                            _texture.LoadImage(req.downloadHandler.data);
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogError(req.error);
-                    }
-
+                    websocket.SendText(json);
                 }
-
-                _deltaT[_iDeltaT++] = Time.time - startT;
-                if (_iDeltaT >= _deltaT.Length) _iDeltaT = 0;
             }
+
+            yield return new WaitForSeconds(0.1f);
         }
     }
 
@@ -160,6 +232,11 @@ public class SpectatorViewClient : MonoBehaviour
 
     void Update()
     {
+#if !UNITY_WEBGL || UNITY_EDITOR
+        websocket?.DispatchMessageQueue();
+#endif
+
+
         if (_xr.InSession) return;
 
         var dt = Time.deltaTime;
@@ -202,7 +279,7 @@ public class SpectatorViewClient : MonoBehaviour
 
         if (Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2))
         {
-            Rotate(Input.GetAxis("Mouse Y")* dt * 100, Input.GetAxis("Mouse X")* dt * 100);
+            Rotate(Input.GetAxis("Mouse Y") * dt * 100, Input.GetAxis("Mouse X") * dt * 100);
         }
 
         Translate(0, 0, Input.GetAxis("Mouse ScrollWheel"));
@@ -219,7 +296,7 @@ public class SpectatorViewClient : MonoBehaviour
 
     void Translate(float x, float y, float z)
     {
-        if (x!=0 || y!=0 || z!=0)
+        if (x != 0 || y != 0 || z != 0)
         {
             _followMode = false;
             Camera.main.transform.Translate(x, y, z);
