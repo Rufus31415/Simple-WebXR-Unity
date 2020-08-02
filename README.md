@@ -11,17 +11,64 @@ Thus, after a Unity WebGL build, your app can do augmented or virtual reality in
 
 # Use cases
 
+## MRTK
+[Mixed Reality Toolkit](https://github.com/microsoft/MixedRealityToolkit-Unity) is a Microsoft-driven project that provides a set of components and features, used to accelerate cross-platform MR app development in Unity. It supports Hololens, Windows Mixed Reality headset, OpenVR, Ultraleap, Mobile devices and now **WebXR** !
+
+LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-mrtk/](https://rufus31415.github.io/sandbox/simple-webxr-mrtk/)
+
+| Android | Hololens 2 | iOS | Quest | Emulator |
+|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
+|<img src=""> |  <img src="">|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-ios.gif">|<img src="">  |  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-simulator.gif" height="225px">|
+
+Fun simulation features in browser, you can simulate your Hololens, like in Unity editor :
+
+| Mouse interaction | Hand simulation (MAJ/SPACE and T/Y) | Scene navigation |
+|:-------------------------:|:-------------------------:|:-------------------------:|
+|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-mouse.gif"> |  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-hand-simulation.gif">|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-move.gif">|
+
+
+
+Sources are [here](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Samples/MRTK)
+
+Unity version : 2018.4.21f1
+MRTK version : 2.4
+
+---
+
 ## Spectator view
+When wearing a HoloLens, we often forget that a person who does not have it on is unable to experience the wonders that we can. Spectator View allows others to see on a 2D screen what a HoloLens user sees in their world.
+[This Microsoft project](https://github.com/microsoft/MixedReality-SpectatorView) is a native spectator view app for iOS and Android. But here, the spectator view is in your browser. WebXR is optional because you can walk around the Hololens space with the keyboard and mouse.
+
 LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-spectator/](https://rufus31415.github.io/sandbox/simple-webxr-spectator/)
 
 Scene for Hololens 2 (MRTK) : [Simple-WebXR-Unity/Samples/MRTK/Assets/SimpleWebXR/Scenes](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Samples/MRTK/Assets/SimpleWebXR/Scenes)/HandInteractionExamples-SpectatorView.unity
 
 Unity project for Mobile (WebGL) : [Simple-WebXR-Unity/Samples/SpectatorViewClient](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Samples/SpectatorViewClient)
 
+Unity version : 2018.4.21f1
+
+| Mobile | Move in Hololens space or Follow user head |
+|:-------------------------:|:-------------------------:|
+|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/spectator-view-ios.gif" height="150px"/>|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/spectator-view-desktop.gif" height="150px"/>|
+
+Comparison with Microsoft solution :
+
+|| Simple WebXR Spectator view | Microsoft native spectator view |
+|:-------------------------:|:-------------------------:|:-------------------------:|
+| iOS | YES : WebXR Viewer, Safari or Chrome (move in Hololens space with touch screen) | YES (ARKit) |
+| Android | YES (Chrome) | YES (ARCore) |
+| Desktop | YES, you can move in hololens space with mouse and keyboard  | NO |
+|Communication Mobile/Hololens| Websocket | WebRTC |
+|FPS| 10 | 60 |
+|Calibration| Touch the screen | Scan a QR Code |
+|Experimental| YES | NO |
 
 
 
-## Paint
+
+## Paint example
+This is a very basic example on how to use Simple WebXR. It uses Unity Line Renderer to draw lines in space with your hands/controllers.
+
 LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-paint/](https://rufus31415.github.io/sandbox/simple-webxr-paint/)
 
 | Android | Hololens 2 | iOS | Quest | Emulator |
@@ -40,36 +87,19 @@ Unity version : 2018.4.21f1
 
 ---
 
-## CAD file viewer
+## CAD file viewer example
+Opens 45+ 3D CAD formats in your browser (FBX, STEP, OBJ, Collada, GLTF, OnShape, ...) and now, view them in VR/AR with WebXR !
+
 LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/3d-viewer](https://rufus31415.github.io/sandbox/3d-viewer)
 
-Opens 45+ 3D CAD formats (FBX, STEP, OBJ, Collada, GLTF, OnShape, ...) and view them in VR/AR with WebXR !
 [work in progress...](https://github.com/Rufus31415/react-webgl-3d-viewer-demo)
 
 ---
 
-## MRTK
-LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-mrtk/](https://rufus31415.github.io/sandbox/simple-webxr-mrtk/)
-
-| Android | Hololens 2 | iOS | Quest | Emulator |
-|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
-|<img src=""> |  <img src="">|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-ios.gif">|<img src="">  |  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-simulator.gif" height="225px">|
-
-Fun simulation features in browser :
-
-| Mouse interaction | Hand simulation (MAJ/SPACE and T/Y) | Scene navigation |
-|:-------------------------:|:-------------------------:|:-------------------------:|
-|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-mouse.gif"> |  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-hand-simulation.gif">|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-move.gif">|
-
-
-
-Sources are [here](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Samples/MRTK)
-
-Unity version : 2018.4.21f1
-
----
 
 ## XRTK
+The [Mixed Reality Toolkit](https://github.com/XRTK/XRTK-Core)'s primary focus is to make it extremely easy to get started creating Mixed Reality applications and to accelerate deployment to multiple platforms from the same Unity project.
+
 LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-xrtk-solvers/](https://rufus31415.github.io/sandbox/simple-webxr-xrtk-solvers)
 | Android | Hololens 2 | iOS | Quest | Emulator |
 |:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
@@ -80,6 +110,8 @@ LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-xrtk-solve
 ---
 
 ## Unity XR Plugin
+Unity has a unified plug-in framework that enables direct integrations or XR for multiple platforms Why not adding WebXR...
+
 [Later...]
 
 ---
