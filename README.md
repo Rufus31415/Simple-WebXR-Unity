@@ -12,7 +12,13 @@ Thus, after a Unity WebGL build, your app can do augmented or virtual reality in
 # Use cases
 
 ## Spectator view
-Work in progress...
+LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-spectator/](https://rufus31415.github.io/sandbox/simple-webxr-spectator/)
+
+Scene for Hololens 2 (MRTK) : [Simple-WebXR-Unity/Samples/MRTK/Assets/SimpleWebXR/Scenes](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Samples/MRTK/Assets/SimpleWebXR/Scenes)/HandInteractionExamples-SpectatorView.unity
+
+Unity project for Mobile (WebGL) : [Simple-WebXR-Unity/Samples/SpectatorViewClient](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Samples/SpectatorViewClient)
+
+
 
 
 ## Paint
