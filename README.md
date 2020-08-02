@@ -9,7 +9,10 @@ Thus, after a Unity WebGL build, your app can do augmented or virtual reality in
 
 ---
 
-# Try it
+# Use cases
+
+## Spectator view
+Work in progress...
 
 
 ## Paint
