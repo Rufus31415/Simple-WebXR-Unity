@@ -16,9 +16,9 @@ Thus, after a Unity WebGL build, your app can do augmented or virtual reality in
 
 LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-mrtk/](https://rufus31415.github.io/sandbox/simple-webxr-mrtk/)
 
-| Android | Hololens 2 | iOS | Quest | Emulator |
-|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
-|<img src=""> |  <img src="">|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-ios.gif">|<img src="">  |  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-simulator.gif" height="225px">|
+| iOS | Emulator |
+|:-------------------------:|:-------------------------:|
+|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-ios.gif">|  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-simulator.gif" height="225px">|
 
 Fun simulation features in browser, you can simulate your Hololens, like in Unity editor :
 
@@ -99,9 +99,9 @@ LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/3d-viewer](https://rufu
 The [Mixed Reality Toolkit](https://github.com/XRTK/XRTK-Core)'s primary focus is to make it extremely easy to get started creating Mixed Reality applications and to accelerate deployment to multiple platforms from the same Unity project.
 
 LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-xrtk-solvers/](https://rufus31415.github.io/sandbox/simple-webxr-xrtk-solvers)
-| Android | Hololens 2 | iOS | Quest | Emulator |
-|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
-|<img src=""> |  <img src="">|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/xrtk-solvers-ios.gif" height="225px">|<img src="">  |  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/xrtk-solvers-simulator.gif" height="225px">|
+| iOS | Emulator |
+|:-------------------------:|:-------------------------:|
+|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/xrtk-solvers-ios.gif" height="225px"> |  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/xrtk-solvers-simulator.gif" height="225px">|
 
 [work in progress...](https://github.com/Rufus31415/WebXR)
 
@@ -161,6 +161,9 @@ bool isVRSupported = _xr.IsVRSupported();
 ``` cs
 bool isInWebXRSession = _xr.InSession;
 ```
+
+## More documentation is coming...
+...
 
 # Tested browsers
 Works on :
