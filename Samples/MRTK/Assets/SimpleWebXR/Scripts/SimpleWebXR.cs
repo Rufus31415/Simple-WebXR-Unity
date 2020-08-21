@@ -106,25 +106,181 @@ public class SimpleWebXR : MonoBehaviour
     public static extern void InternalGetDeviceOrientation(float[] orientationArray, byte[] orientationInfo);
 
 #else // if executed with Unity editor
-    private static void InternalStartSession() { }
 
-    private static void InternalEndSession() { }
+    public bool SimulationIsArSupported = true;
+    public bool SimulationIsVrSupported = false;
+    public bool SimulationRender2Eyes = false;
+
+    public WebXRTargetRayModes SimulationMode = WebXRTargetRayModes.TrackedPointer;
+
+    public bool SimulationLeftSelect = false;
+    public bool SimulationRightSelect = false;
 
 
-    private static void InitWebXR(float[] dataArray, int length, byte[] _byteArray, int _byteArrayLength) { }
+    public float SimulationUserHeight = 1.8f;
 
-    public static bool IsArSupported()
-    {
-        return true; // always display "Enter AR" button for debug purpose
+    private GameObject _simulateLeft;
+    private GameObject _simulateRight;
+    private GameObject _simulateHead;
+
+    private bool _sessionStarted;
+
+    private void InternalStartSession() {
+        _simulateLeft = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        _simulateLeft.name = "Simulation Left";
+        _simulateLeft.transform.parent = gameObject.transform;
+        _simulateLeft.transform.rotation = Camera.main.transform.rotation;
+        _simulateLeft.transform.position = Camera.main.transform.position + new Vector3(-0.5f, -0.5f, 1);
+        _simulateLeft.transform.localScale = new Vector3(0.1f, 0.1f, 0.2f);
+
+        _simulateRight = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        _simulateRight.name = "Simulation Right";
+        _simulateRight.transform.parent = gameObject.transform;
+        _simulateRight.transform.rotation = Camera.main.transform.rotation;
+        _simulateRight.transform.position = Camera.main.transform.position + new Vector3(0.5f, -0.5f, 1);
+        _simulateRight.transform.localScale = new Vector3(0.1f, 0.1f, 0.2f);
+
+        _simulateHead = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        _simulateHead.name = "Simulation Head";
+        _simulateHead.transform.parent = gameObject.transform;
+        _simulateHead.transform.rotation = Camera.main.transform.rotation;
+        _simulateHead.transform.position = Camera.main.transform.position;
+        _simulateHead.transform.localScale = new Vector3(0.1f, 0.1f, 0.2f);
+
+        _sessionStarted = true;
     }
 
-    public static bool IsVrSupported()
+    private  void InternalEndSession() { _sessionStarted = false; }
+
+
+    private  void InitWebXR(float[] dataArray, int length, byte[] _byteArray, int _byteArrayLength) { }
+
+    public  bool IsArSupported()
     {
-        return true; // always display "Enter VR" button for debug purpose
+        return SimulationIsArSupported;
+    }
+
+    public  bool IsVrSupported()
+    {
+        return SimulationIsVrSupported;
     }
 
     public static  void InternalGetDeviceOrientation(float[] orientationArray, byte[] orientationInfo)
     {
+
+    }
+
+    private void Update()
+    {
+        // [0] : number of views (0 : session is stopped)
+        _byteArray[0] = (byte)(_sessionStarted ? (SimulationRender2Eyes ? WebXRViewEyes.Both : WebXRViewEyes.Left) : WebXRViewEyes.None);
+
+
+        if (_sessionStarted) {
+            // [0] -> [15] : projection matrix of view 1
+            var pm = Camera.main.projectionMatrix;
+            _dataArray[0] = pm.m00;
+            _dataArray[4] = pm.m01;
+            _dataArray[8] = pm.m02;
+            _dataArray[12] = pm.m03;
+            _dataArray[1] = pm.m10;
+            _dataArray[5] = pm.m11;
+            _dataArray[9] = pm.m12;
+            _dataArray[13] = pm.m13;
+            _dataArray[2] = pm.m20;
+            _dataArray[6] = pm.m21;
+            _dataArray[10] = pm.m22;
+            _dataArray[14] = pm.m23;
+            _dataArray[3] = pm.m30;
+            _dataArray[7] = pm.m31;
+            _dataArray[11] = pm.m32;
+            _dataArray[15] = pm.m33;
+
+            // [16], [17], [18] : X, Y, Z position in m  of view 1
+            _dataArray[16] = _simulateHead.transform.position.x;
+            _dataArray[17] = _simulateHead.transform.position.y;
+            _dataArray[18] = -_simulateHead.transform.position.z;
+
+            // [19], [20], [21], [22] : RX, RY, RZ, RW rotation (quaternion)  of view 1
+            var rotation = ToUnityRotation(_simulateHead.transform.rotation);
+            _dataArray[19] = rotation.x;
+            _dataArray[20] = rotation.y;
+            _dataArray[21] = rotation.z;
+            _dataArray[22] = rotation.w;
+
+            // [23] -> [26] : Viewport X, Y, width, height  of view 1
+            _dataArray[23] = 0;
+            _dataArray[24] = 0;
+            _dataArray[25] = 1;
+            _dataArray[26] = 1;
+
+            if (SimulationRender2Eyes)
+            {
+                _dataArray[25] = 0.5f;
+
+                // [27] -> [42] : projection matrix of view 2
+                // [43], [44], [45] : X, Y, Z position in m  of view 2
+                // [46], [47], [48], [49] : RX, RY, RZ, RW rotation (quaternion)  of view 2
+                for (int i = 0; i <= 26; i++) _dataArray[27 + i] = _dataArray[i];
+
+                // [50] -> [53] : Viewport X, Y, width, height  of view 2
+                _dataArray[50] = 0.5f;
+            }
+
+
+
+            // [54] -> [60] : Left input x, y, z, rx, ry, rz, rw
+            rotation = ToUnityRotation(_simulateLeft.transform.rotation);
+            _dataArray[54] = _simulateLeft.transform.position.x;
+            _dataArray[55] = _simulateLeft.transform.position.y;
+            _dataArray[56] = -_simulateLeft.transform.position.z;
+            _dataArray[57] = rotation.x;
+            _dataArray[58] = rotation.y;
+            _dataArray[59] = rotation.z;
+            _dataArray[60] = rotation.w;
+
+            // [77] -> [83] : right input x, y, z, rx, ry, rz, rw
+            rotation = ToUnityRotation(_simulateRight.transform.rotation);
+            _dataArray[77] = _simulateRight.transform.position.x;
+            _dataArray[78] = _simulateRight.transform.position.y;
+            _dataArray[79] = -_simulateRight.transform.position.z;
+            _dataArray[80] = rotation.x;
+            _dataArray[81] = rotation.y;
+            _dataArray[82] = rotation.z;
+            _dataArray[83] = rotation.w;
+
+            // [100] : user height
+            _dataArray[100] = SimulationUserHeight;
+
+            // [4] : left input has position info
+            _byteArray[4] = 1;
+
+            // [24] : right input has position info
+            _byteArray[24] = 1;
+
+            // [44] : Left controller active
+            _byteArray[44] = 1;
+
+            // [45] : Right controller active
+            _byteArray[45] = 1;
+
+            // [1] : left controller events
+            if (SimulationLeftSelect && !LeftInput.Selected) _byteArray[1] = (byte) WebXRInputSourceEventTypes.SelectStart;
+            else if (!SimulationLeftSelect && LeftInput.Selected) _byteArray[1] = (byte)WebXRInputSourceEventTypes.SelectEnd;
+            else _byteArray[1] = 0;
+
+            // [2] : right controller events
+            if (SimulationRightSelect && !RightInput.Selected) _byteArray[2] = (byte)WebXRInputSourceEventTypes.SelectStart;
+            else if (!SimulationRightSelect && RightInput.Selected) _byteArray[2] = (byte)WebXRInputSourceEventTypes.SelectEnd;
+            else _byteArray[2] = 0;
+
+            // [5] : left input target ray mode
+            _byteArray[5] = (byte)SimulationMode;
+
+            // [25] : right input target ray mode
+            _byteArray[25] = _byteArray[5];
+
+        }
 
     }
 #endif
@@ -204,6 +360,7 @@ public class SimpleWebXR : MonoBehaviour
                 var camGameObject = new GameObject("WebXRCamera_" + id);
                 camGameObject.transform.parent = gameObject.transform;
                 _cameras[id] = camGameObject.AddComponent<Camera>();
+                _cameras[id].depth = Camera.main.depth - 1;
             }
             else
             {
@@ -267,7 +424,7 @@ public class SimpleWebXR : MonoBehaviour
 
         inputSource.Position = ToUnityPosition(_dataArray[floatStartId + 0], _dataArray[floatStartId + 1], _dataArray[floatStartId + 2]);
         inputSource.Rotation = ToUnityRotation(_dataArray[floatStartId + 3], _dataArray[floatStartId + 4], _dataArray[floatStartId + 5], _dataArray[floatStartId + 6]);
-        inputSource.IsPositionValid = (_byteArray[byteStartId + 0] != 0);
+        inputSource.IsPositionTracked = (_byteArray[byteStartId + 0] != 0);
 
         var eventId = (int)inputSource.Handedness + 1;
         var mask = _byteArray[eventId];
@@ -305,6 +462,22 @@ public class SimpleWebXR : MonoBehaviour
     {
         if (((WebXRInputSourceEventTypes)mask & type) == type)
         {
+            switch (type)
+            {
+                case WebXRInputSourceEventTypes.SelectStart:
+                    inputSource.Selected = true;
+                    break;
+                case WebXRInputSourceEventTypes.SelectEnd:
+                    inputSource.Selected = false;
+                    break;
+                case WebXRInputSourceEventTypes.SqueezeStart:
+                    inputSource.Squeezed = true;
+                    break;
+                case WebXRInputSourceEventTypes.SqueezeEnd:
+                    inputSource.Squeezed = false;
+                    break;
+            }
+
             unityEvent.Invoke();
             webxrInputEvent.Invoke(inputSource);
 
@@ -317,11 +490,21 @@ public class SimpleWebXR : MonoBehaviour
     {
         return new Vector3(x, y, -z);
     }
+    private static Vector3 ToUnityPosition(Vector3 position)
+    {
+        return ToUnityPosition(position.x, position.y, position.z);
+    }
+ 
     private static Quaternion ToUnityRotation(float x, float y, float z, float w)
     {
         var quat = new Quaternion(x, y, z, w);
         var euler = quat.eulerAngles;
         return Quaternion.Euler(-euler.x, -euler.y, euler.z);
+    }
+
+    private static Quaternion ToUnityRotation(Quaternion rotation)
+    {
+        return ToUnityRotation(rotation.x, rotation.y, rotation.z, rotation.w);
     }
 
     public readonly UnityEvent InputSourcesChange = new UnityEvent();
@@ -451,10 +634,7 @@ public class SimpleWebXR : MonoBehaviour
             sb.Append("  Position :");
             sb.AppendLine(camera.transform.position.ToString());
             sb.Append("  Rotation :");
-            sb.AppendLine(camera.transform.rotation.eulerAngles.ToString());
-            sb.Append("  FOV :");
-            sb.AppendLine(camera.fieldOfView.ToString("0.0"));
-            
+            sb.AppendLine(camera.transform.rotation.eulerAngles.ToString());            
             return sb.ToString();
         }
         else return $"No {name} eye";
@@ -506,7 +686,7 @@ public class WebXRInput
     public readonly WebXRHandedness Handedness;
     public Vector3 Position;
     public Quaternion Rotation;
-    public bool IsPositionValid = false;
+    public bool IsPositionTracked = false;
 
     public int AxesCount = 0;
     public readonly float[] Axes = new float[AXES_BUTTON_COUNT];
@@ -515,6 +695,9 @@ public class WebXRInput
     public readonly WebXRGamepadButton[] Buttons = new WebXRGamepadButton[AXES_BUTTON_COUNT];
 
     public WebXRTargetRayModes TargetRayMode = WebXRTargetRayModes.None;
+
+    public bool Selected;
+    public bool Squeezed;
 
     public readonly UnityEvent Select = new UnityEvent();
     public readonly UnityEvent SelectStart = new UnityEvent();
@@ -535,7 +718,7 @@ public class WebXRInput
         sb.Append("  Mode : ");
         sb.AppendLine(TargetRayMode.ToString());
 
-        if (IsPositionValid)
+        if (IsPositionTracked)
         {
             sb.Append("  Position : ");
             sb.AppendLine(Position.ToString());

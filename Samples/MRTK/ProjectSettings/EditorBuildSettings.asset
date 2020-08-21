@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/SimpleWebXR/Scenes/HandInteractionExamples-SpectatorView.unity
-    guid: 5c87a7a2123c52f4eb5a1c6eec8bcebb
+    path: Assets/SimpleWebXR/Scenes/HandInteractionExamples.unity
+    guid: d967f59b6e89d4a42af78763fc94ef4c
   m_configObjects:
     Unity.XR.WindowsMR.Settings: {fileID: 11400000, guid: b473d8d1ff820a242915cc3633363b8d,
       type: 2}
