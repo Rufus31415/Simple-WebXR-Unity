@@ -22,6 +22,7 @@ Work in progress for :
 - [Firefox Reality](https://www.oculus.com/experiences/quest/2180252408763702/?locale=fr_FR) on Oculus Quest
 - don't hesitate to tell me about browsers you've tried...
 
+---
 
 # Integration examples
 
@@ -177,6 +178,7 @@ bool isInWebXRSession = _xr.InSession;
 ```
 
 ## More documentation is coming...
+<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/bg.jpg"/>
 ...
 
 # Useful WebXR content
