@@ -35,7 +35,7 @@ LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-mrtk/](htt
 |:-------------------------:|:-------------------------:|
 |<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-ios.gif">|  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-simulator.gif" height="225px">|
 
-Fun simulation features in browser, you can simulate your Hololens, like in Unity editor :
+Fun **simulation** features in browser, you can simulate your Hololens, like in Unity editor :
 
 | Mouse interaction | Hand simulation (MAJ/SPACE and T/Y) | Scene navigation |
 |:-------------------------:|:-------------------------:|:-------------------------:|
