@@ -9,6 +9,20 @@ Thus, after a Unity WebGL build, your app can do augmented or virtual reality in
 
 ---
 
+# Compatible browsers
+Works on :
+- [Google Chrome](https://play.google.com/store/apps/details?id=com.android.chrome) on Android
+- [Firefox Reality](https://www.microsoft.com/en-gb/p/firefox-reality/9npq78m7nb0r?activetab=pivot:overviewtab) on Hololens 2
+- [Mozilla WebXR Viewer](https://apps.apple.com/fr/app/webxr-viewer/id1295998056) on iOS
+- [Oculus Browser](https://developer.oculus.com/webxr/?locale=fr_FR) on Oculus Quest
+- [Firefox emulator](https://addons.mozilla.org/fr/firefox/addon/webxr-api-emulator/) on desktop
+- [Chrome emulator](https://chrome.google.com/webstore/detail/webxr-api-emulator/mjddjgeghkdijejnciaefnkjmkafnnje) on desktop
+
+Work in progress for :
+- [Firefox Reality](https://www.oculus.com/experiences/quest/2180252408763702/?locale=fr_FR) on Oculus Quest
+- don't hesitate to tell me about browsers you've tried...
+
+
 # Use cases
 
 ## MRTK
@@ -164,19 +178,6 @@ bool isInWebXRSession = _xr.InSession;
 
 ## More documentation is coming...
 ...
-
-# Tested browsers
-Works on :
-- [Google Chrome](https://play.google.com/store/apps/details?id=com.android.chrome) on Android
-- [Firefox Reality](https://www.microsoft.com/en-gb/p/firefox-reality/9npq78m7nb0r?activetab=pivot:overviewtab) on Hololens 2
-- [Mozilla WebXR Viewer](https://apps.apple.com/fr/app/webxr-viewer/id1295998056) on iOS
-- [Oculus Browser](https://developer.oculus.com/webxr/?locale=fr_FR) on Oculus Quest
-- [Firefox emulator](https://addons.mozilla.org/fr/firefox/addon/webxr-api-emulator/) on desktop
-- [Chrome emulator](https://chrome.google.com/webstore/detail/webxr-api-emulator/mjddjgeghkdijejnciaefnkjmkafnnje) on desktop
-
-Work in progress for :
-- [Firefox Reality](https://www.oculus.com/experiences/quest/2180252408763702/?locale=fr_FR) on Oculus Quest
-- don't hesitate to tell me about browsers you've tried...
 
 # Useful WebXR content
 - [https://immersive-web.github.io/](https://immersive-web.github.io/) : Many useful examples
