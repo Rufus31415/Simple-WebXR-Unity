@@ -23,7 +23,7 @@ Work in progress for :
 - don't hesitate to tell me about browsers you've tried...
 
 
-# Use cases
+# Integration examples
 
 ## MRTK
 [Mixed Reality Toolkit](https://github.com/microsoft/MixedRealityToolkit-Unity) is a Microsoft-driven project that provides a set of components and features, used to accelerate cross-platform MR app development in Unity. It supports Hololens, Windows Mixed Reality headset, OpenVR, Ultraleap, Mobile devices and now **WebXR** !
