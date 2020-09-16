@@ -141,6 +141,8 @@ The project must be compiled in WebGL, otherwise SimpleWebXR will has no effect.
 I've noticed that big scenes like MRTK don't work on mobile anymore when compiled with Unity 2019.4. That's why I recommend Unity 2018.4.
 I haven't dug into the reason yet.
 
+Also, you should revert the file "Simple-WebXR-Unity/Samples/MRTK/Library/PackageCache/com.unity.xr.arfoundation@1.5.0-preview.6/Runtime/AR/ARSession.cs" while Unity is opened. The problem will be fixed in future versions of ARFoundation.
+
 # Runtime
 When compiled as a WebGL app, if the browser is WebXR compatible, it will display a "Start AR" button on your canvas.
 You don't need a specific WebGL Template, so your can keep using yours.
