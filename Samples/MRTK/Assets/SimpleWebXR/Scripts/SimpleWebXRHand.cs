@@ -46,9 +46,11 @@ using TeleportPointer = Microsoft.MixedReality.Toolkit.Teleport.TeleportPointer;
         public SimpleWebXRHand(TrackingState trackingState, Handedness controllerHandedness, IMixedRealityInputSource inputSource = null, MixedRealityInteractionMapping[] interactions = null)
             : base(trackingState, controllerHandedness, inputSource, interactions)
         {
+
         }
 
-   // private MixedRealityPose currentPointerPose = MixedRealityPose.ZeroIdentity;
+
+    // private MixedRealityPose currentPointerPose = MixedRealityPose.ZeroIdentity;
 
     /*
     /// <summary>
@@ -70,7 +72,7 @@ using TeleportPointer = Microsoft.MixedReality.Toolkit.Teleport.TeleportPointer;
 #endif
 
 
-   // private int pinchStrengthProp;
+    // private int pinchStrengthProp;
 
 
     #region IMixedRealityHand Implementation
@@ -102,7 +104,7 @@ using TeleportPointer = Microsoft.MixedReality.Toolkit.Teleport.TeleportPointer;
         {
             AssignControllerMappings(DefaultInteractions);
         }
-        
+
             
         public override bool IsInPointingPose
         {
@@ -178,8 +180,14 @@ using TeleportPointer = Microsoft.MixedReality.Toolkit.Teleport.TeleportPointer;
         {
             isSelecting = Vector3.Distance(controller.Hand.Joints[WebXRHand.THUMB_PHALANX_TIP].Position, controller.Hand.Joints[WebXRHand.INDEX_PHALANX_TIP].Position) < 0.02;
 
-            var joint = controller.Hand.Joints[WebXRHand.WRIST];
-            pose = new MixedRealityPose(joint.Position, joint.Rotation);
+            var wrist = controller.Hand.Joints[WebXRHand.THUMB_METACARPAL].Position;
+            var index = controller.Hand.Joints[WebXRHand.INDEX_PHALANX_PROXIMAL].Position;
+            var little = controller.Hand.Joints[WebXRHand.LITTLE_PHALANX_PROXIMAL].Position;
+
+            var direction = Vector3.Cross(wrist - index, wrist - little);
+            if (controller.Handedness == WebXRHandedness.Right) direction = -direction;
+
+            pose = new MixedRealityPose(wrist, Quaternion.LookRotation(direction));
         }
 
 
@@ -196,6 +204,10 @@ using TeleportPointer = Microsoft.MixedReality.Toolkit.Teleport.TeleportPointer;
         UpdateVelocity();
 
         //   UpdateTeleport();
+
+        var indexJoint = controller.Hand.Joints[WebXRHand.INDEX_PHALANX_TIP];
+        var indexPose = new MixedRealityPose(indexJoint.Position, indexJoint.Rotation);
+
 
         for (int i = 0; i < Interactions?.Length; i++)
         {
@@ -246,8 +258,7 @@ using TeleportPointer = Microsoft.MixedReality.Toolkit.Teleport.TeleportPointer;
                     }
                     break;
                 case DeviceInputType.IndexFinger:
-                    var indexJoint = controller.Hand.Joints[WebXRHand.INDEX_PHALANX_TIP];
-                    Interactions[i].PoseData = new MixedRealityPose(indexJoint.Position, indexJoint.Rotation);
+                    Interactions[i].PoseData = indexPose;
                     if (Interactions[i].Changed)
                     {
                         CoreServices.InputSystem?.RaisePoseInputChanged(InputSource, ControllerHandedness, Interactions[i].MixedRealityInputAction, Interactions[i].PoseData);

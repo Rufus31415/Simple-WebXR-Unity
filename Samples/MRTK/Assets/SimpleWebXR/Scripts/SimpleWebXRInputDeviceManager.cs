@@ -42,7 +42,7 @@ public class SimpleWebXRInputDeviceManager : BaseInputDeviceManager, IMixedReali
     private readonly Dictionary<Handedness, SimpleWebXRHand> trackedHands = new Dictionary<Handedness, SimpleWebXRHand>();
     private readonly Dictionary<Handedness, SimpleWebXRController> trackedControllers = new Dictionary<Handedness, SimpleWebXRController>();
 
-    private readonly Dictionary<Handedness, SimpleWebXRHand> inactiveHandCache = new Dictionary<Handedness, SimpleWebXRHand>();
+    //private readonly Dictionary<Handedness, SimpleWebXRHand> inactiveHandCache = new Dictionary<Handedness, SimpleWebXRHand>();
     private readonly Dictionary<Handedness, SimpleWebXRController> inactiveControllerCache = new Dictionary<Handedness, SimpleWebXRController>();
     private readonly Dictionary<Handedness, TeleportPointer> teleportPointers = new Dictionary<Handedness, TeleportPointer>();
 
@@ -231,7 +231,7 @@ public class SimpleWebXRInputDeviceManager : BaseInputDeviceManager, IMixedReali
         {
             controller = new SimpleWebXRController(TrackingState.Tracked, handedness, inputSource);
         }
-        inactiveHandCache.Remove(handedness);
+        //inactiveHandCache.Remove(handedness);
 
         for (int i = 0; i < controller.InputSource?.Pointers?.Length; i++)
         {
@@ -318,11 +318,11 @@ public class SimpleWebXRInputDeviceManager : BaseInputDeviceManager, IMixedReali
             IMixedRealityInputSystem inputSystem = Service as IMixedRealityInputSystem;
             var inputSource = inputSystem?.RequestNewGenericInputSource($"WebXR {handedness} Hand", pointers, inputSourceType);
 
-            if (!inactiveHandCache.TryGetValue(handedness, out var handController))
-            {
-                handController = new SimpleWebXRHand(TrackingState.Tracked, handedness, inputSource);
-            }
-            inactiveHandCache.Remove(handedness);
+        //if (!inactiveHandCache.TryGetValue(handedness, out var handController))
+        // {
+        var handController = new SimpleWebXRHand(TrackingState.Tracked, handedness, inputSource);
+            //}
+            //inactiveHandCache.Remove(handedness);
 
             for (int i = 0; i < handController.InputSource?.Pointers?.Length; i++)
             {
@@ -384,8 +384,6 @@ public class SimpleWebXRInputDeviceManager : BaseInputDeviceManager, IMixedReali
                     pointer.Reset();
                 }
             }
-
-            inactiveHandCache.Add(hand.ControllerHandedness, hand);
 
             CoreServices.InputSystem?.RaiseSourceLost(hand.InputSource, hand);
             trackedHands.Remove(hand.ControllerHandedness);
