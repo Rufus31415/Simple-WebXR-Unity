@@ -7,7 +7,7 @@ mergeInto(LibraryManager.library, {
   /****************************************************************************/
   // Makes the background of the canvas transparent (see : https://support.unity3d.com/hc/en-us/articles/208892946-How-can-I-make-the-canvas-transparent-on-WebGL-)
   glClear: function (mask) {
-    if (mask == 0x00004000) {
+    if (GLctx.ARSessionStarted && mask == 0x00004000) {
       var v = GLctx.getParameter(GLctx.COLOR_WRITEMASK);
       if (!v[0] && !v[1] && !v[2] && v[3])
         return;
@@ -17,7 +17,7 @@ mergeInto(LibraryManager.library, {
 
   /****************************************************************************/
   // Initialize WebXR features and check if browser is compatible
-  InitWebXR: function (dataArray, dataArrayLength, byteArray, byteArrayLength) {
+  InitWebXR: function (dataArray, dataArrayLength, byteArray, byteArrayLength, handDataArray, handDataArrayLength) {
     _isVrSupported = false;
     _isArSupported = false;
 
@@ -36,6 +36,7 @@ mergeInto(LibraryManager.library, {
     // Initialize pointers to shared arrays that contains data (projection matrix, position, orientation, input sources)
     _dataArray = new Float32Array(buffer, dataArray, dataArrayLength);
     _byteArray = new Uint8Array(buffer, byteArray, byteArrayLength);
+    _handArray = new Float32Array(buffer, handDataArray, handDataArrayLength);
 
     _useLocalSpaceForInput = true;
 
@@ -167,6 +168,40 @@ mergeInto(LibraryManager.library, {
       else {
         _byteArray[byteStartId + 1] = 0;
       }
+
+      // Hand detection
+      // https://immersive-web.github.io/webxr-hand-input/#skeleton-joints-section
+      if (inputSource.hand && inputSource.hand.length == 25) {
+        _byteArray[46 + id] = 1; // hand supported
+        var delta = (_useLocalSpaceForInput ? 0 : _dataArray[100])
+        for (var j = 0; j < 25; j++) {
+          if (inputSource.hand[j] !== null) {
+            var joint = frame.getJointPose(inputSource.hand[j], _useLocalSpaceForInput ? _arSession.localSpace : _arSession.localFloorSpace);
+            if (joint !== null) {
+              var i = id * 200 + j * 8;
+              _handArray[i] = joint.transform.position.x;
+              _handArray[i + 1] = joint.transform.position.y - delta;
+              _handArray[i + 2] = joint.transform.position.z;
+              _handArray[i + 3] = joint.transform.orientation.x;
+              _handArray[i + 4] = joint.transform.orientation.y;
+              _handArray[i + 5] = joint.transform.orientation.z;
+              _handArray[i + 6] = joint.transform.orientation.w;
+              if (joint.radius !== null) {
+                _handArray[i + 7] = joint.radius;
+              }
+              else {
+                _handArray[i + 7] = NaN;
+              }
+            }
+            else {
+              _byteArray[46 + id] = 0; // hand not fully supported
+            }
+          }
+        }
+      }
+      else {
+        _byteArray[46 + id] = 0; // hand not supported
+      }
     }
 
     // Declare a pointer to the session (set in StartSession())
@@ -289,7 +324,7 @@ mergeInto(LibraryManager.library, {
     // Access Unity internal Browser and override its requestAnimationFrame
     // It's a good idea found by Mozilla : https://github.com/MozillaReality/unity-webxr-export/blob/c8a6a4ee71a3d890b513fc4cd950ccd238973844/Assets/WebGLTemplates/WebXR/webxr.js#L144
     Browser.requestAnimationFrame = function (func) {
-      if(!_rAFCB) _rAFCB = func;
+      if (!_rAFCB) _rAFCB = func;
 
       if (_arSession && _arSession.isInSession) {
         return _arSession.requestAnimationFrame(function (time, xrFrame) {
@@ -334,13 +369,15 @@ mergeInto(LibraryManager.library, {
     if (!_isVrSupported && !_isArSupported) return;
     console.log("Start WebXR session...");
 
+
     // Request the WebXR session and create the WebGL layer
     // In first approach, AR is prioritary over VR
-    navigator.xr.requestSession(_isArSupported ? 'immersive-ar' : 'immersive-vr', { optionalFeatures: ['local-floor'] }).then(function (session) {
+    navigator.xr.requestSession(_isArSupported ? 'immersive-ar' : 'immersive-vr', { optionalFeatures: ['local-floor', 'hand-tracking'] }).then(function (session) {
       _arSession = session;
       _canvasWidth = GLctx.canvas.width;
       _canvasHeight = GLctx.canvas.height;
 
+      GLctx.ARSessionStarted = _isArSupported;
       session.isInSession = true; // add field in session to indicate that a session in running
 
       var glLayer = new XRWebGLLayer(session, GLctx);
@@ -354,6 +391,7 @@ mergeInto(LibraryManager.library, {
         _arSession = null;
         GLctx.canvas.width = _canvasWidth;
         GLctx.canvas.height = _canvasHeight;
+        GLctx.ARSessionStarted = false;
       });
 
       // handle input sources events

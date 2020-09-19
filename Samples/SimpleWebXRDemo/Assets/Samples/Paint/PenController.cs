@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PenController : MonoBehaviour
 {
-    private SimpleWebXR _session;
+    private SimpleWebXR _xr;
     private WebXRInput _input;
     private MeshRenderer _renderer;
 
@@ -14,11 +14,11 @@ public class PenController : MonoBehaviour
 
     void Start()
     {
-        _session = SimpleWebXR.GetInstance();
+        _xr = SimpleWebXR.GetInstance();
 
-        if (!_session) return;
+        if (!_xr) return;
 
-        _input = IsLeft ? _session.LeftInput : _session.RightInput;
+        _input = IsLeft ? _xr.LeftInput : _xr.RightInput;
 
         _input.SelectStart.AddListener(() => StartCoroutine(DrawCoroutine()));
         _input.SelectEnd.AddListener(StopAllCoroutines);
@@ -42,9 +42,9 @@ public class PenController : MonoBehaviour
 
     void LateUpdate()
     {
-        if (!_renderer || !_session) return;
+        if (!_renderer || !_xr) return;
 
-        _renderer.enabled = _session.InSession && _input.Available && _input.IsPositionValid;
+        _renderer.enabled = _xr.InSession && _input.Available && _input.IsPositionTracked;
 
         transform.position = _input.Position;
         transform.rotation = _input.Rotation;

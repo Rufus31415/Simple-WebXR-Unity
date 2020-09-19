@@ -49,7 +49,15 @@ public class SimpleWebXR : MonoBehaviour
     // [36] -> [43] : right inputs pressed
     // [44] : Left controller active
     // [45] : Right controller active
-    private readonly byte[] _byteArray = new byte[46];
+    // [46] : Left hand active
+    // [47] : Right hand active
+    private readonly byte[] _byteArray = new byte[48];
+
+    // Hand data
+    // [0] -> [7] : Left Wrist x, y, z, rx, ry, rz, zw, radius
+    // [8] -> [199] : Left other fingers ...
+    // [200] -> [399] : right wrist and fingers
+    private readonly float[] _handData = new float[8 * 25 * 2];
 
     // Number of views (i.e. cameras)
     private WebXRViewEyes ViewEye => (WebXRViewEyes)_byteArray[0];
@@ -94,7 +102,7 @@ public class SimpleWebXR : MonoBehaviour
     private static extern void InternalEndSession();
 
     [DllImport("__Internal")]
-    private static extern void InitWebXR(float[] dataArray, int length, byte[] _byteArray, int _byteArrayLength);
+    private static extern void InitWebXR(float[] dataArray, int length, byte[] byteArray, int _byteArrayLength, float[] handDataArray, int handDataArrayLength);
 
     [DllImport("__Internal")]
     public static extern bool IsArSupported();
@@ -153,7 +161,7 @@ public class SimpleWebXR : MonoBehaviour
     private  void InternalEndSession() { _sessionStarted = false; }
 
 
-    private  void InitWebXR(float[] dataArray, int length, byte[] _byteArray, int _byteArrayLength) { }
+    private  void InitWebXR(float[] dataArray, int length, byte[] _byteArray, int _byteArrayLength, float[] handDataArray, int handDataArrayLength) { }
 
     public  bool IsArSupported()
     {
@@ -288,7 +296,7 @@ public class SimpleWebXR : MonoBehaviour
     // Share _dataArray and init WebXR
     void Start()
     {
-        InitWebXR(_dataArray, _dataArray.Length, _byteArray, _byteArray.Length);
+        InitWebXR(_dataArray, _dataArray.Length, _byteArray, _byteArray.Length, _handData, _handData.Length);
     }
 
     // Display "Enter AR" button if WebXR immersive AR is supported
@@ -456,6 +464,22 @@ public class SimpleWebXR : MonoBehaviour
             button.Touched = _byteArray[byteStartId + 4 + i] != 0;
             button.Pressed = _byteArray[byteStartId + 12 + i] != 0;
         }
+
+        var handAvailable = 0 != _byteArray[46 + (int)inputSource.Handedness];
+
+        inputSource.Hand.Available = handAvailable;
+        if (handAvailable)
+        {
+            for(int j = 0; j < 25; j++)
+            {
+                var i = (int)inputSource.Handedness * 200 + j * 8;
+                var joint = inputSource.Hand.Joints[j];
+                joint.Position = ToUnityPosition(_handData[i], _handData[i + 1], _handData[i + 2]);
+                joint.Rotation = ToUnityRotation(_handData[i+3], _handData[i + 4], _handData[i + 5], _handData[i + 6]);
+                joint.Radius = _handData[i + 7];
+            }
+        }
+
     }
 
     private void RaiseInputSourceEvent(byte mask, WebXRInputSourceEventTypes type, WebXRInputEvent webxrInputEvent, UnityEvent unityEvent, WebXRInput inputSource)
@@ -497,9 +521,7 @@ public class SimpleWebXR : MonoBehaviour
  
     private static Quaternion ToUnityRotation(float x, float y, float z, float w)
     {
-        var quat = new Quaternion(x, y, z, w);
-        var euler = quat.eulerAngles;
-        return Quaternion.Euler(-euler.x, -euler.y, euler.z);
+        return new Quaternion(-x, -y, z, w);
     }
 
     private static Quaternion ToUnityRotation(Quaternion rotation)
@@ -706,6 +728,8 @@ public class WebXRInput
     public readonly UnityEvent SqueezeStart = new UnityEvent();
     public readonly UnityEvent SqueezeEnd = new UnityEvent();
 
+    public readonly WebXRHand Hand = new WebXRHand();
+
     public override string ToString()
     {
         var sb = new StringBuilder();
@@ -727,6 +751,9 @@ public class WebXRInput
             sb.AppendLine(Rotation.eulerAngles.ToString());
         }
         else sb.AppendLine("  No position info");
+
+        sb.Append("  Hand : ");
+        sb.AppendLine(Hand.Available ? "Yes" : "No");
 
         sb.AppendLine("  Axes :");
         if (AxesCount > 0)
@@ -782,3 +809,53 @@ public enum WebXRTargetRayModes
 
 public class WebXRInputEvent : UnityEvent<WebXRInput> { }
 
+public class WebXRJoint
+{
+    public Vector3 Position;
+    public Quaternion Rotation;
+    public float Radius = float.NaN;
+}
+
+public class WebXRHand
+{
+    public WebXRHand()
+    {
+        for (int i = 0; i < JOINT_COUNT; i++) Joints[i] = new WebXRJoint();
+    }
+
+    public bool Available;
+    public readonly WebXRJoint[] Joints = new WebXRJoint[JOINT_COUNT];
+
+    public const int JOINT_COUNT = 25;
+
+    public const int WRIST = 0;
+
+    public const int THUMB_METACARPAL = 1;
+    public const int THUMB_PHALANX_PROXIMAL = 2;
+    public const int THUMB_PHALANX_DISTAL = 3;
+    public const int THUMB_PHALANX_TIP = 4;
+
+    public const int INDEX_METACARPAL = 5;
+    public const int INDEX_PHALANX_PROXIMAL = 6;
+    public const int INDEX_PHALANX_INTERMEDIATE = 7;
+    public const int INDEX_PHALANX_DISTAL = 8;
+    public const int INDEX_PHALANX_TIP = 9;
+
+    public const int MIDDLE_METACARPAL = 10;
+    public const int MIDDLE_PHALANX_PROXIMAL = 11;
+    public const int MIDDLE_PHALANX_INTERMEDIATE = 12;
+    public const int MIDDLE_PHALANX_DISTAL = 13;
+    public const int MIDDLE_PHALANX_TIP = 14;
+
+    public const int RING_METACARPAL = 15;
+    public const int RING_PHALANX_PROXIMAL = 16;
+    public const int RING_PHALANX_INTERMEDIATE = 17;
+    public const int RING_PHALANX_DISTAL = 18;
+    public const int RING_PHALANX_TIP = 19;
+
+    public const int LITTLE_METACARPAL = 20;
+    public const int LITTLE_PHALANX_PROXIMAL = 21;
+    public const int LITTLE_PHALANX_INTERMEDIATE = 22;
+    public const int LITTLE_PHALANX_DISTAL = 23;
+    public const int LITTLE_PHALANX_TIP = 24;
+}

@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Samples/Paint/SimpleWebXR-Paint.unity
-    guid: b0c2a2f3bf2cde1498f54d06929a1761
+    path: Assets/Samples/HandDetection/SimpleWebXR-HandDetection.unity
+    guid: b1a98eae0180d68449cde8a125c28b66
   m_configObjects: {}
