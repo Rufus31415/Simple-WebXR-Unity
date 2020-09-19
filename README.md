@@ -22,6 +22,7 @@ Work in progress for :
 - [Firefox Reality](https://www.oculus.com/experiences/quest/2180252408763702/?locale=fr_FR) on Oculus Quest
 - don't hesitate to tell me about browsers you've tried...
 
+---
 
 # Integration examples
 
@@ -34,7 +35,7 @@ LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-mrtk/](htt
 |:-------------------------:|:-------------------------:|
 |<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-ios.gif">|  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-simulator.gif" height="225px">|
 
-Fun simulation features in browser, you can simulate your Hololens, like in Unity editor :
+Fun **simulation** features in browser, you can simulate your Hololens, like in Unity editor :
 
 | Mouse interaction | Hand simulation (MAJ/SPACE and T/Y) | Scene navigation |
 |:-------------------------:|:-------------------------:|:-------------------------:|
@@ -140,6 +141,8 @@ The project must be compiled in WebGL, otherwise SimpleWebXR will has no effect.
 I've noticed that big scenes like MRTK don't work on mobile anymore when compiled with Unity 2019.4. That's why I recommend Unity 2018.4.
 I haven't dug into the reason yet.
 
+Also, you should revert the file "Simple-WebXR-Unity/Samples/MRTK/Library/PackageCache/com.unity.xr.arfoundation@1.5.0-preview.6/Runtime/AR/ARSession.cs" while Unity is opened. The problem will be fixed in future versions of ARFoundation.
+
 # Runtime
 When compiled as a WebGL app, if the browser is WebXR compatible, it will display a "Start AR" button on your canvas.
 You don't need a specific WebGL Template, so your can keep using yours.
@@ -177,6 +180,7 @@ bool isInWebXRSession = _xr.InSession;
 ```
 
 ## More documentation is coming...
+<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/bg.jpg"/>
 ...
 
 # Useful WebXR content
