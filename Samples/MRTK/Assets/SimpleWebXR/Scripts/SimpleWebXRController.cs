@@ -33,7 +33,7 @@ using UnityEngine;
 using TeleportPointer = Microsoft.MixedReality.Toolkit.Teleport.TeleportPointer;
 
     [MixedRealityController(SupportedControllerType.ArticulatedHand, new[] { Handedness.Left, Handedness.Right })]
-    public class SimpleWebXRController : BaseController, IMixedRealityHand
+    public class SimpleWebXRController : BaseController
     {
         private MixedRealityPose currentPointerPose = MixedRealityPose.ZeroIdentity;
 
@@ -105,6 +105,7 @@ using TeleportPointer = Microsoft.MixedReality.Toolkit.Teleport.TeleportPointer;
             new MixedRealityInteractionMapping(1, "Spatial Grip", AxisType.SixDof, DeviceInputType.SpatialGrip, new MixedRealityInputAction(3, "Grip Pose", AxisType.SixDof)),
             new MixedRealityInteractionMapping(2, "Select", AxisType.Digital, DeviceInputType.Select, new MixedRealityInputAction(1, "Select", AxisType.Digital)),
             new MixedRealityInteractionMapping(3, "Grab", AxisType.SingleAxis, DeviceInputType.TriggerPress, new MixedRealityInputAction(7, "Grip Press", AxisType.SingleAxis)),
+            new MixedRealityInteractionMapping(4, "Index Finger Pose", AxisType.SixDof, DeviceInputType.IndexFinger,  new MixedRealityInputAction(13, "Index Finger Pose", AxisType.SixDof)),
         };
 
         public override MixedRealityInteractionMapping[] DefaultLeftHandedInteractions => DefaultInteractions;
@@ -183,14 +184,14 @@ using TeleportPointer = Microsoft.MixedReality.Toolkit.Teleport.TeleportPointer;
                 }
             }
         }
-
+  /*
     public bool TryGetJoint(TrackedHandJoint joint, out MixedRealityPose pose)
     {
         pose = new MixedRealityPose();
         return false;
     }
 
-    /*
+  
         private void UpdateTeleport(Vector2 stickInput)
         {
             if (MRTKOculusConfig.Instance.ActiveTeleportPointerMode == MRTKOculusConfig.TeleportPointerMode.None) return;

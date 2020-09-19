@@ -32,35 +32,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TeleportPointer = Microsoft.MixedReality.Toolkit.Teleport.TeleportPointer;
-/*
+
     [MixedRealityController(SupportedControllerType.ArticulatedHand, new[] { Handedness.Left, Handedness.Right })]
-    public class SimpleWebXRHand : BaseHand, IMixedRealityHand
+    public class SimpleWebXRHand : BaseHand
     {
-        private MixedRealityPose currentPointerPose = MixedRealityPose.ZeroIdentity;
-
-        /// <summary>
-        /// Pose used by hand ray
-        /// </summary>
-        public MixedRealityPose HandPointerPose => currentPointerPose;
-
-        private MixedRealityPose currentIndexPose = MixedRealityPose.ZeroIdentity;
-        private MixedRealityPose currentGripPose = MixedRealityPose.ZeroIdentity;
-
-        /// <summary>
-        /// Teleport pointer reference. Needs custom pointer because MRTK does not support teleporting with articulated hands.
-        /// </summary>
-        public TeleportPointer TeleportPointer { get; set; }
-
-        private Material handMaterial = null;
-        private Renderer handRenderer = null;
-
-        private bool isIndexGrabbing = false;
-        private bool isMiddleGrabbing = false;
-        private bool isThumbGrabbing = false;
-
-
-        private int pinchStrengthProp;
-
         /// <summary>
         /// Default constructor used by reflection for profiles
         /// </summary>
@@ -71,34 +46,44 @@ using TeleportPointer = Microsoft.MixedReality.Toolkit.Teleport.TeleportPointer;
         public SimpleWebXRHand(TrackingState trackingState, Handedness controllerHandedness, IMixedRealityInputSource inputSource = null, MixedRealityInteractionMapping[] interactions = null)
             : base(trackingState, controllerHandedness, inputSource, interactions)
         {
-            pinchStrengthProp = Shader.PropertyToID(MRTKOculusConfig.Instance.PinchStrengthMaterialProperty);
         }
 
-        public void InitializeHand(OVRHand ovrHand, Material handMaterial)
-        {
-            handRenderer = ovrHand.GetComponent<Renderer>();
-            UpdateHandMaterial(handMaterial);
-        }
+   // private MixedRealityPose currentPointerPose = MixedRealityPose.ZeroIdentity;
 
-        public void UpdateHandMaterial(Material newHandMaterial)
-        {
-            if (newHandMaterial == null || !MRTKOculusConfig.Instance.UseCustomHandMaterial) return;
+    /*
+    /// <summary>
+    /// Pose used by hand ray
+    /// </summary>
+    public MixedRealityPose HandPointerPose => currentPointerPose;
 
-            if (handMaterial != null)
-            {
-                Object.Destroy(handMaterial);
-            }
-            handMaterial = new Material(newHandMaterial);
-            handRenderer.sharedMaterial = handMaterial;
-        }
+    private MixedRealityPose currentIndexPose = MixedRealityPose.ZeroIdentity;
+    private MixedRealityPose currentGripPose = MixedRealityPose.ZeroIdentity;
+    */
 
-        public void CleanupHand()
-        {
-            if (handRenderer != null)
-            {
-                handRenderer.enabled = false;
-            }
-        }
+#if OCULUSINTEGRATION_PRESENT
+        private Material handMaterial = null;
+        private Renderer handRenderer = null;
+
+        private bool isIndexGrabbing = false;
+        private bool isMiddleGrabbing = false;
+        private bool isThumbGrabbing = false;
+#endif
+
+
+   // private int pinchStrengthProp;
+
+
+    #region IMixedRealityHand Implementation
+
+    protected readonly Dictionary<TrackedHandJoint, MixedRealityPose> jointPoses = new Dictionary<TrackedHandJoint, MixedRealityPose>();
+    /// <inheritdoc/>
+    public override bool TryGetJoint(TrackedHandJoint joint, out MixedRealityPose pose)
+    {
+        return jointPoses.TryGetValue(joint, out pose);
+    }
+
+    #endregion IMixedRealityHand Implementation
+
 
         public override MixedRealityInteractionMapping[] DefaultInteractions => new[]
         {
@@ -113,25 +98,19 @@ using TeleportPointer = Microsoft.MixedReality.Toolkit.Teleport.TeleportPointer;
 
         public override MixedRealityInteractionMapping[] DefaultRightHandedInteractions => DefaultInteractions;
 
-        public override void SetupDefaultInteractions(Handedness controllerHandedness)
+        public override void SetupDefaultInteractions()
         {
             AssignControllerMappings(DefaultInteractions);
         }
-
-        #region IMixedRealityHand Implementation
-
-        /// <inheritdoc/>
-        public override bool TryGetJoint(TrackedHandJoint joint, out MixedRealityPose pose)
-        {
-            return jointPoses.TryGetValue(joint, out pose);
-        }
-
-        #endregion IMixedRealityHand Implementation
-
+        
+            
         public override bool IsInPointingPose
         {
             get
             {
+            return true;
+
+            /*
                 if (!TryGetJoint(TrackedHandJoint.Palm, out var palmPose)) return false;
 
                 Camera mainCamera = CameraCache.Main;
@@ -147,11 +126,13 @@ using TeleportPointer = Microsoft.MixedReality.Toolkit.Teleport.TeleportPointer;
 
                 // We check if the palm forward is roughly in line with the camera lookAt
                 // We must also ensure we're not in teleport pose
-                return Vector3.Dot(cameraTransform.forward, projectedPalmUp) > 0.3f && !IsInTeleportPose;
+                return Vector3.Dot(cameraTransform.forward, projectedPalmUp) > 0.3f;*/
             }
         }
+            
 
-        protected bool IsInTeleportPose
+
+    /*        protected bool IsInTeleportPose
         {
             get
             {
@@ -173,101 +154,110 @@ using TeleportPointer = Microsoft.MixedReality.Toolkit.Teleport.TeleportPointer;
                        && !isThumbGrabbing && isMiddleGrabbing;
             }
         }
+    */
 
-        protected bool IsPinching { set; get; }
+    /// <summary>
+    /// Update the controller data from the provided platform state
+    /// </summary>
+    /// <param name="interactionSourceState">The InteractionSourceState retrieved from the platform</param>
+    public void UpdateController(WebXRInput controller)
+    {
+        if (!Enabled) return;
 
-        // Pinch was also used as grab, we want to allow hand-curl grab not just pinch.
-        // Determine pinch and grab separately
-        protected bool IsGrabbing { set; get; }
+        IsPositionAvailable = IsRotationAvailable = controller.Hand.Available;
 
-        /// <summary>
-        /// Update the controller data from the provided platform state
-        /// </summary>
-        /// <param name="interactionSourceState">The InteractionSourceState retrieved from the platform</param>
-        public void UpdateController(OVRHand hand, OVRSkeleton ovrSkeleton, Transform trackingOrigin)
+        bool isSelecting;
+        MixedRealityPose pose;
+
+        if (controller.IsPositionTracked)
         {
-            if (!Enabled || hand == null || ovrSkeleton == null)
-            {
-                return;
-            }
+            isSelecting = controller.Selected;
+            pose = new MixedRealityPose(controller.Position, controller.Rotation);
+        }
+        else
+        {
+            isSelecting = Vector3.Distance(controller.Hand.Joints[WebXRHand.THUMB_PHALANX_TIP].Position, controller.Hand.Joints[WebXRHand.INDEX_PHALANX_TIP].Position) < 0.02;
 
-            bool isTracked = UpdateHandData(hand, ovrSkeleton);
-            IsPositionAvailable = IsRotationAvailable = isTracked;
-
-            if (isTracked)
-            {
-                // Leverage Oculus Platform Hand Ray - instead of simulating it in a crummy way
-                currentPointerPose.Position = trackingOrigin.TransformPoint(hand.PointerPose.position);
-
-                Vector3 pointerForward = trackingOrigin.TransformDirection(hand.PointerPose.forward);
-                Vector3 pointerUp = trackingOrigin.TransformDirection(hand.PointerPose.up);
-
-                currentPointerPose.Rotation = Quaternion.LookRotation(pointerForward, pointerUp);
-
-                currentGripPose = jointPoses[TrackedHandJoint.Palm];
-
-                CoreServices.InputSystem?.RaiseSourcePoseChanged(InputSource, this, currentGripPose);
-
-                UpdateVelocity();
-            }
-
-            UpdateTeleport();
-
-            for (int i = 0; i < Interactions?.Length; i++)
-            {
-                switch (Interactions[i].InputType)
-                {
-                    case DeviceInputType.SpatialPointer:
-                        Interactions[i].PoseData = currentPointerPose;
-                        if (Interactions[i].Changed)
-                        {
-                            CoreServices.InputSystem?.RaisePoseInputChanged(InputSource, ControllerHandedness, Interactions[i].MixedRealityInputAction, currentPointerPose);
-                        }
-                        break;
-                    case DeviceInputType.SpatialGrip:
-                        Interactions[i].PoseData = currentGripPose;
-                        if (Interactions[i].Changed)
-                        {
-                            CoreServices.InputSystem?.RaisePoseInputChanged(InputSource, ControllerHandedness, Interactions[i].MixedRealityInputAction, currentGripPose);
-                        }
-                        break;
-                    case DeviceInputType.Select:
-                        Interactions[i].BoolData = IsPinching || IsGrabbing;
-
-                        if (Interactions[i].Changed)
-                        {
-                            if (Interactions[i].BoolData)
-                            {
-                                CoreServices.InputSystem?.RaiseOnInputDown(InputSource, ControllerHandedness, Interactions[i].MixedRealityInputAction);
-                            }
-                            else
-                            {
-                                CoreServices.InputSystem?.RaiseOnInputUp(InputSource, ControllerHandedness, Interactions[i].MixedRealityInputAction);
-                            }
-                        }
-                        break;
-                    case DeviceInputType.TriggerPress:
-                        Interactions[i].BoolData = IsPinching || IsGrabbing;
-
-                        if (Interactions[i].Changed)
-                        {
-                            if (Interactions[i].BoolData)
-                            {
-                                CoreServices.InputSystem?.RaiseOnInputDown(InputSource, ControllerHandedness, Interactions[i].MixedRealityInputAction);
-                            }
-                            else
-                            {
-                                CoreServices.InputSystem?.RaiseOnInputUp(InputSource, ControllerHandedness, Interactions[i].MixedRealityInputAction);
-                            }
-                        }
-                        break;
-                    case DeviceInputType.IndexFinger:
-                        UpdateIndexFingerData(Interactions[i]);
-                        break;
-                }
-            }
+            var joint = controller.Hand.Joints[WebXRHand.WRIST];
+            pose = new MixedRealityPose(joint.Position, joint.Rotation);
         }
 
+
+        CoreServices.InputSystem?.RaiseSourcePoseChanged(InputSource, this, pose);
+
+
+        for(int i = 0; i < WebXRHand.JOINT_COUNT; i++)
+        {
+            var joint = controller.Hand.Joints[i];
+            jointPoses[(TrackedHandJoint)(i + 1)] = new MixedRealityPose(joint.Position,joint.Rotation);
+        }
+        CoreServices.InputSystem?.RaiseHandJointsUpdated(InputSource, ControllerHandedness, jointPoses);
+
+        UpdateVelocity();
+
+        //   UpdateTeleport();
+
+        for (int i = 0; i < Interactions?.Length; i++)
+        {
+            switch (Interactions[i].InputType)
+            {
+                case DeviceInputType.SpatialPointer:
+                    Interactions[i].PoseData = pose;
+                    if (Interactions[i].Changed)
+                    {
+                        CoreServices.InputSystem?.RaisePoseInputChanged(InputSource, ControllerHandedness, Interactions[i].MixedRealityInputAction, Interactions[i].PoseData);
+                    }
+                    break;
+                case DeviceInputType.SpatialGrip:
+                    Interactions[i].PoseData = pose;
+                    if (Interactions[i].Changed)
+                    {
+                        CoreServices.InputSystem?.RaisePoseInputChanged(InputSource, ControllerHandedness, Interactions[i].MixedRealityInputAction, Interactions[i].PoseData);
+                    }
+                    break;
+                case DeviceInputType.Select:
+                    Interactions[i].BoolData = isSelecting;
+
+                    if (Interactions[i].Changed)
+                    {
+                        if (Interactions[i].BoolData)
+                        {
+                            CoreServices.InputSystem?.RaiseOnInputDown(InputSource, ControllerHandedness, Interactions[i].MixedRealityInputAction);
+                        }
+                        else
+                        {
+                            CoreServices.InputSystem?.RaiseOnInputUp(InputSource, ControllerHandedness, Interactions[i].MixedRealityInputAction);
+                        }
+                    }
+                    break;
+                case DeviceInputType.TriggerPress:
+                    Interactions[i].BoolData = isSelecting;
+
+                    if (Interactions[i].Changed)
+                    {
+                        if (Interactions[i].BoolData)
+                        {
+                            CoreServices.InputSystem?.RaiseOnInputDown(InputSource, ControllerHandedness, Interactions[i].MixedRealityInputAction);
+                        }
+                        else
+                        {
+                            CoreServices.InputSystem?.RaiseOnInputUp(InputSource, ControllerHandedness, Interactions[i].MixedRealityInputAction);
+                        }
+                    }
+                    break;
+                case DeviceInputType.IndexFinger:
+                    var indexJoint = controller.Hand.Joints[WebXRHand.INDEX_PHALANX_TIP];
+                    Interactions[i].PoseData = new MixedRealityPose(indexJoint.Position, indexJoint.Rotation);
+                    if (Interactions[i].Changed)
+                    {
+                        CoreServices.InputSystem?.RaisePoseInputChanged(InputSource, ControllerHandedness, Interactions[i].MixedRealityInputAction, Interactions[i].PoseData);
+                    }
+                    break;
+            }
+        }
+    }
+
+    /*
         private void UpdateTeleport()
         {
             if (MRTKOculusConfig.Instance.ActiveTeleportPointerMode == MRTKOculusConfig.TeleportPointerMode.None) return;
@@ -330,37 +320,39 @@ using TeleportPointer = Microsoft.MixedReality.Toolkit.Teleport.TeleportPointer;
                     return;
             }
         }
+        */
+  //  #region HandJoints
 
-        #region HandJoints
-        protected readonly Dictionary<TrackedHandJoint, MixedRealityPose> jointPoses = new Dictionary<TrackedHandJoint, MixedRealityPose>();
-
-        protected readonly Dictionary<BoneId, TrackedHandJoint> boneJointMapping = new Dictionary<BoneId, TrackedHandJoint>()
+    /*
+    protected readonly Dictionary<int, TrackedHandJoint> boneJointMapping = new Dictionary<int, TrackedHandJoint>()
         {
-            { BoneId.Hand_Thumb1, TrackedHandJoint.ThumbMetacarpalJoint },
-            { BoneId.Hand_Thumb2, TrackedHandJoint.ThumbProximalJoint },
-            { BoneId.Hand_Thumb3, TrackedHandJoint.ThumbDistalJoint },
-            { BoneId.Hand_ThumbTip, TrackedHandJoint.ThumbTip },
-            { BoneId.Hand_Index1, TrackedHandJoint.IndexKnuckle },
-            { BoneId.Hand_Index2, TrackedHandJoint.IndexMiddleJoint },
-            { BoneId.Hand_Index3, TrackedHandJoint.IndexDistalJoint },
-            { BoneId.Hand_IndexTip, TrackedHandJoint.IndexTip },
-            { BoneId.Hand_Middle1, TrackedHandJoint.MiddleKnuckle },
-            { BoneId.Hand_Middle2, TrackedHandJoint.MiddleMiddleJoint },
-            { BoneId.Hand_Middle3, TrackedHandJoint.MiddleDistalJoint },
-            { BoneId.Hand_MiddleTip, TrackedHandJoint.MiddleTip },
-            { BoneId.Hand_Ring1, TrackedHandJoint.RingKnuckle },
-            { BoneId.Hand_Ring2, TrackedHandJoint.RingMiddleJoint },
-            { BoneId.Hand_Ring3, TrackedHandJoint.RingDistalJoint },
-            { BoneId.Hand_RingTip, TrackedHandJoint.RingTip },
-            { BoneId.Hand_Pinky1, TrackedHandJoint.PinkyKnuckle },
-            { BoneId.Hand_Pinky2, TrackedHandJoint.PinkyMiddleJoint },
-            { BoneId.Hand_Pinky3, TrackedHandJoint.PinkyDistalJoint },
-            { BoneId.Hand_PinkyTip, TrackedHandJoint.PinkyTip },
-            { BoneId.Hand_WristRoot, TrackedHandJoint.Wrist },
+            { WebXRHand.THUMB_METACARPAL, TrackedHandJoint.ThumbMetacarpalJoint },
+            { WebXRHand.THUMB_PHALANX_PROXIMAL, TrackedHandJoint.ThumbProximalJoint },
+            { WebXRHand.THUMB_PHALANX_DISTAL, TrackedHandJoint.ThumbDistalJoint },
+            { WebXRHand.THUMB_PHALANX_TIP, TrackedHandJoint.ThumbTip },
+            { WebXRHand.INDEX_PHALANX_PROXIMAL, TrackedHandJoint.IndexKnuckle },
+            { WebXRHand.INDEX_PHALANX_INTERMEDIATE, TrackedHandJoint.IndexMiddleJoint },
+            { WebXRHand.INDEX_PHALANX_DISTAL, TrackedHandJoint.IndexDistalJoint },
+            { WebXRHand.INDEX_PHALANX_TIP, TrackedHandJoint.IndexTip },
+            { WebXRHand.MIDDLE_PHALANX_PROXIMAL, TrackedHandJoint.MiddleKnuckle },
+            { WebXRHand.MIDDLE_PHALANX_INTERMEDIATE, TrackedHandJoint.MiddleMiddleJoint },
+            { WebXRHand.MIDDLE_PHALANX_DISTAL, TrackedHandJoint.MiddleDistalJoint },
+            { WebXRHand.MIDDLE_PHALANX_TIP, TrackedHandJoint.MiddleTip },
+            { WebXRHand.RING_PHALANX_PROXIMAL, TrackedHandJoint.RingKnuckle },
+            { WebXRHand.RING_PHALANX_INTERMEDIATE, TrackedHandJoint.RingMiddleJoint },
+            { WebXRHand.RING_PHALANX_DISTAL, TrackedHandJoint.RingDistalJoint },
+            { WebXRHand.RING_PHALANX_TIP, TrackedHandJoint.RingTip },
+            { WebXRHand.LITTLE_PHALANX_PROXIMAL, TrackedHandJoint.PinkyKnuckle },
+            { WebXRHand.LITTLE_PHALANX_INTERMEDIATE, TrackedHandJoint.PinkyMiddleJoint },
+            { WebXRHand.LITTLE_PHALANX_DISTAL, TrackedHandJoint.PinkyDistalJoint },
+            { WebXRHand.LITTLE_PHALANX_TIP, TrackedHandJoint.PinkyTip },
+            { WebXRHand.WRIST, TrackedHandJoint.Wrist },
         };
+        */
+    /*
 
         private float _lastHighConfidenceTime = 0f;
-        protected bool UpdateHandData(OVRHand ovrHand, OVRSkeleton ovrSkeleton)
+        protected bool UpdateHandData(OVRHand ovrHand)
         {
             bool isTracked = ovrHand.IsTracked;
             if (ovrHand.HandConfidence == OVRHand.TrackingConfidence.High)
@@ -384,14 +376,6 @@ using TeleportPointer = Microsoft.MixedReality.Toolkit.Teleport.TeleportPointer;
                 }
             }
 
-            if (ControllerHandedness == Handedness.Left)
-            {
-                MRTKOculusConfig.Instance.CurrentLeftHandTrackingConfidence = ovrHand.HandConfidence;
-            }
-            else
-            {
-                MRTKOculusConfig.Instance.CurrentRightHandTrackingConfidence = ovrHand.HandConfidence;
-            }
 
             // Disable hand if not tracked
             if (handRenderer != null)
@@ -532,6 +516,18 @@ using TeleportPointer = Microsoft.MixedReality.Toolkit.Teleport.TeleportPointer;
         {
             Vector3 jointPosition = position;
 
+            // TODO Figure out kalman filter coefficients to get good quality smoothing
+            /*
+            if (joint == TrackedHandJoint.IndexTip)
+            {
+                jointPosition = indexTipFilter.Update(position);
+            }
+            else if (joint == TrackedHandJoint.Palm)
+            {
+                jointPosition = palmFilter.Update(position);
+            }
+            
+
             MixedRealityPose pose = new MixedRealityPose(jointPosition, rotation);
             if (!jointPoses.ContainsKey(joint))
             {
@@ -560,7 +556,6 @@ using TeleportPointer = Microsoft.MixedReality.Toolkit.Teleport.TeleportPointer;
                 CoreServices.InputSystem?.RaisePoseInputChanged(InputSource, ControllerHandedness, interactionMapping.MixedRealityInputAction, currentIndexPose);
             }
         }
+    */
+}
 
-        #endregion
-    }
-*/

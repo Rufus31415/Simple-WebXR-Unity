@@ -34,17 +34,17 @@ using System.Linq;
 using UnityEngine;
 
 /// <summary>
-/// Manages Oculus Quest Hand Inputs
+/// Manages WebXR Hand Inputs
 /// </summary>
 [MixedRealityDataProvider(typeof(IMixedRealityInputSystem), SupportedPlatforms.Web | SupportedPlatforms.WindowsEditor, "WebXR Input Manager")]
 public class SimpleWebXRInputDeviceManager : BaseInputDeviceManager, IMixedRealityCapabilityCheck
 {
-    private Dictionary<Handedness, SimpleWebXRController> trackedHands = new Dictionary<Handedness, SimpleWebXRController>();
-    private Dictionary<Handedness, SimpleWebXRController> trackedControllers = new Dictionary<Handedness, SimpleWebXRController>();
+    private readonly Dictionary<Handedness, SimpleWebXRHand> trackedHands = new Dictionary<Handedness, SimpleWebXRHand>();
+    private readonly Dictionary<Handedness, SimpleWebXRController> trackedControllers = new Dictionary<Handedness, SimpleWebXRController>();
 
-    private Dictionary<Handedness, SimpleWebXRController> inactiveHandCache = new Dictionary<Handedness, SimpleWebXRController>();
-    private Dictionary<Handedness, SimpleWebXRController> inactiveControllerCache = new Dictionary<Handedness, SimpleWebXRController>();
-    private Dictionary<Handedness, TeleportPointer> teleportPointers = new Dictionary<Handedness, TeleportPointer>();
+    private readonly Dictionary<Handedness, SimpleWebXRHand> inactiveHandCache = new Dictionary<Handedness, SimpleWebXRHand>();
+    private readonly Dictionary<Handedness, SimpleWebXRController> inactiveControllerCache = new Dictionary<Handedness, SimpleWebXRController>();
+    private readonly Dictionary<Handedness, TeleportPointer> teleportPointers = new Dictionary<Handedness, TeleportPointer>();
 
    // private bool handsInitialized = false;
 
@@ -71,6 +71,13 @@ public class SimpleWebXRInputDeviceManager : BaseInputDeviceManager, IMixedReali
         base.Enable();
         SetupInput();
         xr = SimpleWebXR.GetInstance();
+        
+        MixedRealityHandTrackingProfile handTrackingProfile = CoreServices.InputSystem?.InputSystemProfile?.HandTrackingProfile;
+        if (handTrackingProfile != null)
+        {
+            handTrackingProfile.EnableHandMeshVisualization = true;
+            handTrackingProfile.EnableHandJointVisualization = true;
+        }
     }
 
     private void SetupInput()
@@ -153,7 +160,7 @@ public class SimpleWebXRInputDeviceManager : BaseInputDeviceManager, IMixedReali
         base.Disable();
 
         RemoveAllControllerDevices();
-        // RemoveAllHandDevices();
+        RemoveAllHandDevices();
     }
 
     public override IMixedRealityController[] GetActiveControllers()
@@ -172,42 +179,38 @@ public class SimpleWebXRInputDeviceManager : BaseInputDeviceManager, IMixedReali
     /// <inheritdoc />
     public bool CheckCapability(MixedRealityCapability capability)
     {
-        return false; // (capability == MixedRealityCapability.ArticulatedHand);
+        return (capability == MixedRealityCapability.ArticulatedHand);
     }
 
     public override void Update()
     {
         base.Update();
-        /*
-            if (OVRPlugin.GetHandTrackingEnabled())
-            {
-                RemoveAllControllerDevices();
-                UpdateHands();
-            }
-            else
-            {
-                RemoveAllHandDevices();*/
-        UpdateControllers();
-        //}
-    }
 
-    #region Controller Management
-    protected void UpdateControllers()
-    {
         UpdateController(xr.LeftInput, Handedness.Left);
         UpdateController(xr.RightInput, Handedness.Right);
     }
 
+    #region Controller Management
+
     protected void UpdateController(WebXRInput controller, Handedness handedness)
     {
-        if (controller.Available && controller.IsPositionTracked)
+        if (controller.Available && (controller.IsPositionTracked || controller.Hand.Available))
         {
-            var touchController = GetOrAddController(handedness);
-            touchController.UpdateController(controller);
+            if (controller.Hand.Available)
+            {
+                RemoveControllerDevice(handedness);
+                GetOrAddHand(handedness)?.UpdateController(controller);
+            }
+            else
+            {
+                RemoveHandDevice(handedness);
+                GetOrAddController(handedness)?.UpdateController(controller);
+            }
         }
         else
         {
             RemoveControllerDevice(handedness);
+            RemoveHandDevice(handedness);
         }
     }
 
@@ -297,53 +300,11 @@ public class SimpleWebXRInputDeviceManager : BaseInputDeviceManager, IMixedReali
         RecyclePointers(controller.InputSource);
     }
     #endregion
-    /*
+    
         #region Hand Management
-        protected void UpdateHands()
-        {
-            UpdateHand(rightHand, rightSkeleton, righMeshRenderer, Handedness.Right);
-            UpdateHand(leftHand, leftSkeleton, righMeshRenderer, Handedness.Left);
-        }
 
-        protected void UpdateHand(OVRHand ovrHand, OVRSkeleton ovrSkeleton, OVRMeshRenderer ovrMeshRenderer, Handedness handedness)
-        {
-            // Until the ovrMeshRenderer is initialized we do nothing with the hand
-            // This is a bit of a hack because the Oculus Integration fails if we touch the renderer before it has initialized itself
-            if (ovrMeshRenderer == null || !ovrMeshRenderer.IsInitialized) return;
 
-            if (ovrHand.IsTracked)
-            {
-                var hand = GetOrAddHand(handedness, ovrHand);
-                hand.UpdateController(ovrHand, ovrSkeleton, cameraRig.trackingSpace);
-                handsInitialized = true;
-            }
-            else
-            {
-                RemoveHandDevice(handedness);
-            }
-        }
-        private void UpdateHandMaterial()
-        {
-            foreach (var hand in trackedHands.Values)
-            {
-                hand.UpdateHandMaterial(MRTKOculusConfig.Instance.CustomHandMaterial);
-            }
-            foreach (var hand in inactiveHandCache.Values)
-            {
-                hand.UpdateHandMaterial(MRTKOculusConfig.Instance.CustomHandMaterial);
-            }
-
-            foreach (var controller in trackedControllers.Values)
-            {
-                controller.UpdateAvatarMaterial(MRTKOculusConfig.Instance.CustomHandMaterial);
-            }
-            foreach (var controller in inactiveControllerCache.Values)
-            {
-                controller.UpdateAvatarMaterial(MRTKOculusConfig.Instance.CustomHandMaterial);
-            }
-        }
-
-        private SimpleWebXRController GetOrAddHand(Handedness handedness, OVRHand ovrHand)
+        private SimpleWebXRHand GetOrAddHand(Handedness handedness)
         {
             if (trackedHands.ContainsKey(handedness))
             {
@@ -355,12 +316,11 @@ public class SimpleWebXRInputDeviceManager : BaseInputDeviceManager, IMixedReali
             var inputSourceType = InputSourceType.Hand;
 
             IMixedRealityInputSystem inputSystem = Service as IMixedRealityInputSystem;
-            var inputSource = inputSystem?.RequestNewGenericInputSource($"Oculus Quest {handedness} Hand", pointers, inputSourceType);
+            var inputSource = inputSystem?.RequestNewGenericInputSource($"WebXR {handedness} Hand", pointers, inputSourceType);
 
             if (!inactiveHandCache.TryGetValue(handedness, out var handController))
             {
-                handController = new SimpleWebXRController(TrackingState.Tracked, handedness, inputSource);
-                handController.InitializeHand(ovrHand, MRTKOculusConfig.Instance.CustomHandMaterial);
+                handController = new SimpleWebXRHand(TrackingState.Tracked, handedness, inputSource);
             }
             inactiveHandCache.Remove(handedness);
 
@@ -368,7 +328,7 @@ public class SimpleWebXRInputDeviceManager : BaseInputDeviceManager, IMixedReali
             {
                 handController.InputSource.Pointers[i].Controller = handController;
             }
-
+            /*
             if (MRTKOculusConfig.Instance.ActiveTeleportPointerMode == MRTKOculusConfig.TeleportPointerMode.Custom && MixedRealityToolkit.IsTeleportSystemEnabled)
             {
                 if (!teleportPointers.TryGetValue(handedness, out TeleportPointer pointer))
@@ -380,6 +340,7 @@ public class SimpleWebXRInputDeviceManager : BaseInputDeviceManager, IMixedReali
                 pointer.Controller = handController;
                 handController.TeleportPointer = pointer;
             }
+            */
 
             inputSystem?.RaiseSourceDetected(handController.InputSource, handController);
 
@@ -390,7 +351,7 @@ public class SimpleWebXRInputDeviceManager : BaseInputDeviceManager, IMixedReali
 
         private void RemoveHandDevice(Handedness handedness)
         {
-            if (trackedHands.TryGetValue(handedness, out SimpleWebXRController hand))
+            if (trackedHands.TryGetValue(handedness, out SimpleWebXRHand hand))
             {
                 RemoveHandDevice(hand);
             }
@@ -401,14 +362,14 @@ public class SimpleWebXRInputDeviceManager : BaseInputDeviceManager, IMixedReali
             if (trackedHands.Count == 0) return;
 
             // Create a new list to avoid causing an error removing items from a list currently being iterated on.
-            foreach (var hand in new List<SimpleWebXRController>(trackedHands.Values))
+            foreach (var hand in new List<SimpleWebXRHand>(trackedHands.Values))
             {
                 RemoveHandDevice(hand);
             }
             trackedHands.Clear();
         }
 
-        private void RemoveHandDevice(SimpleWebXRController hand)
+        private void RemoveHandDevice(SimpleWebXRHand hand)
         {
             if (hand == null) return;
 
@@ -422,10 +383,8 @@ public class SimpleWebXRInputDeviceManager : BaseInputDeviceManager, IMixedReali
                 {
                     pointer.Reset();
                 }
-                hand.TeleportPointer = null;
             }
 
-            hand.CleanupHand();
             inactiveHandCache.Add(hand.ControllerHandedness, hand);
 
             CoreServices.InputSystem?.RaiseSourceLost(hand.InputSource, hand);
@@ -434,5 +393,5 @@ public class SimpleWebXRInputDeviceManager : BaseInputDeviceManager, IMixedReali
             RecyclePointers(hand.InputSource);
         }
         #endregion
-    */
+    
 }
