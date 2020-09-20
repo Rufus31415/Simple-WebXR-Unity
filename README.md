@@ -126,6 +126,9 @@ Opens 45+ 3D CAD formats in your browser (FBX, STEP, OBJ, Collada, GLTF, OnShape
 
 LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/3d-viewer](https://rufus31415.github.io/sandbox/3d-viewer)
 
+<p align="center"><img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/3d-viewer.gif" height="200px"/></p>
+
+
 [work in progress...](https://github.com/Rufus31415/react-webgl-3d-viewer-demo)
 
 ---
