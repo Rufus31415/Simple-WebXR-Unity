@@ -29,7 +29,13 @@ Work in progress for :
 ## MRTK
 [Mixed Reality Toolkit](https://github.com/microsoft/MixedRealityToolkit-Unity) is a Microsoft-driven project that provides a set of components and features, used to accelerate cross-platform MR app development in Unity. It supports Hololens, Windows Mixed Reality headset, OpenVR, Ultraleap, Mobile devices and now **WebXR** !
 
+The [SimpleWebXRInputDeviceManager.cs](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Samples/MRTK/Assets/SimpleWebXR/Scripts/MRTK) file adds WebXR capabilities to MRTK with the following functions: controller tracking, **hand** tracking, hand ray, index pointer, grip pointer and spatial pointer. Teleportation could be added.
+
 LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-mrtk/](https://rufus31415.github.io/sandbox/simple-webxr-mrtk/)
+
+| Hololens 2 | Oculus Quest |
+|:-------------------------:|:-------------------------:|
+|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-hololens.gif">|  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-quest.gif" height="225px">|
 
 | iOS | Emulator |
 |:-------------------------:|:-------------------------:|
