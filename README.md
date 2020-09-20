@@ -57,7 +57,11 @@ MRTK version : 2.4
 ---
 
 ## Simple hand tracking
-SimpleWebXR supports hand tracking. This example displays a sphere on each joint of the detected hands. The radius of this sphere is given by the device.
+SimpleWebXR supports hand tracking. This example displays a sphere on each joint of the detected hands. The radius of this sphere is given by the device. It was tested on Hololens 2 and Oculus Quest.
+
+You need to set flags to enable hand tracking. In firefox reality, open setting panel and set ```dom.webxr.hands.enabled``` to true. In Oculus Browser, visit chrome://flags/ and enable #webxr-hands.
+
+
 LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-hand/](https://rufus31415.github.io/sandbox/simple-webxr-hand/)
 
 <p align="center"><img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/hand-tracking.gif" height="150px"/></p>
