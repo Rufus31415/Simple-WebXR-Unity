@@ -29,7 +29,13 @@ Work in progress for :
 ## MRTK
 [Mixed Reality Toolkit](https://github.com/microsoft/MixedRealityToolkit-Unity) is a Microsoft-driven project that provides a set of components and features, used to accelerate cross-platform MR app development in Unity. It supports Hololens, Windows Mixed Reality headset, OpenVR, Ultraleap, Mobile devices and now **WebXR** !
 
+The [SimpleWebXRInputDeviceManager.cs](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Samples/MRTK/Assets/SimpleWebXR/Scripts/MRTK) file adds WebXR capabilities to MRTK with the following functions: controller tracking, **hand** tracking, hand ray, index pointer, grip pointer and spatial pointer. Teleportation could be added.
+
 LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-mrtk/](https://rufus31415.github.io/sandbox/simple-webxr-mrtk/)
+
+| Hololens 2 | Oculus Quest |
+|:-------------------------:|:-------------------------:|
+|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-hololens.gif">|  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-quest.gif" height="225px">|
 
 | iOS | Emulator |
 |:-------------------------:|:-------------------------:|
@@ -47,6 +53,19 @@ Sources are [here](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/
 
 Unity version : 2018.4.21f1
 MRTK version : 2.4
+
+---
+
+## Simple hand tracking
+SimpleWebXR supports hand tracking. This example displays a sphere on each joint of the detected hands. The radius of this sphere is given by the device. It was tested on Hololens 2 and Oculus Quest.
+
+You need to set flags to enable hand tracking. In firefox reality, open setting panel and set ```dom.webxr.hands.enabled``` to true. In Oculus Browser, visit chrome://flags/ and enable #webxr-hands.
+
+
+LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-hand/](https://rufus31415.github.io/sandbox/simple-webxr-hand/)
+
+<p align="center"><img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/hand-tracking.gif" height="150px"/></p>
+
 
 ---
 
