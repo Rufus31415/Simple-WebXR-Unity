@@ -121,7 +121,7 @@ Unity version : 2018.4.21f1
 
 ---
 
-## CAD file viewer example
+## XR CAD file viewer
 Opens 45+ 3D CAD formats in your browser (FBX, STEP, OBJ, Collada, GLTF, OnShape, ...) and now, view them in VR/AR with WebXR !
 
 LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/3d-viewer](https://rufus31415.github.io/sandbox/3d-viewer)
