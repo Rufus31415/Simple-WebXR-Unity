@@ -75,7 +75,9 @@ When wearing a HoloLens, we often forget that a person who does not have it on i
 
 LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-spectator/](https://rufus31415.github.io/sandbox/simple-webxr-spectator/)
 
-Scene for Hololens 2 (MRTK) : [Simple-WebXR-Unity/Samples/MRTK/Assets/SimpleWebXR/Scenes](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Samples/MRTK/Assets/SimpleWebXR/Scenes)/HandInteractionExamples-SpectatorView.unity
+DOWNLOAD : [⏬ Hololens 2 ARM appx and dependencies](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Samples/MRTK/Builds/SpectatorViewHololens2/WSAPlayer/AppPackages/MixedRealityToolkit/)
+ 
+Scene for Hololens 2 (MRTK) : [Simple-WebXR-Unity/Samples/MRTK/Assets/SimpleWebXR/Scenes](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Samples/MRTK/Assets/SimpleWebXR/Scenes)/HandInteractionExamples-SpectatorView.unity. To compile, this scene, do not use UWP SDK 19041, it has socket server issues.
 
 Unity project for Mobile (WebGL) : [Simple-WebXR-Unity/Samples/SpectatorViewClient](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Samples/SpectatorViewClient)
 
