@@ -56,6 +56,15 @@ MRTK version : 2.4
 
 ---
 
+## Simple hand tracking
+SimpleWebXR supports hand tracking. This example displays a sphere on each joint of the detected hands. The radius of this sphere is given by the device.
+LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-hand/](https://rufus31415.github.io/sandbox/simple-webxr-hand/)
+
+<p align="center"><img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/hand-tracking.gif" height="150px"/></p>
+
+
+---
+
 ## Spectator view
 When wearing a HoloLens, we often forget that a person who does not have it on is unable to experience the wonders that we can. Spectator View allows others to see on a 2D screen what a HoloLens user sees in their world.
 [This Microsoft project](https://github.com/microsoft/MixedReality-SpectatorView) is a native spectator view app for iOS and Android. But here, the spectator view is in your browser. WebXR is optional because you can walk around the Hololens space with the keyboard and mouse.
