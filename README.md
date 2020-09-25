@@ -11,6 +11,7 @@ Thus, after a Unity WebGL build, your app can do augmented or virtual reality in
 
 # Compatible browsers
 Works on :
+- [Edge](https://docs.microsoft.com/fr-fr/windows/mixed-reality/new-microsoft-edge) on Windows 10 for Mixed Reality Headsets
 - [Google Chrome](https://play.google.com/store/apps/details?id=com.android.chrome) on Android
 - [Firefox Reality](https://www.microsoft.com/en-gb/p/firefox-reality/9npq78m7nb0r?activetab=pivot:overviewtab) on Hololens 2
 - [Mozilla WebXR Viewer](https://apps.apple.com/fr/app/webxr-viewer/id1295998056) on iOS
