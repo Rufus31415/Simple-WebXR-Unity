@@ -30,9 +30,17 @@ Work in progress for :
 ## MRTK
 [Mixed Reality Toolkit](https://github.com/microsoft/MixedRealityToolkit-Unity) is a Microsoft-driven project that provides a set of components and features, used to accelerate cross-platform MR app development in Unity. It supports Hololens, Windows Mixed Reality headset, OpenVR, Ultraleap, Mobile devices and now **WebXR** !
 
-The [SimpleWebXRInputDeviceManager.cs](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Samples/MRTK/Assets/SimpleWebXR/Scripts/MRTK) file adds WebXR capabilities to MRTK with the following functions: controller tracking, **hand** tracking, hand ray, index pointer, grip pointer and spatial pointer. Teleportation could be added.
+The files in directory [/Assets/SimpleWebXR/Scripts/MRTK-Providers](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Assets/SimpleWebXR/Scripts/MRTK-Providers) add WebXR capabilities to MRTK with the following functions: controller tracking, **hand** tracking, hand ray, index pointer, grip pointer and spatial pointer. Teleportation could be added.
 
-LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-mrtk/](https://rufus31415.github.io/sandbox/simple-webxr-mrtk/)
+LIVE DEMO : 
+- [▶️ https://rufus31415.github.io/webxr/MRTK-HandInteraction](https://rufus31415.github.io/webxr/MRTK-HandInteraction/)
+- [▶️ https://rufus31415.github.io/webxr/MRTK-ColorPicker](https://rufus31415.github.io/webxr/MRTK-ColorPicker/)
+- [▶️ https://rufus31415.github.io/webxr/MRTK-ElasticSystem](https://rufus31415.github.io/webxr/MRTK-ElasticSystem/)
+- [▶️ https://rufus31415.github.io/webxr/MRTK-HandCoach](https://rufus31415.github.io/webxr/MRTK-HandCoach/)
+- [▶️ https://rufus31415.github.io/webxr/MRTK-HandMenuLayout](https://rufus31415.github.io/webxr/MRTK-HandMenuLayout/)
+- [▶️ https://rufus31415.github.io/webxr/MRTK-MaterialGallery](https://rufus31415.github.io/webxr/MRTK-MaterialGallery/)
+- [▶️ https://rufus31415.github.io/webxr/MRTK-ScrollingObjectCollection](https://rufus31415.github.io/webxr/MRTK-ScrollingObjectCollection/)
+- [▶️ https://rufus31415.github.io/webxr/MRTK-Solver](https://rufus31415.github.io/webxr/MRTK-Solver/)
 
 | Hololens 2 | Oculus Quest |
 |:-------------------------:|:-------------------------:|
@@ -49,11 +57,8 @@ Fun **simulation** features in browser, you can simulate your Hololens, like in 
 |<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-mouse.gif"> |  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-hand-simulation.gif">|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-move.gif">|
 
 
-
-Sources are [here](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Samples/MRTK)
-
 Unity version : 2018.4.21f1
-MRTK version : 2.4
+MRTK version : 2.5
 
 ---
 
@@ -63,7 +68,7 @@ SimpleWebXR supports hand tracking. This example displays a sphere on each joint
 You need to set flags to enable hand tracking. In firefox reality, open setting panel and set ```dom.webxr.hands.enabled``` to true. In Oculus Browser, visit chrome://flags/ and enable #webxr-hands.
 
 
-LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-hand/](https://rufus31415.github.io/sandbox/simple-webxr-hand/)
+LIVE DEMO : [▶️ https://rufus31415.github.io/webxr/HandDetectionExample/](https://rufus31415.github.io/webxr/HandDetectionExample/)
 
 <p align="center"><img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/hand-tracking.gif" height="150px"/></p>
 
@@ -74,13 +79,15 @@ LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-hand/](htt
 When wearing a HoloLens, we often forget that a person who does not have it on is unable to experience the wonders that we can. Spectator View allows others to see on a 2D screen what a HoloLens user sees in their world.
 [This Microsoft project](https://github.com/microsoft/MixedReality-SpectatorView) is a native spectator view app for iOS and Android. But here, the spectator view is in your browser. WebXR is optional because you can walk around the Hololens space with the keyboard and mouse.
 
-LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-spectator/](https://rufus31415.github.io/sandbox/simple-webxr-spectator/)
+LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-spectator/](https://rufus31415.github.io/webxr/SpectatorViewWebXRClient/)
 
-DOWNLOAD : [⏬ Hololens 2 ARM appx and dependencies](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Samples/MRTK/Builds/SpectatorViewHololens2/WSAPlayer/AppPackages/MixedRealityToolkit/)
+DOWNLOAD : [⏬ Hololens 2 ARM appx and dependencies](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Builds/SpectatorViewHololens2Server)
  
-Scene for Hololens 2 (MRTK) : [Simple-WebXR-Unity/Samples/MRTK/Assets/SimpleWebXR/Scenes](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Samples/MRTK/Assets/SimpleWebXR/Scenes)/HandInteractionExamples-SpectatorView.unity. To compile, this scene, do not use UWP SDK 19041, it has socket server issues.
+Scene for Hololens 2 (MRTK) : [/Assets/SimpleWebXR/Scenes/](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Assets/SimpleWebXR/Scenes)/
+SpectatorViewHololens2Server.unity. To compile, this scene, do not use UWP SDK 19041, it has socket server issues.
 
-Unity project for Mobile (WebGL) : [Simple-WebXR-Unity/Samples/SpectatorViewClient](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Samples/SpectatorViewClient)
+Unity scene for Mobile (WebGL) : [/Assets/SimpleWebXR/Scenes/](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Assets/SimpleWebXR/Scenes)/
+SpectatorViewWebXRClient.unity
 
 Unity version : 2018.4.21f1
 
@@ -104,7 +111,7 @@ Comparison with Microsoft solution :
 ## Paint example
 This is a very basic example on how to use Simple WebXR. It uses Unity Line Renderer to draw lines in space with your hands/controllers.
 
-LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-paint/](https://rufus31415.github.io/sandbox/simple-webxr-paint/)
+LIVE DEMO : [▶️ https://rufus31415.github.io/webxr/PaintExample/](https://rufus31415.github.io/webxr/PaintExample/)
 
 | Android | Hololens 2 | iOS | Quest | Emulator |
 |:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
@@ -116,7 +123,7 @@ LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-paint/](ht
   </a>
 </p>
 
-Sources are [here](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/Samples/SimpleWebXRDemo/Assets/Samples/Paint/PenController.cs)
+Sources are [here](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/Assets/SimpleWebXR/Scripts/PaintExample/PenController.cs)
 
 Unity version : 2018.4.21f1
 
@@ -157,16 +164,14 @@ Unity has a unified plug-in framework that enables direct integrations or XR for
 # How to use
 # Installation
 Just add these 3 files in your Unity Asset folder, then add SimpleWebXR MonoBehavior on a game object in your scene.
-- [SimpleWebXR.cs](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/SimpleWebXR.cs): Mono Behaviour that displays the "Start AR" button and communicates with javascript. This behavior should be in your scene.
-- [SimpleWebXR.jslib](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/SimpleWebXR.jslib): Javascript plugin that is included in the application and that makes the link between the Unity engine and the WebXR session. It displays the rendering and obtains the positions and characteristics of the camera.
-- [SimpleWebXR.jspre](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/SimpleWebXR.jspre): Javascript plugin executed before the application that initializes a number of things.
+- [SimpleWebXR.cs](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/Assets/SimpleWebXR/Plugins/SimpleWebXR.cs): Mono Behaviour that displays the "Start AR" button and communicates with javascript. This behavior should be in your scene.
+- [SimpleWebXR.jslib](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/Assets/SimpleWebXR/Plugins/SimpleWebXR.jslib): Javascript plugin that is included in the application and that makes the link between the Unity engine and the WebXR session. It displays the rendering and obtains the positions and characteristics of the camera.
+- [SimpleWebXR.jspre](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/Assets/SimpleWebXR/Plugins/SimpleWebXR.jspre): Javascript plugin executed before the application that initializes a number of things.
 
 # Compilation
 The project must be compiled in WebGL, otherwise SimpleWebXR will has no effect.
 I've noticed that big scenes like MRTK don't work on mobile anymore when compiled with Unity 2019.4. That's why I recommend Unity 2018.4.
 I haven't dug into the reason yet.
-
-Also, you should revert the file "Simple-WebXR-Unity/Samples/MRTK/Library/PackageCache/com.unity.xr.arfoundation@1.5.0-preview.6/Runtime/AR/ARSession.cs" while Unity is opened. The problem will be fixed in future versions of ARFoundation.
 
 # Runtime
 When compiled as a WebGL app, if the browser is WebXR compatible, it will display a "Start AR" button on your canvas.
