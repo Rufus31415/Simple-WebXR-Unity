@@ -1,1 +1,8 @@
 /.vs
+/UWPTempPath
+/Library
+/*.csproj
+/*.sln
+/Temp
+/obj
+/devBuilds
