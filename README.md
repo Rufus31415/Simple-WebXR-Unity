@@ -33,14 +33,14 @@ Work in progress for :
 The files in directory [/Assets/SimpleWebXR/Scripts/MRTK-Providers](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Assets/SimpleWebXR/Scripts/MRTK-Providers) add WebXR capabilities to MRTK with the following functions: controller tracking, **hand** tracking, hand ray, index pointer, grip pointer and spatial pointer. Teleportation could be added.
 
 LIVE DEMO : 
-- [▶️ https://rufus31415.github.io/webxr/MRTK-HandInteraction](https://rufus31415.github.io/webxr/MRTK-HandInteraction/)
-- [▶️ https://rufus31415.github.io/webxr/MRTK-ColorPicker](https://rufus31415.github.io/webxr/MRTK-ColorPicker/)
-- [▶️ https://rufus31415.github.io/webxr/MRTK-ElasticSystem](https://rufus31415.github.io/webxr/MRTK-ElasticSystem/)
-- [▶️ https://rufus31415.github.io/webxr/MRTK-HandCoach](https://rufus31415.github.io/webxr/MRTK-HandCoach/)
-- [▶️ https://rufus31415.github.io/webxr/MRTK-HandMenuLayout](https://rufus31415.github.io/webxr/MRTK-HandMenuLayout/)
-- [▶️ https://rufus31415.github.io/webxr/MRTK-MaterialGallery](https://rufus31415.github.io/webxr/MRTK-MaterialGallery/)
-- [▶️ https://rufus31415.github.io/webxr/MRTK-ScrollingObjectCollection](https://rufus31415.github.io/webxr/MRTK-ScrollingObjectCollection/)
-- [▶️ https://rufus31415.github.io/webxr/MRTK-Solver](https://rufus31415.github.io/webxr/MRTK-Solver/)
+- Hand interaction : [▶️ https://rufus31415.github.io/webxr/MRTK-HandInteraction](https://rufus31415.github.io/webxr/MRTK-HandInteraction/)
+- Color picker : [▶️ https://rufus31415.github.io/webxr/MRTK-ColorPicker](https://rufus31415.github.io/webxr/MRTK-ColorPicker/)
+- Elastic menus : [▶️ https://rufus31415.github.io/webxr/MRTK-ElasticSystem](https://rufus31415.github.io/webxr/MRTK-ElasticSystem/)
+- Hand coach : [▶️ https://rufus31415.github.io/webxr/MRTK-HandCoach](https://rufus31415.github.io/webxr/MRTK-HandCoach/)
+- Hand menu : [▶️ https://rufus31415.github.io/webxr/MRTK-HandMenuLayout](https://rufus31415.github.io/webxr/MRTK-HandMenuLayout/)
+- Material gallery : [▶️ https://rufus31415.github.io/webxr/MRTK-MaterialGallery](https://rufus31415.github.io/webxr/MRTK-MaterialGallery/)
+- Scrolling menus : [▶️ https://rufus31415.github.io/webxr/MRTK-ScrollingObjectCollection](https://rufus31415.github.io/webxr/MRTK-ScrollingObjectCollection/)
+- Solvers : [▶️ https://rufus31415.github.io/webxr/MRTK-Solver](https://rufus31415.github.io/webxr/MRTK-Solver/)
 
 | Hololens 2 | Oculus Quest |
 |:-------------------------:|:-------------------------:|
@@ -83,10 +83,10 @@ LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-spectator/
 
 DOWNLOAD : [⏬ Hololens 2 ARM appx and dependencies](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Builds/SpectatorViewHololens2Server)
  
-Scene for Hololens 2 (MRTK) : [/Assets/SimpleWebXR/Scenes/](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Assets/SimpleWebXR/Scenes)/
+Scene for Hololens 2 (MRTK) : [/Assets/SimpleWebXR/Scenes](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Assets/SimpleWebXR/Scenes)/
 SpectatorViewHololens2Server.unity. To compile, this scene, do not use UWP SDK 19041, it has socket server issues.
 
-Unity scene for Mobile (WebGL) : [/Assets/SimpleWebXR/Scenes/](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Assets/SimpleWebXR/Scenes)/
+Unity scene for Mobile (WebGL) : [/Assets/SimpleWebXR/Scenes](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Assets/SimpleWebXR/Scenes)/
 SpectatorViewWebXRClient.unity
 
 Unity version : 2018.4.21f1
