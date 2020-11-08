@@ -5,8 +5,6 @@
 SimpleWebXR is a lightweight library that exposes the WebXR javascript API in your C# Unity code.
 Thus, after a Unity WebGL build, your app can do augmented or virtual reality in the browser.
 
-:warning::warning::warning: **This project is under development...** :warning::warning::warning:
-
 ---
 
 # Compatible browsers
@@ -14,7 +12,7 @@ Works on :
 - [Google Chrome](https://play.google.com/store/apps/details?id=com.android.chrome) on Android (:warning: a secure https connection is required)
 - [Edge](https://docs.microsoft.com/fr-fr/windows/mixed-reality/new-microsoft-edge) on Windows 10 for Mixed Reality Headsets
 - [Firefox Reality](https://www.microsoft.com/en-gb/p/firefox-reality/9npq78m7nb0r?activetab=pivot:overviewtab) on Hololens 2
-- [Mozilla WebXR Viewer](https://apps.apple.com/fr/app/webxr-viewer/id1295998056) on iOS
+- [Mozilla WebXR Viewer](https://apps.apple.com/fr/app/webxr-viewer/id1295998056) on iOS  (:warning: WebGL 2.0 should be disabled, it's a Webkit experimental feature)
 - [Oculus Browser](https://developer.oculus.com/webxr/?locale=fr_FR) on Oculus Quest
 - [Firefox emulator](https://addons.mozilla.org/fr/firefox/addon/webxr-api-emulator/) on desktop
 - [Chrome emulator](https://chrome.google.com/webstore/detail/webxr-api-emulator/mjddjgeghkdijejnciaefnkjmkafnnje) on desktop
@@ -175,8 +173,8 @@ I've noticed that big scenes like MRTK don't work on mobile anymore when compile
 I haven't dug into the reason yet.
 
 # Runtime
-When compiled as a WebGL app, if the browser is WebXR compatible, it will display a "Start AR" button on your canvas.
-You don't need a specific WebGL Template, so your can keep using yours.
+When compiled as a WebGL app, if the browser is WebXR compatible, it will display a "Start AR" or "Start VR" button on your canvas.
+You don't need a specific WebGL Template, so you can keep using yours.
 
 # Get started
 ## SimpleWebXR MonoBehavior
@@ -203,7 +201,7 @@ In addition, you can at any time in the main thread start an immersive session f
 SimpleWebXR.StartSession();
 ```
 
-You can also end an immersove session by calling :
+You can also end an immersive session by calling :
 ``` cs
 SimpleWebXR.EndSession();
 ```
@@ -347,6 +345,9 @@ Also, the events select, squeeze, ... can be handled at the ```SimpleWebXR``` cl
 
 ### Members of class ```WebXRGamepadButton```
 ```WebXRGamepadButton``` Describes a button, trigger, thumbstick, or touchpad data.
+
+This class maps the information retrieved in javascript via the WebXR Gamepads Module API : https://www.w3.org/TR/webxr-gamepads-module-1
+
 ``` cs
 class WebXRGamepadButton {
 
@@ -363,6 +364,8 @@ class WebXRGamepadButton {
 
 ### Members of class ```WebXRHand```
 ```WebXRHand``` describes the poses of hand skeleton joints
+
+This class maps the information retrieved in javascript via the WebXR Hand Input Module API : https://www.w3.org/TR/webxr-hand-input-1
 
 ``` cs
 class WebXRHand {
@@ -410,7 +413,7 @@ class WebXRHand {
 }
 ```
 
-<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/hand-layout.svg" width="100px"/>
+<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/hand-layout.svg"/>
 
 
 ### Members of class ```WebXRJoint```
