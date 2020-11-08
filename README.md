@@ -347,6 +347,9 @@ Also, the events select, squeeze, ... can be handled at the ```SimpleWebXR``` cl
 
 ### Members of class ```WebXRGamepadButton```
 ```WebXRGamepadButton``` Describes a button, trigger, thumbstick, or touchpad data.
+
+This class maps the information retrieved in javascript via the WebXR Gamepads Module API : https://www.w3.org/TR/webxr-gamepads-module-1
+
 ``` cs
 class WebXRGamepadButton {
 
@@ -363,6 +366,8 @@ class WebXRGamepadButton {
 
 ### Members of class ```WebXRHand```
 ```WebXRHand``` describes the poses of hand skeleton joints
+
+This class maps the information retrieved in javascript via the WebXR Hand Input Module API : https://www.w3.org/TR/webxr-hand-input-1
 
 ``` cs
 class WebXRHand {
