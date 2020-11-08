@@ -21,6 +21,7 @@ Works on :
 
 Work in progress for :
 - [Firefox Reality](https://www.oculus.com/experiences/quest/2180252408763702/?locale=fr_FR) on Oculus Quest
+- [Helio Browser](https://developer.magicleap.com/en-us/learn/guides/webxr-overview) on Magic Leap
 - don't hesitate to tell me about browsers you've tried...
 
 ---
@@ -177,37 +178,83 @@ I haven't dug into the reason yet.
 When compiled as a WebGL app, if the browser is WebXR compatible, it will display a "Start AR" button on your canvas.
 You don't need a specific WebGL Template, so your can keep using yours.
 
-# Code example
-## Get WebXR session anywhere 
-``` cs
-private SimpleWebXR _xr;
+# Get started
+## SimpleWebXR MonoBehavior
+To begin with, **it is recommended to have the SimpleWebXR component active in the scene** at all times. I recommend you to create a root game object "WebXR" which contains only the SimpleWebXR component.
 
-void Start()
-{
-  _xr = SimpleWebXR.GetInstance();
-}
-```
+This one will manage two things:
+- It will display the "Start AR" or "Start VR" button at the bottom of the canvas, and will start the session if the user presses it.
+- It will call to each frame the function ```SimpleWebXR.UpdateWebXR()```.
 
-## Start immersive session
-By default, SimpleWebXR displays a "Start AR" or "Start VR" GUI button. When the user presses it, the session starts.
+However SimpleWebXR may not be present as a component game object in the scene, but you will have to **call the static function ```SimpleWebXR.UpdateWebXR()``` by yourself at each frame**.
 
-But you can hide this button by checking "Hide Start Button", and executing the following code: 
-``` cs
-_xr.StartSession();
-```
+You can also add this component by code by calling the static method ```SimpleWebXR.EnsureInstance()```. The SimpleWebXR component does not exist, it will create it on a root game object "WebXR".
+
 <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/monobehavior.png"/>
 
+## Start/Stop immersive session
+If the SimpleWebXR component is active in the scene, it will automatically display a button that allows the user to start an immersive WebXR session.
+
+You can hide this button by checking the field ```Hide Start Button```.
+
+In addition, you can at any time in the main thread start an immersive session from your code via the static method :
+
+``` cs
+SimpleWebXR.StartSession();
+```
+
+You can also end an immersove session by calling :
+``` cs
+SimpleWebXR.EndSession();
+```
+
+In addition, the following static events are raised when an immersive session starts or stops :
+``` cs
+⚡️ UnityEvent SimpleWebXR.SessionStart
+⚡️ UnityEvent SimpleWebXR.SessionEnd
+
+SimpleWebXR.SessionStart.AddListener(OnSessionStart); // OnSessionStart() is a method in your code called when a session starts
+SimpleWebXR.SessionEnd.AddListener(OnSessionEnd); // OnSessionEnd() is a method in your code called when a session starts
+```
 
 ## Check AR/VR supported
+To find out if the current browser supports WebXR, you can call these static methods from anywhere in your code:
 ``` cs
-bool isARSupported = _xr.IsARSupported();
-bool isVRSupported = _xr.IsVRSupported();
+bool isARSupported = SimpleWebXR.IsARSupported(); // 'immersive-ar' feature is supported
+bool isVRSupported = SimpleWebXR.IsVRSupported(); // 'immersive-vr' feature is supported
 ```
+Warning: the result of the request is asynchronous in javascript. It may be necessary to call these functions several times or to wait to get the result. For example, the SimpleWebXR component requests the capabilities at each frame in the OnGUI() function.
 
 ## Check if a WebXR Session is running
+The static property ```SimpleWebXR.InSession``` indicates whether a WebXR immersive session is in progress.
 ``` cs
-bool isInWebXRSession = _xr.InSession;
+bool isInWebXRSession = SimpleWebXR.InSession;
 ```
+
+## Eyes
+On a smartphone and tablets, only one camera is required. But on HMD (head mounted headset), a different rendering is made for each eye, so there are two active cameras.
+
+At the start of the session, the left eye is equal to ```Camera.Main```. If necessary a camera is created for the left eye. The characteristics of these cameras are modified at startup (clearFlags, background, clip planes, ...).
+
+During a session, the pose and the projection matrix are updated when ```SimpleWebXR.UpdateWebXR()``` is called. 
+
+The second camera (right eye) is destroyed at the end of the immersive session.
+
+``` cs
+Camera leftEye = SimpleWebXR.LeftEye; // == Camera.Main
+Camera rightEye = SimpleWebXR.RightEye; // == null on smartphones and tablets
+```
+
+## Input controllers
+The ```SimpleWebXR.LeftInput``` and ```SimpleWebXR.RightInput``` fields represent left and right controllers. On smartphones either of these input sources can be used (it depends on the browser) and corresponds to the place where the user touched the screen.
+
+``` cs
+WebXRInputSource leftInput = SimpleWebXR.LeftInput
+WebXRInputSource rightInput = SimpleWebXR.RightInput
+```
+
+WebXRInputSource
+
 
 ## More documentation is coming...
 <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/bg.jpg"/>
