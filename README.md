@@ -173,8 +173,8 @@ I've noticed that big scenes like MRTK don't work on mobile anymore when compile
 I haven't dug into the reason yet.
 
 # Runtime
-When compiled as a WebGL app, if the browser is WebXR compatible, it will display a "Start AR" button on your canvas.
-You don't need a specific WebGL Template, so your can keep using yours.
+When compiled as a WebGL app, if the browser is WebXR compatible, it will display a "Start AR" or "Start VR" button on your canvas.
+You don't need a specific WebGL Template, so you can keep using yours.
 
 # Get started
 ## SimpleWebXR MonoBehavior
@@ -201,7 +201,7 @@ In addition, you can at any time in the main thread start an immersive session f
 SimpleWebXR.StartSession();
 ```
 
-You can also end an immersove session by calling :
+You can also end an immersive session by calling :
 ``` cs
 SimpleWebXR.EndSession();
 ```
