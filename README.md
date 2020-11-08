@@ -5,8 +5,6 @@
 SimpleWebXR is a lightweight library that exposes the WebXR javascript API in your C# Unity code.
 Thus, after a Unity WebGL build, your app can do augmented or virtual reality in the browser.
 
-:warning::warning::warning: **This project is under development...** :warning::warning::warning:
-
 ---
 
 # Compatible browsers
@@ -14,7 +12,7 @@ Works on :
 - [Google Chrome](https://play.google.com/store/apps/details?id=com.android.chrome) on Android (:warning: a secure https connection is required)
 - [Edge](https://docs.microsoft.com/fr-fr/windows/mixed-reality/new-microsoft-edge) on Windows 10 for Mixed Reality Headsets
 - [Firefox Reality](https://www.microsoft.com/en-gb/p/firefox-reality/9npq78m7nb0r?activetab=pivot:overviewtab) on Hololens 2
-- [Mozilla WebXR Viewer](https://apps.apple.com/fr/app/webxr-viewer/id1295998056) on iOS
+- [Mozilla WebXR Viewer](https://apps.apple.com/fr/app/webxr-viewer/id1295998056) on iOS  (:warning: WebGL 2.0 should be disabled, it's a Webkit experimental feature)
 - [Oculus Browser](https://developer.oculus.com/webxr/?locale=fr_FR) on Oculus Quest
 - [Firefox emulator](https://addons.mozilla.org/fr/firefox/addon/webxr-api-emulator/) on desktop
 - [Chrome emulator](https://chrome.google.com/webstore/detail/webxr-api-emulator/mjddjgeghkdijejnciaefnkjmkafnnje) on desktop
