@@ -1,353 +1,103 @@
-﻿using System;
-using System.Runtime.InteropServices; // for DllImport
+﻿// SimpleWebXR - Unity
+//                                                                                           .*#%@@@@@@&.                 
+//           ..                           ,                                        .,(%&@@@@@@@@@@@@@@@@#                 
+//           //////,                ./(((((/                                    %@@@@@@@@@@@@@@@@@@@@@@@@*                
+//           *//////////,      .*((((((((((,                                  *@@@@@@@@&#/,.  #@@@@@@@@@@&.               
+//           /////////////*,*/(((((((((((/                          .#@@@@@@@#/,.          ,&@@@@@*(@@@@@#               
+//            ////////*,,,,,,,,,,,*/((((((,                        /@@@@@@@&.              (@@@@@%   %@@@@@*              
+//            //*,,,,,,,,,,,,,,,,,,,,,,,//                      .%@@@@@@@(               ,&@@@@@*    ,@@@@@&.             
+//          ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,                 (@@@@@@@%.                (@@@@@%.      /@@@@@%             
+//       .,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,            ,&@@@@@@@/                 .&@@@@@/         #@@@@&.            
+//       ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.         #@@@@@@@@#((((((((((((((((((%@@@@@%.          .&@@(              
+//        ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,       ,&@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@/             *&.               
+//         ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,          ,%@@@@@@@@&%%%%%%%%%%%%%%%%%%&@@@@@#            &@@*              
+//          ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,              /@@@@@@@&,                 *@@@@@@,         (@@@@%.            
+//           ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.                 .%@@@@@@@#                 %@@@@@#       *@@@@@%             
+//            ,,,,,,,,,,,,,,,,,,,,,,,,,,,,.                     *&@@@@@@&,               *@@@@@@,    .&@@@@@,             
+//             ,,,,,,,,,,,,,,,,,,,,,,,,,,.                         #@@@@@@@#               %@@@@@#   %@@@@@/              
+//              ,,,,,,,,,,.  .,,,,,,,,,,.                            ,&@@@@@@&/,.           *@@@@@@,/@@@@@%               
+//               ,.,,,,,        ,,,,,,,.                                      /@@@@@@@%#/,.   %@@@@@@@@@@@.               
+//                ....            .,,,.                                        .&@@@@@@@@@@@@@@@@@@@@@@@@*                
+//                                                                                .*(%@@@@@@@@@@@@@@@@@@#                 
+//                                                                                          ,/#&@@@@@@@&.                 
+//                                                                                                   .*,                  
+//
+//                ███████╗██╗███╗   ███╗██████╗ ██╗     ███████╗██╗    ██╗███████╗██████╗ ██╗  ██╗██████╗ 
+//                ██╔════╝██║████╗ ████║██╔══██╗██║     ██╔════╝██║    ██║██╔════╝██╔══██╗╚██╗██╔╝██╔══██╗
+//                ███████╗██║██╔████╔██║██████╔╝██║     █████╗  ██║ █╗ ██║█████╗  ██████╔╝ ╚███╔╝ ██████╔╝
+//                ╚════██║██║██║╚██╔╝██║██╔═══╝ ██║     ██╔══╝  ██║███╗██║██╔══╝  ██╔══██╗ ██╔██╗ ██╔══██╗
+//                ███████║██║██║ ╚═╝ ██║██║     ███████╗███████╗╚███╔███╔╝███████╗██████╔╝██╔╝ ██╗██║  ██║
+//                ╚══════╝╚═╝╚═╝     ╚═╝╚═╝     ╚══════╝╚══════╝ ╚══╝╚══╝ ╚══════╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+//
+// 
+// -----------------------------------------------------------------------------
+//
+// https://github.com/Rufus31415/Simple-WebXR-Unity
+//
+// -----------------------------------------------------------------------------
+//
+// MIT License
+//
+// Copyright(c) 2020 Florent GIRAUD (Rufus31415)
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files(the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions :
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// -----------------------------------------------------------------------------
+
+using System;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+using System.Runtime.InteropServices;
+#endif
+
 namespace Rufus31415.WebXR
 {
     /// <summary>
-    /// Exposes a simple behavior that allows any WebGL application built with Unity to implement WebXR.
-    /// This behavior will display an "Enter AR" GUI button that will launch the WebXR session (see also SimpleWebXR.jslib and SimpleWebXR.jspre). 
-    /// The data (projection matrix, position and rotation) are shared via a buffer.
-    /// When the WebXR session is started, this behavior modifies the position and characteristics of the main camera to allow the augmented reality experience.
+    /// This class can be used as a Behavior to make your application instantly compatible with WebXR.
+    /// It will display a "Enter AR" or "Enter VR" GUI button that will launch the WebXR session and the main camera pose is automatically updated.
+    /// However, for more advanced applications, this class contains static functions to expose the WebXR javascript API in the Unity C# code.
     /// </summary>
+    /// <remarks>
+    /// The data (projection matrix, position and rotation) are shared with javascript via arrays.
+    /// See also files SimpleWebXR.jslib and SimpleWebXR.jspre
+    /// </remarks>
     public class SimpleWebXR : MonoBehaviour
     {
-        #region Configuration
+        #region MonoBehaviour
+
         /// <summary>
-        /// Do not show the GUI button "Start AR" or "Start VR".
+        /// Hide the GUI button "Start AR" or "Start VR".
         /// </summary>
         public bool HideStartButton;
 
-        #endregion
-
-        #region Public XR state
-        /// <summary>
-        /// 
-        /// </summary>
-        public WebXRInput LeftInput = new WebXRInput(WebXRHandedness.Left);
+        /// Update cameras poses and trigger events
+        private void LateUpdate() => UpdateWebXR();
 
         /// <summary>
-        /// 
+        /// A human-readable presentation of the WebXR session and capabilities
         /// </summary>
-        public WebXRInput RightInput = new WebXRInput(WebXRHandedness.Right);
+        public override string ToString() => Stringify();
 
-
-        public WebXRInputEvent InputSourceSelect = new WebXRInputEvent();
-        public WebXRInputEvent InputSourceSqueeze = new WebXRInputEvent();
-        public WebXRInputEvent InputSourceSelectStart = new WebXRInputEvent();
-        public WebXRInputEvent InputSourceSelectEnd = new WebXRInputEvent();
-        public WebXRInputEvent InputSourceSqueezeStart = new WebXRInputEvent();
-        public WebXRInputEvent InputSourceSqueezeEnd = new WebXRInputEvent();
-        public UnityEvent InputSourcesChange = new UnityEvent();
-
-
-        /// <summary>
-        /// Indicates if a XR session is running
-        /// </summary>
-        public bool InSession { get; private set; }
-
-        /// <summary>
-        /// User height in meter (startup distance from floor to device)
-        /// </summary>
-        public float UserHeight => _dataArray[100];
-
-        /// <summary>
-        /// Camera that renders Left eye
-        /// </summary>
-        public Camera LeftEye => _cameras[0];
-
-        /// <summary>
-        /// Camera that renders Right eye
-        /// </summary>
-        public Camera RightEye => _cameras[1];
-
-        #endregion
-
-        // Shared float array with javascript.
-        // [0] -> [15] : projection matrix of view 1
-        // [16], [17], [18] : X, Y, Z position in m  of view 1
-        // [19], [20], [21], [22] : RX, RY, RZ, RW rotation (quaternion)  of view 1
-        // [23] -> [26] : Viewport X, Y, width, height  of view 1
-        // [27] -> [42] : projection matrix of view 2
-        // [43], [44], [45] : X, Y, Z position in m  of view 2
-        // [46], [47], [48], [49] : RX, RY, RZ, RW rotation (quaternion)  of view 2
-        // [50] -> [53] : Viewport X, Y, width, height  of view 2
-        // [54] -> [60] : Left input x, y, z, rx, ry, rz, rw
-        // [61] -> [68] : left input axes
-        // [69] -> [76] : left gamepad value
-        // [77] -> [83] : right input x, y, z, rx, ry, rz, rw
-        // [84] -> [91] : right input axes
-        // [92] -> [99] : right gamepad value
-        // [100] : user height
-        private readonly float[] _dataArray = new float[101];
-
-        // Shared float array with javascript.
-        // [0] : number of views (0 : session is stopped)
-        // [1] : left controller events
-        // [2] : right controller events
-        // [3] : input change event
-        // [4] : left input has position info
-        // [5] : left input target ray mode
-        // [6] : left input gamepad axes count
-        // [7] : left input gamepad buttons count
-        // [8] -> [15] : left inputs touched
-        // [16] -> [23] : left inputs pressed
-        // [24] : right input has position info
-        // [25] : right input target ray mode
-        // [26] : right input gamepad axes count
-        // [27] : right input gamepad buttons count
-        // [28] -> [35] : right inputs touched
-        // [36] -> [43] : right inputs pressed
-        // [44] : Left controller active
-        // [45] : Right controller active
-        // [46] : Left hand active
-        // [47] : Right hand active
-        private readonly byte[] _byteArray = new byte[48];
-
-        // Hand data
-        // [0] -> [7] : Left Wrist x, y, z, rx, ry, rz, zw, radius
-        // [8] -> [199] : Left other fingers ...
-        // [200] -> [399] : right wrist and fingers
-        private readonly float[] _handData = new float[8 * 25 * 2];
-
-        // Number of views (i.e. cameras)
-        private WebXRViewEyes ViewEye => (WebXRViewEyes)_byteArray[0];
-
-        // A session is running
-        private bool InternalInSession => _byteArray[0] != 0;
-
-        // Cameras created for each eyes ([0]:left, [1]:right)
-        private readonly Camera[] _cameras = new Camera[2];
-
-
-        public WebXRInput GetInput(WebXRHandedness handedness)
-        {
-            return handedness == WebXRHandedness.Left ? LeftInput : RightInput;
-        }
-
-
-        public static SimpleWebXR GetInstance()
-        {
-            return FindObjectOfType<SimpleWebXR>();
-        }
-
-        public static SimpleWebXR EnsureInstance()
-        {
-            var xr = GetInstance();
-
-            if (xr) return xr;
-
-            var newGameObject = new GameObject("WebXR");
-            return newGameObject.AddComponent<SimpleWebXR>();
-        }
-
-#if UNITY_WEBGL && !UNITY_EDITOR // If executed in browser
-    [DllImport("__Internal")]
-    private static extern void InternalStartSession();
-
-    [DllImport("__Internal")]
-    private static extern void InternalEndSession();
-
-    [DllImport("__Internal")]
-    private static extern void InitWebXR(float[] dataArray, int length, byte[] byteArray, int _byteArrayLength, float[] handDataArray, int handDataArrayLength);
-
-    [DllImport("__Internal")]
-    public static extern bool IsArSupported();
-
-    [DllImport("__Internal")]
-    public static extern bool IsVrSupported();
-
-    [DllImport("__Internal")]
-    public static extern void InternalGetDeviceOrientation(float[] orientationArray, byte[] orientationInfo);
-
-#else // if executed with Unity editor
-
-        public bool SimulationIsArSupported = true;
-        public bool SimulationIsVrSupported = false;
-        public bool SimulationRender2Eyes = false;
-
-        public WebXRTargetRayModes SimulationMode = WebXRTargetRayModes.TrackedPointer;
-
-        public bool SimulationLeftSelect = false;
-        public bool SimulationRightSelect = false;
-
-
-        public float SimulationUserHeight = 1.8f;
-
-        private GameObject _simulateLeft;
-        private GameObject _simulateRight;
-        private GameObject _simulateHead;
-
-        private bool _sessionStarted;
-
-        private void InternalStartSession()
-        {
-            _simulateLeft = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            _simulateLeft.name = "Simulation Left";
-            _simulateLeft.transform.parent = gameObject.transform;
-            _simulateLeft.transform.rotation = Camera.main.transform.rotation;
-            _simulateLeft.transform.position = Camera.main.transform.position + new Vector3(-0.5f, -0.5f, 1);
-            _simulateLeft.transform.localScale = new Vector3(0.1f, 0.1f, 0.2f);
-
-            _simulateRight = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            _simulateRight.name = "Simulation Right";
-            _simulateRight.transform.parent = gameObject.transform;
-            _simulateRight.transform.rotation = Camera.main.transform.rotation;
-            _simulateRight.transform.position = Camera.main.transform.position + new Vector3(0.5f, -0.5f, 1);
-            _simulateRight.transform.localScale = new Vector3(0.1f, 0.1f, 0.2f);
-
-            _simulateHead = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            _simulateHead.name = "Simulation Head";
-            _simulateHead.transform.parent = gameObject.transform;
-            _simulateHead.transform.rotation = Camera.main.transform.rotation;
-            _simulateHead.transform.position = Camera.main.transform.position;
-            _simulateHead.transform.localScale = new Vector3(0.1f, 0.1f, 0.2f);
-
-            _sessionStarted = true;
-        }
-
-        private void InternalEndSession() { _sessionStarted = false; }
-
-
-        private void InitWebXR(float[] dataArray, int length, byte[] _byteArray, int _byteArrayLength, float[] handDataArray, int handDataArrayLength) { }
-
-        public bool IsArSupported()
-        {
-            return SimulationIsArSupported;
-        }
-
-        public bool IsVrSupported()
-        {
-            return SimulationIsVrSupported;
-        }
-
-        public static void InternalGetDeviceOrientation(float[] orientationArray, byte[] orientationInfo)  { }
-
-        private void Update()
-        {
-            // [0] : number of views (0 : session is stopped)
-            _byteArray[0] = (byte)(_sessionStarted ? (SimulationRender2Eyes ? WebXRViewEyes.Both : WebXRViewEyes.Left) : WebXRViewEyes.None);
-
-
-            if (_sessionStarted)
-            {
-                // [0] -> [15] : projection matrix of view 1
-                var pm = Camera.main.projectionMatrix;
-                _dataArray[0] = pm.m00;
-                _dataArray[4] = pm.m01;
-                _dataArray[8] = pm.m02;
-                _dataArray[12] = pm.m03;
-                _dataArray[1] = pm.m10;
-                _dataArray[5] = pm.m11;
-                _dataArray[9] = pm.m12;
-                _dataArray[13] = pm.m13;
-                _dataArray[2] = pm.m20;
-                _dataArray[6] = pm.m21;
-                _dataArray[10] = pm.m22;
-                _dataArray[14] = pm.m23;
-                _dataArray[3] = pm.m30;
-                _dataArray[7] = pm.m31;
-                _dataArray[11] = pm.m32;
-                _dataArray[15] = pm.m33;
-
-                // [16], [17], [18] : X, Y, Z position in m  of view 1
-                _dataArray[16] = _simulateHead.transform.position.x;
-                _dataArray[17] = _simulateHead.transform.position.y;
-                _dataArray[18] = -_simulateHead.transform.position.z;
-
-                // [19], [20], [21], [22] : RX, RY, RZ, RW rotation (quaternion)  of view 1
-                var rotation = ToUnityRotation(_simulateHead.transform.rotation);
-                _dataArray[19] = rotation.x;
-                _dataArray[20] = rotation.y;
-                _dataArray[21] = rotation.z;
-                _dataArray[22] = rotation.w;
-
-                // [23] -> [26] : Viewport X, Y, width, height  of view 1
-                _dataArray[23] = 0;
-                _dataArray[24] = 0;
-                _dataArray[25] = 1;
-                _dataArray[26] = 1;
-
-                if (SimulationRender2Eyes)
-                {
-                    _dataArray[25] = 0.5f;
-
-                    // [27] -> [42] : projection matrix of view 2
-                    // [43], [44], [45] : X, Y, Z position in m  of view 2
-                    // [46], [47], [48], [49] : RX, RY, RZ, RW rotation (quaternion)  of view 2
-                    for (int i = 0; i <= 26; i++) _dataArray[27 + i] = _dataArray[i];
-
-                    // [50] -> [53] : Viewport X, Y, width, height  of view 2
-                    _dataArray[50] = 0.5f;
-                }
-
-
-
-                // [54] -> [60] : Left input x, y, z, rx, ry, rz, rw
-                rotation = ToUnityRotation(_simulateLeft.transform.rotation);
-                _dataArray[54] = _simulateLeft.transform.position.x;
-                _dataArray[55] = _simulateLeft.transform.position.y;
-                _dataArray[56] = -_simulateLeft.transform.position.z;
-                _dataArray[57] = rotation.x;
-                _dataArray[58] = rotation.y;
-                _dataArray[59] = rotation.z;
-                _dataArray[60] = rotation.w;
-
-                // [77] -> [83] : right input x, y, z, rx, ry, rz, rw
-                rotation = ToUnityRotation(_simulateRight.transform.rotation);
-                _dataArray[77] = _simulateRight.transform.position.x;
-                _dataArray[78] = _simulateRight.transform.position.y;
-                _dataArray[79] = -_simulateRight.transform.position.z;
-                _dataArray[80] = rotation.x;
-                _dataArray[81] = rotation.y;
-                _dataArray[82] = rotation.z;
-                _dataArray[83] = rotation.w;
-
-                // [100] : user height
-                _dataArray[100] = SimulationUserHeight;
-
-                // [4] : left input has position info
-                _byteArray[4] = 1;
-
-                // [24] : right input has position info
-                _byteArray[24] = 1;
-
-                // [44] : Left controller active
-                _byteArray[44] = 1;
-
-                // [45] : Right controller active
-                _byteArray[45] = 1;
-
-                // [1] : left controller events
-                if (SimulationLeftSelect && !LeftInput.Selected) _byteArray[1] = (byte)WebXRInputSourceEventTypes.SelectStart;
-                else if (!SimulationLeftSelect && LeftInput.Selected) _byteArray[1] = (byte)WebXRInputSourceEventTypes.SelectEnd;
-                else _byteArray[1] = 0;
-
-                // [2] : right controller events
-                if (SimulationRightSelect && !RightInput.Selected) _byteArray[2] = (byte)WebXRInputSourceEventTypes.SelectStart;
-                else if (!SimulationRightSelect && RightInput.Selected) _byteArray[2] = (byte)WebXRInputSourceEventTypes.SelectEnd;
-                else _byteArray[2] = 0;
-
-                // [5] : left input target ray mode
-                _byteArray[5] = (byte)SimulationMode;
-
-                // [25] : right input target ray mode
-                _byteArray[25] = _byteArray[5];
-
-            }
-
-        }
-#endif
-
-        // Share _dataArray and init WebXR
-        void Start()
-        {
-            InitWebXR(_dataArray, _dataArray.Length, _byteArray, _byteArray.Length, _handData, _handData.Length);
-        }
-
-        // Display "Enter AR" button if WebXR immersive AR is supported
+#if UNITY_WEBGL
+        // Display "Enter AR" or "Enter VR" button if WebXR immersive AR is supported
         private void OnGUI()
         {
             if (HideStartButton) return;
@@ -370,25 +120,303 @@ namespace Rufus31415.WebXR
                 }
             }
         }
+#endif
 
-        // Starts a new session
-        public void StartSession()
+        #endregion
+
+        #region Static WebXR library
+
+        /// <summary>
+        /// Indicates if a WebXR session is running
+        /// </summary>
+        public static bool InSession { get; private set; }
+
+        /// <summary>
+        /// User height in meter (startup distance from floor to device)
+        /// </summary>
+        public static float UserHeight => _dataArray[100];
+
+        /// <summary>
+        /// Event triggered when a session has started
+        /// </summary>
+        public static readonly UnityEvent SessionStart = new UnityEvent();
+
+        /// <summary>
+        /// Event triggered when a session has ended
+        /// </summary>
+        public static readonly UnityEvent SessionEnd = new UnityEvent();
+
+        /// <summary>
+        /// Left input controller data
+        /// </summary>
+        public static readonly WebXRInputSource LeftInput = new WebXRInputSource(WebXRHandedness.Left);
+
+        /// <summary>
+        /// Right input controller data
+        /// </summary>
+        public static readonly WebXRInputSource RightInput = new WebXRInputSource(WebXRHandedness.Right);
+
+        /// <summary>
+        /// Event triggered when the browser triggers a XRSession.selectend event, which means the input source has fully completed its primary action.
+        /// </summary>
+        /// <remarks>
+        /// On Oculus Quest : Back trigger button was pressed
+        /// On Hololens 2 : A air tap has been was performed
+        /// On smartphones : The screen was touched
+        /// </remarks>
+        public static readonly WebXRInputEvent InputSourceSelect = new WebXRInputEvent();
+
+        /// <summary>
+        /// Event triggered when the browser triggers a XRSession.selectstart event, which means the input source begins its primary action.
+        /// </summary>
+        public static readonly WebXRInputEvent InputSourceSelectStart = new WebXRInputEvent();
+
+        /// <summary>
+        /// Event triggered when the browser triggers a XRSession.selectend event, which means the input source ends its primary action.
+        /// </summary>
+        public static readonly WebXRInputEvent InputSourceSelectEnd = new WebXRInputEvent();
+
+        /// <summary>
+        /// Event triggered when the browser triggers a XRSession.selectend event, which means the input source has fully completed its primary squeeze action.
+        /// </summary>
+        /// <remarks>
+        /// On Oculus Quest : Side grip button was pressed
+        /// </remarks>
+        public static readonly WebXRInputEvent InputSourceSqueeze = new WebXRInputEvent();
+
+        /// <summary>
+        /// Event triggered when the browser triggers a XRSession.selectstart event, which means the input source begins its primary squeeze action.
+        /// </summary>
+        public static readonly WebXRInputEvent InputSourceSqueezeStart = new WebXRInputEvent();
+
+        /// <summary>
+        /// Event triggered when the browser triggers a XRSession.selectend event, which means the input source ends its primary squeeze action.
+        /// </summary>
+        public static readonly WebXRInputEvent InputSourceSqueezeEnd = new WebXRInputEvent();
+
+        /// <summary>
+        /// Event triggered when the browser triggers a XRSession.inputsourceschange event, which means a input sources has been added or removed.
+        /// </summary> 
+        public static readonly UnityEvent InputSourcesChange = new UnityEvent();
+
+
+        /// <summary>
+        /// Camera that renders Left eye (Camera.main)
+        /// </summary>
+        public static Camera LeftEye => _cameras[0];
+
+        /// <summary>
+        /// Camera that renders Right eye
+        /// </summary>
+        public static Camera RightEye => _cameras[1];
+
+        /// <summary>
+        /// Initialize the binding with the WebXR API, via shared arrays
+        /// </summary>
+        public static void Initialize()
         {
-            if (!IsArSupported() && !IsVrSupported()) return;
+            if (_initialized) return;
+            InitWebXR(_dataArray, _dataArray.Length, _byteArray, _byteArray.Length, _handData, _handData.Length);
+            _initialized = true;
+        }
 
+        /// <summary>
+        /// Returns SimpleWebXR.LeftInput or SimpleWebXR.RightInput according to the argument
+        /// </summary>
+        /// <param name="handedness">The handedness of the desired input source</param>
+        /// <returns>Input source controller</returns>
+        public static WebXRInputSource GetInput(WebXRHandedness handedness)
+        {
+            return handedness == WebXRHandedness.Left ? LeftInput : RightInput;
+        }
+
+        /// <summary>
+        /// Returns the instance of the gameobject SimpleWebXR in current scene.
+        /// </summary>
+        /// <remarks>Return null is no gameobject was found</remarks>
+        public static SimpleWebXR GetInstance()
+        {
+            return FindObjectOfType<SimpleWebXR>();
+        }
+
+        /// <summary>
+        /// Ensures that a SimpleWebXR instance is available in the current scene.
+        /// If no instance was found, a "WebXR" gameobject is created as a root gameobject with a SimpleWebXR component.
+        /// </summary>
+        /// <returns>The existing or newly created SimpleWebXR instance</returns>
+        public static SimpleWebXR EnsureInstance()
+        {
+            var xr = GetInstance();
+
+            if (xr) return xr;
+
+            var newGameObject = new GameObject("WebXR");
+            return newGameObject.AddComponent<SimpleWebXR>();
+        }
+
+        /// <summary>
+        /// Check if Augmented Reality (AR) is supported 
+        /// </summary>
+        /// <remarks>It returns the result of navigator.xr.isSessionSupported('immersive-ar')</remarks>
+        /// <returns>True if AR is supported</returns>
+        public static bool IsArSupported()
+        {
+            Initialize();
+            return InternalIsArSupported();
+        }
+
+        /// <summary>
+        /// Check if Virtual Reality (VR) is supported 
+        /// </summary>
+        /// <remarks>It returns the result of navigator.xr.isSessionSupported('immersive-vr')</remarks>
+        /// <returns>True if VR is supported</returns>
+        public static bool IsVrSupported()
+        {
+            Initialize();
+            return InternalIsVrSupported();
+        }
+
+        /// <summary>
+        /// Triggers the start of a WebXR immersive session 
+        /// </summary>
+        public static void StartSession()
+        {
+            Initialize();
+            if (InternalInSession) return;
             InternalStartSession();
         }
 
-        // Ends the session
-        public void EndSession()
+        /// <summary>
+        /// Ends the current WebXR immersive session
+        /// </summary>
+        public static void EndSession()
         {
             if (!InternalInSession) return;
-
             InternalEndSession();
         }
 
+        /// <summary>
+        /// Update cameras (eyes), input sources and propagates WebXR events to Unity. This function should be called once per frame.
+        /// </summary>
+        public static void UpdateWebXR()
+        {
+            UpdateCamera(WebXRViewEyes.Left);
+            UpdateCamera(WebXRViewEyes.Right);
 
-        private void UpdateCamera(WebXRViewEyes eye)
+            UpdateInput(LeftInput);
+            UpdateInput(RightInput);
+
+            LeftInput.Available = _byteArray[44] != 0;
+            RightInput.Available = _byteArray[45] != 0;
+
+            // Input source change event
+            if (_byteArray[3] != 0)
+            {
+                InputSourcesChange.Invoke();
+                _byteArray[3] = 0;
+            }
+
+            // Session state changed invoked when all gamepads and cameras are updated
+            if (InternalInSession && !InSession) //New session detected
+            {
+                InSession = true;
+                SessionStart.Invoke();
+            }
+            else if (InSession && !InternalInSession) // End of session detected
+            {
+                InSession = false;
+                SessionEnd.Invoke();
+            }
+        }
+
+        /// <summary>
+        /// A human-readable presentation of the WebXR session and capabilities
+        /// </summary>
+        public static string Stringify()
+        {
+            var sb = new StringBuilder();
+            sb.Append("In session : ");
+            sb.AppendLine(InSession ? "Yes" : "No");
+
+            sb.Append("AR supported : ");
+            sb.AppendLine(IsArSupported() ? "Yes" : "No");
+
+            sb.Append("VR supported : ");
+            sb.AppendLine(IsVrSupported() ? "Yes" : "No");
+
+            sb.Append("User height : ");
+            sb.AppendLine(UserHeight.ToString("0.0"));
+
+            sb.AppendLine(Stringify(LeftEye, "left"));
+            sb.AppendLine(Stringify(RightEye, "right"));
+
+            sb.Append(LeftInput.ToString());
+            sb.Append(RightInput.ToString());
+
+            return sb.ToString();
+        }
+
+        // Indicate that InitWebXR() has been called
+        private static bool _initialized = false;
+
+        // Shared float array with javascript.
+        // [0] -> [15] : projection matrix of view 1
+        // [16], [17], [18] : X, Y, Z position in m  of view 1
+        // [19], [20], [21], [22] : RX, RY, RZ, RW rotation (quaternion)  of view 1
+        // [23] -> [26] : Viewport X, Y, width, height  of view 1
+        // [27] -> [42] : projection matrix of view 2
+        // [43], [44], [45] : X, Y, Z position in m  of view 2
+        // [46], [47], [48], [49] : RX, RY, RZ, RW rotation (quaternion)  of view 2
+        // [50] -> [53] : Viewport X, Y, width, height  of view 2
+        // [54] -> [60] : Left input x, y, z, rx, ry, rz, rw
+        // [61] -> [68] : left input axes
+        // [69] -> [76] : left gamepad value
+        // [77] -> [83] : right input x, y, z, rx, ry, rz, rw
+        // [84] -> [91] : right input axes
+        // [92] -> [99] : right gamepad value
+        // [100] : user height
+        private static readonly float[] _dataArray = new float[101];
+
+        // Shared float array with javascript.
+        // [0] : number of views (0 : session is stopped)
+        // [1] : left controller events
+        // [2] : right controller events
+        // [3] : input change event
+        // [4] : left input has position info
+        // [5] : left input target ray mode
+        // [6] : left input gamepad axes count
+        // [7] : left input gamepad buttons count
+        // [8] -> [15] : left inputs touched
+        // [16] -> [23] : left inputs pressed
+        // [24] : right input has position info
+        // [25] : right input target ray mode
+        // [26] : right input gamepad axes count
+        // [27] : right input gamepad buttons count
+        // [28] -> [35] : right inputs touched
+        // [36] -> [43] : right inputs pressed
+        // [44] : Left controller active
+        // [45] : Right controller active
+        // [46] : Left hand active
+        // [47] : Right hand active
+        private static readonly byte[] _byteArray = new byte[48];
+
+        // Hand data
+        // [0] -> [7] : Left Wrist x, y, z, rx, ry, rz, zw, radius
+        // [8] -> [199] : Left other fingers ...
+        // [200] -> [399] : right wrist and fingers
+        private static readonly float[] _handData = new float[8 * 25 * 2];
+
+        // Number of views (i.e. cameras)
+        private static WebXRViewEyes ViewEye => (WebXRViewEyes)_byteArray[0];
+
+        // A session is running
+        private static bool InternalInSession => _byteArray[0] != 0;
+
+        // Cameras created for each eyes ([0]:left, [1]:right)
+        private static readonly Camera[] _cameras = new Camera[2];
+
+        // Create and update camera pose
+        private static void UpdateCamera(WebXRViewEyes eye)
         {
             var id = (int)eye - 1;
 
@@ -410,7 +438,6 @@ namespace Rufus31415.WebXR
                 if (id > 0)
                 {
                     var camGameObject = new GameObject("WebXRCamera_" + id);
-                    camGameObject.transform.parent = gameObject.transform;
                     _cameras[id] = camGameObject.AddComponent<Camera>();
                     _cameras[id].depth = Camera.main.depth - 1;
                 }
@@ -469,7 +496,8 @@ namespace Rufus31415.WebXR
             _cameras[id].transform.rotation = ToUnityRotation(_dataArray[floatStartId + 19], _dataArray[floatStartId + 20], _dataArray[floatStartId + 21], _dataArray[floatStartId + 22]);
         }
 
-        private void UpdateInput(WebXRInput inputSource)
+        // Update input source pose
+        private static void UpdateInput(WebXRInputSource inputSource)
         {
             var floatStartId = (int)inputSource.Handedness * 23 + 54;
             var byteStartId = (int)inputSource.Handedness * 20 + 4;
@@ -495,13 +523,13 @@ namespace Rufus31415.WebXR
             inputSource.TargetRayMode = (WebXRTargetRayModes)_byteArray[byteStartId + 1];
 
             inputSource.AxesCount = _byteArray[byteStartId + 2];
-            for (int i = 0; i < WebXRInput.AXES_BUTTON_COUNT; i++)
+            for (int i = 0; i < WebXRInputSource.AXES_BUTTON_COUNT; i++)
             {
                 inputSource.Axes[i] = _dataArray[floatStartId + 7 + i];
             }
 
             inputSource.ButtonsCount = _byteArray[byteStartId + 3];
-            for (int i = 0; i < WebXRInput.AXES_BUTTON_COUNT; i++)
+            for (int i = 0; i < WebXRInputSource.AXES_BUTTON_COUNT; i++)
             {
                 var button = inputSource.Buttons[i];
                 button.Value = _dataArray[floatStartId + 15 + i];
@@ -526,7 +554,8 @@ namespace Rufus31415.WebXR
 
         }
 
-        private void RaiseInputSourceEvent(byte mask, WebXRInputSourceEventTypes type, WebXRInputEvent webxrInputEvent, UnityEvent unityEvent, WebXRInput inputSource)
+        // Raise input sources select and squeeze events
+        private static void RaiseInputSourceEvent(byte mask, WebXRInputSourceEventTypes type, WebXRInputEvent webxrInputEvent, UnityEvent unityEvent, WebXRInputSource inputSource)
         {
             if (((WebXRInputSourceEventTypes)mask & type) == type)
             {
@@ -553,86 +582,52 @@ namespace Rufus31415.WebXR
             }
         }
 
+        // Converts a WebGL position coordinate to a Unity position coordinate
         private static Vector3 ToUnityPosition(float x, float y, float z)
         {
             return new Vector3(x, y, -z);
         }
-        private static Vector3 ToUnityPosition(Vector3 position)
-        {
-            return ToUnityPosition(position.x, position.y, position.z);
-        }
 
+        // Converts a WebGL rotation to a Unity rotation
         private static Quaternion ToUnityRotation(float x, float y, float z, float w)
         {
             return new Quaternion(-x, -y, z, w);
         }
 
-        private static Quaternion ToUnityRotation(Quaternion rotation)
-        {
-            return ToUnityRotation(rotation.x, rotation.y, rotation.z, rotation.w);
-        }
 
-        // Update camera position, rotation and projection
-        void LateUpdate()
-        {
-            UpdateCamera(WebXRViewEyes.Left);
-            UpdateCamera(WebXRViewEyes.Right);
+#if UNITY_WEBGL && !UNITY_EDITOR // If executed in browser
+        [DllImport("__Internal")]
+        private static extern void InternalStartSession();
 
-            UpdateInput(LeftInput);
-            UpdateInput(RightInput);
+        [DllImport("__Internal")]
+        private static extern void InternalEndSession();
 
-            LeftInput.Available = _byteArray[44] != 0;
-            RightInput.Available = _byteArray[45] != 0;
+        [DllImport("__Internal")]
+        private static extern void InitWebXR(float[] dataArray, int length, byte[] byteArray, int _byteArrayLength, float[] handDataArray, int handDataArrayLength);
 
-            // Input source change event
-            if (_byteArray[3] != 0)
-            {
-                InputSourcesChange.Invoke();
-                _byteArray[3] = 0;
-            }
+        [DllImport("__Internal")]
+        private static extern bool InternalIsArSupported();
 
-            // Session state changed invoked when all gamepads and cameras are updated
-            if (InternalInSession && !InSession) //New session detected
-            {
-                InSession = true;
-                SessionStart.Invoke();
-            }
-            else if (InSession && !InternalInSession) // End of session detected
-            {
-                InSession = false;
-                SessionEnd.Invoke();
-            }
-        }
+        [DllImport("__Internal")]
+        private static extern bool InternalIsVrSupported();
 
-        public readonly UnityEvent SessionStart = new UnityEvent();
-        public readonly UnityEvent SessionEnd = new UnityEvent();
+        [DllImport("__Internal")]
+        private static extern void InternalGetDeviceOrientation(float[] orientationArray, byte[] orientationInfo);
 
+#else // if executed with Unity editor
+        private static void InternalEndSession() { }
 
-#if UNITY_EDITOR
-        [UnityEditor.MenuItem("WebXR/Set camera none")]
-        public static void SetCameraNone()
-        {
-            UnityEngine.Object.FindObjectOfType<SimpleWebXR>()._dataArray[0] = 0;
-        }
+        private static void InternalStartSession() { }
 
-        [UnityEditor.MenuItem("WebXR/Set camera left")]
-        public static void SetCameraLeft()
-        {
-            UnityEngine.Object.FindObjectOfType<SimpleWebXR>()._dataArray[0] = 1;
-        }
+        private static void InitWebXR(float[] dataArray, int length, byte[] _byteArray, int _byteArrayLength, float[] handDataArray, int handDataArrayLength) { }
 
-        [UnityEditor.MenuItem("WebXR/Set camera right")]
-        public static void SetCameraRight()
-        {
-            UnityEngine.Object.FindObjectOfType<SimpleWebXR>()._dataArray[0] = 2;
-        }
+        private static bool InternalIsArSupported() => false;
 
-        [UnityEditor.MenuItem("WebXR/Set camera both")]
-        public static void SetCameraBoth()
-        {
-            UnityEngine.Object.FindObjectOfType<SimpleWebXR>()._dataArray[0] = 3;
-        }
+        private static bool InternalIsVrSupported() => false;
+
+        private static void InternalGetDeviceOrientation(float[] orientationArray, byte[] orientationInfo) { }
 #endif
+
 
         [System.Flags]
         private enum WebXRViewEyes
@@ -656,31 +651,7 @@ namespace Rufus31415.WebXR
             SelectEnd = 32
         }
 
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            sb.Append("In session : ");
-            sb.AppendLine(InSession ? "Yes" : "No");
-
-            sb.Append("AR supported : ");
-            sb.AppendLine(IsArSupported() ? "Yes" : "No");
-
-            sb.Append("VR supported : ");
-            sb.AppendLine(IsVrSupported() ? "Yes" : "No");
-
-            sb.Append("User height : ");
-            sb.AppendLine(UserHeight.ToString("0.0"));
-
-            sb.AppendLine(StringifyEye(LeftEye, "left"));
-            sb.AppendLine(StringifyEye(RightEye, "right"));
-
-            sb.Append(LeftInput.ToString());
-            sb.Append(RightInput.ToString());
-
-            return sb.ToString();
-        }
-
-        private string StringifyEye(Camera camera, string name)
+        private static string Stringify(Camera camera, string name)
         {
             if (camera)
             {
@@ -695,18 +666,39 @@ namespace Rufus31415.WebXR
             }
             else return $"No {name} eye";
         }
+        #endregion
 
 
-#region Device orientation sensor
-        // Orientation info
-        // 
-        private readonly float[] _orientationArray = new float[3];
-        private readonly byte[] _orientationInfo = new byte[1];
-        private bool _orientationDeviceStarted = false;
+        #region Device orientation sensor
 
-        // Returns device orientation
-        // see : https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Orientation_and_motion_data_explained#About_rotation
-        public bool GetDeviceOrientation(out float alpha, out float beta, out float gamma)
+        // Orientation float data (shared array with javascript)
+        // [0] : alpha
+        // [1] : beta
+        // [2] : gamma
+        private static readonly float[] _orientationArray = new float[3];
+
+        // Orientation byte data (shared array with javascript)
+        // [0] : 1=valid angle values, 0=angles not available yet
+        private static readonly byte[] _orientationInfo = new byte[1];
+
+        // Indicates that InternalGetDeviceOrientation was already called
+        private static bool _orientationDeviceStarted = false;
+
+        /// <summary>
+        /// Get the orientation of the device. This feature is independent of WebXR and can be used as a fallback if WebXR is not supported. 
+        /// </summary>
+        /// <remarks>
+        /// Values come from the javascript event "deviceorientation" obtained by : window.addEventListener("deviceorientation", _onDeviceOrientation);
+        /// The x axis is in the plane of the screen and is positive toward the right and negative toward the left.
+        /// The y axis is in the plane of the screen and is positive toward the top and negative toward the bottom.
+        /// The z axis is perpendicular to the screen or keyboard, and is positive extending outward from the screen.
+        /// </remarks>
+        /// <see cref="https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Orientation_and_motion_data_explained#About_rotation"/>
+        /// <param name="alpha">Rotation around the z axis -- that is, twisting the device -- causes the alpha rotation angle to change. The alpha angle is 0° when top of the device is pointed directly toward the Earth's north pole, and increases as the device is rotated toward the left</param>
+        /// <param name="beta">Rotation around the x axis -- that is, tipping the device away from or toward the user -- causes the beta rotation angle to change. The beta angle is 0° when the device's top and bottom are the same distance from the Earth's surface; it increases toward 180° as the device is tipped forward toward the user, and it decreases toward -180° as the device is tipped backward away from the user.</param>
+        /// <param name="gamma">Rotation around the y axis -- that is, tilting the device toward the left or right -- causes the gamma rotation angle to change.The gamma angle is 0° when the device's left and right sides are the same distance from the surface of the Earth, and increases toward 90° as the device is tipped toward the right, and toward -90° as the device is tipped toward the left.</param>
+        /// <returns>True if valid angles are returned</returns>
+        public static bool GetDeviceOrientation(out float alpha, out float beta, out float gamma)
         {
             if (!_orientationDeviceStarted)
             {
@@ -720,59 +712,155 @@ namespace Rufus31415.WebXR
 
             return _orientationInfo[0] != 0;
         }
-#endregion
+        #endregion
     }
 
+    /// <summary>
+    /// Handedness of a controller
+    /// </summary>
     public enum WebXRHandedness { Left = 0, Right = 1 }
 
+    /// <summary>
+    /// Contains WebXR input source controller state and events
+    /// </summary>
     [Serializable]
-    public class WebXRInput
+    public class WebXRInputSource
     {
-        public UnityEvent Select = new UnityEvent();
-        public UnityEvent SelectStart = new UnityEvent();
-        public UnityEvent SelectEnd = new UnityEvent();
-        public UnityEvent Squeeze = new UnityEvent();
-        public UnityEvent SqueezeStart = new UnityEvent();
-        public UnityEvent SqueezeEnd = new UnityEvent();
+        #region Events
+        /// <summary>
+        /// Event triggered when the browser triggers a XRSession.selectend event, which means the input source has fully completed its primary action.
+        /// </summary>
+        /// <remarks>
+        /// On Oculus Quest : Back trigger button was pressed
+        /// On Hololens 2 : A air tap has been was performed
+        /// On smartphones : The screen was touched
+        /// </remarks>
+        public readonly UnityEvent Select = new UnityEvent();
 
-        public WebXRInput(WebXRHandedness handedness)
+        /// <summary>
+        /// Event triggered when the browser triggers a XRSession.selectstart event, which means the input source begins its primary action.
+        /// </summary>
+        public readonly UnityEvent SelectStart = new UnityEvent();
+
+        /// <summary>
+        /// Event triggered when the browser triggers a XRSession.selectend event, which means the input source ends its primary action.
+        /// </summary>
+        public readonly UnityEvent SelectEnd = new UnityEvent();
+
+        /// <summary>
+        /// Event triggered when the browser triggers a XRSession.selectend event, which means the input source has fully completed its primary squeeze action.
+        /// </summary>
+        /// <remarks>
+        /// On Oculus Quest : Side grip button was pressed
+        /// </remarks>
+        public readonly UnityEvent Squeeze = new UnityEvent();
+
+        /// <summary>
+        /// Event triggered when the browser triggers a XRSession.selectstart event, which means the input source begins its primary squeeze action.
+        /// </summary>
+        public readonly UnityEvent SqueezeStart = new UnityEvent();
+
+        /// <summary>
+        /// Event triggered when the browser triggers a XRSession.selectend event, which means the input source ends its primary squeeze action.
+        /// </summary>
+        public readonly UnityEvent SqueezeEnd = new UnityEvent();
+
+        #endregion
+
+        #region Constant
+        public const int AXES_BUTTON_COUNT = 8;
+        #endregion
+
+        #region State
+        /// <summary>
+        /// Indicates if the input source exists
+        /// </summary>
+        public bool Available;
+
+        /// <summary>
+        /// Handedness of the input source
+        /// </summary>
+        public readonly WebXRHandedness Handedness;
+
+        /// <summary>
+        /// Indicates that the input source is detected and its position is tarcked
+        /// </summary>
+        public bool IsPositionTracked = false;
+
+        /// <summary>
+        /// Current position of the input source if the position is tracked
+        /// </summary>
+        public Vector3 Position;
+
+        /// <summary>
+        /// Current rotation of the input source if the position is tracked
+        public Quaternion Rotation;
+
+        /// <summary>
+        /// Number of axes available for this input source
+        /// </summary>
+        public int AxesCount = 0;
+
+        /// <summary>
+        /// Current value of each axes
+        /// </summary>
+        public readonly float[] Axes = new float[AXES_BUTTON_COUNT];
+
+        /// <summary>
+        /// Number of button for this input source
+        /// </summary>
+        public int ButtonsCount = 0;
+
+        /// <summary>
+        /// Current state of each buttons
+        /// </summary>
+        public readonly WebXRGamepadButton[] Buttons = new WebXRGamepadButton[AXES_BUTTON_COUNT];
+
+        /// <summary>
+        /// Describes the method used to produce the target ray, and indicates how the application should present the target ray to the user if desired.
+        /// </summary>
+        public WebXRTargetRayModes TargetRayMode = WebXRTargetRayModes.None;
+
+        /// <summary>
+        /// The input source primary action is active
+        /// </summary>
+        /// <remarks>
+        /// On Oculus Quest : Back trigger button is pressed
+        /// On Hololens 2 : A air tap is performed
+        /// On smartphones : The screen is touched
+        /// </remarks>
+        public bool Selected;
+
+        /// <summary>
+        /// The input source primary squeeze action is active
+        /// </summary>
+        /// <remarks>
+        /// On Oculus Quest : Side grip button is pressed
+        /// </remarks>
+        public bool Squeezed;
+
+        /// <summary>
+        /// Constains hand joints poses, if hand tracking is enabled
+        /// </summary>
+        public readonly WebXRHand Hand = new WebXRHand();
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Constructor that initialize the input source
+        /// </summary>
+        /// <param name="handedness">Handedness of the input source</param>
+        public WebXRInputSource(WebXRHandedness handedness)
         {
             Handedness = handedness;
             for (int i = 0; i < AXES_BUTTON_COUNT; i++) Buttons[i] = new WebXRGamepadButton();
         }
 
-        [HideInInspector()]
-        public bool Available;
-
-        public readonly WebXRHandedness Handedness;
-
-        [HideInInspector()]
-        public Vector3 Position;
-        [HideInInspector()]
-        public Quaternion Rotation;
-        [HideInInspector()]
-        public bool IsPositionTracked = false;
-
-        public const int AXES_BUTTON_COUNT = 8;
-
-        [HideInInspector()]
-        public int AxesCount = 0;
-        public readonly float[] Axes = new float[AXES_BUTTON_COUNT];
-
-        [HideInInspector()]
-        public int ButtonsCount = 0;
-        public readonly WebXRGamepadButton[] Buttons = new WebXRGamepadButton[AXES_BUTTON_COUNT];
-
-        [HideInInspector()]
-        public WebXRTargetRayModes TargetRayMode = WebXRTargetRayModes.None;
-
-        [HideInInspector()]
-        public bool Selected;
-        [HideInInspector()]
-        public bool Squeezed;
-
-        public readonly WebXRHand Hand = new WebXRHand();
-
+        /// <summary>
+        /// Return a string that represent current input source state
+        /// </summary>
+        /// <returns>String that represent current input source state</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -827,54 +915,120 @@ namespace Rufus31415.WebXR
 
             return sb.ToString();
         }
-
+        #endregion
     }
 
+    /// <summary>
+    /// Describes a button, trigger, thumbstick, or touchpad data 
+    /// </summary>
     public class WebXRGamepadButton
     {
+        /// <summary>
+        /// The amount which the button has been pressed, between 0.0 and 1.0, for buttons that have an analog sensor
+        /// </summary>
         public float Value;
+
+        /// <summary>
+        /// The touched state of the button
+        /// </summary>
         public bool Touched;
+
+        /// <summary>
+        /// The pressed state of the button
+        /// </summary>
         public bool Pressed;
 
+        /// <summary>
+        /// Stringify the button, trigger, thumbstick, or touchpad data
+        /// </summary>
+        /// <returns>String that describes the button, trigger, thumbstick, or touchpad data</returns>
         public override string ToString()
         {
             return $"{(Touched ? (Pressed ? "Touched and pressed" : "Touched") : (Pressed ? "Pressed" : "Released"))} - {(int)(100 * Value)}%";
         }
     }
 
+    /// <summary>
+    /// Describes the method used to produce the target ray, and indicates how the application should present the target ray to the user if desired.
+    /// </summary>
     public enum WebXRTargetRayModes
     {
+        /// <summary>
+        /// No event has yet identified the target ray mode.
+        /// </summary>
         None = 0,
+
+        /// <summary>
+        /// The target ray originates from either a handheld device or other hand-tracking mechanism and represents that the user is using their hands or the held device for pointing. The orientation of the target ray relative to the tracked object MUST follow platform-specific ergonomics guidelines when available. In the absence of platform-specific guidance, the target ray SHOULD point in the same direction as the user’s index finger if it was outstretched.
+        /// </summary>
         TrackedPointer = 1,
+
+        /// <summary>
+        /// The input source was an interaction with the canvas element associated with an inline session’s output context, such as a mouse click or touch event.
+        /// </summary>
         Screen = 2,
+
+        /// <summary>
+        /// The target ray will originate at the viewer and follow the direction it is facing. (This is commonly referred to as a "gaze input" device in the context of head-mounted displays.)
+        /// </summary>
         Gaze = 3,
     }
 
+    /// <summary>
+    /// Unity event triggered when an input source event is triggered
+    /// </summary>
     [Serializable]
-    public class WebXRInputEvent : UnityEvent<WebXRInput> { }
+    public class WebXRInputEvent : UnityEvent<WebXRInputSource> { }
 
+    /// <summary>
+    /// Joint of a hand. Each hand is made up many bones, connected by joints.
+    /// </summary>
     public class WebXRJoint
     {
+        /// <summary>
+        /// Position of the joint
+        /// </summary>
         public Vector3 Position;
+
+        /// <summary>
+        /// Rotatiuon of the joint
+        /// </summary>
         public Quaternion Rotation;
+
+        /// <summary>
+        /// Optional joint radius that can be used to represent the joint has a sphere.
+        /// </summary>
+        /// <remarks>float.NaN if not supported</remarks>
         public float Radius = float.NaN;
     }
 
     /// <summary>
-    /// 
+    /// Describes the poses of hand skeleton joints
     /// </summary>
     public class WebXRHand
     {
-        public const int JOINT_COUNT = 25;
-
         public WebXRHand()
         {
             for (int i = 0; i < JOINT_COUNT; i++) Joints[i] = new WebXRJoint();
         }
 
+        /// <summary>
+        /// Indicates if hand tracking is available
+        /// </summary>
         public bool Available;
+
+        /// <summary>
+        /// Poses of hand skeleton joints
+        /// </summary>
         public readonly WebXRJoint[] Joints = new WebXRJoint[JOINT_COUNT];
 
+        #region Constants
+        /// <summary>
+        /// Number of tracked joints
+        /// </summary>
+        public const int JOINT_COUNT = 25;
+
+        // INDEX OF EACH JOINT IN ARRAY :
 
         public const int WRIST = 0;
 
@@ -906,5 +1060,6 @@ namespace Rufus31415.WebXR
         public const int LITTLE_PHALANX_INTERMEDIATE = 22;
         public const int LITTLE_PHALANX_DISTAL = 23;
         public const int LITTLE_PHALANX_TIP = 24;
+        #endregion
     }
 }

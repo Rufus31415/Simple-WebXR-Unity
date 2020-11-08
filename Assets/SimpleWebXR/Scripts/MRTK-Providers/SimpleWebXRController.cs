@@ -38,7 +38,7 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
             AssignControllerMappings(DefaultInteractions);
         }
 
-        public void UpdateController(WebXRInput controller)
+        public void UpdateController(WebXRInputSource controller)
         {
             if (!Enabled) return;
 

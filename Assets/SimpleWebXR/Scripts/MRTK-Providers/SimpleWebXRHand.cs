@@ -49,7 +49,7 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
 
         public override bool IsInPointingPose => true;
 
-        public void UpdateController(WebXRInput controller)
+        public void UpdateController(WebXRInputSource controller)
         {
             if (!Enabled) return;
 
@@ -66,30 +66,28 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
             var indexPose = new MixedRealityPose(indexJoint.Position, indexJoint.Rotation);
 
             bool isSelecting;
-            MixedRealityPose pointerPose;
-            MixedRealityPose currentGripPose;
+            MixedRealityPose spatialPointerPose;
 
 
             if (controller.IsPositionTracked)
             {
                 isSelecting = controller.Selected;
-                pointerPose = new MixedRealityPose(controller.Position, controller.Rotation);
-                currentGripPose = pointerPose;
+                spatialPointerPose = new MixedRealityPose(controller.Position, controller.Rotation);
             }
             else
             {
+                // Is selecting if thumb tip and index tip are close
                 isSelecting = Vector3.Distance(controller.Hand.Joints[WebXRHand.THUMB_PHALANX_TIP].Position, controller.Hand.Joints[WebXRHand.INDEX_PHALANX_TIP].Position) < 0.04;
 
-                currentGripPose = jointPoses[TrackedHandJoint.Wrist];
-
+                // The hand ray starts from the middle of thumb tip and index tip
                 HandRay.Update((controller.Hand.Joints[WebXRHand.THUMB_PHALANX_TIP].Position + controller.Hand.Joints[WebXRHand.INDEX_PHALANX_TIP].Position) / 2, new Vector3(0.3f, -0.4f, 0.9f), CameraCache.Main.transform, ControllerHandedness);
 
                 Ray ray = HandRay.Ray;
 
-                pointerPose = new MixedRealityPose(ray.origin, Quaternion.LookRotation(ray.direction));
+                spatialPointerPose = new MixedRealityPose(ray.origin, Quaternion.LookRotation(ray.direction));
             }
 
-            CoreServices.InputSystem?.RaiseSourcePoseChanged(InputSource, this, pointerPose);
+            CoreServices.InputSystem?.RaiseSourcePoseChanged(InputSource, this, spatialPointerPose);
 
             CoreServices.InputSystem?.RaiseHandJointsUpdated(InputSource, ControllerHandedness, jointPoses);
 
@@ -100,14 +98,14 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
                 switch (Interactions[i].InputType)
                 {
                     case DeviceInputType.SpatialPointer:
-                        Interactions[i].PoseData = pointerPose;
+                        Interactions[i].PoseData = spatialPointerPose;
                         if (Interactions[i].Changed)
                         {
                             CoreServices.InputSystem?.RaisePoseInputChanged(InputSource, ControllerHandedness, Interactions[i].MixedRealityInputAction, Interactions[i].PoseData);
                         }
                         break;
                     case DeviceInputType.SpatialGrip:
-                        Interactions[i].PoseData = currentGripPose;
+                        Interactions[i].PoseData = indexPose;
                         if (Interactions[i].Changed)
                         {
                             CoreServices.InputSystem?.RaisePoseInputChanged(InputSource, ControllerHandedness, Interactions[i].MixedRealityInputAction, Interactions[i].PoseData);

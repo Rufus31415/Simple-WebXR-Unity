@@ -10,13 +10,10 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
 
     public class OnScreenHelper : MonoBehaviour
     {
-        private SimpleWebXR _xr;
         private GUIStyle _style;
 
         void Start()
         {
-            _xr = SimpleWebXR.EnsureInstance();
-
             _style = new GUIStyle();
             _style.richText = true;
             _style.alignment = TextAnchor.UpperLeft;
@@ -26,7 +23,7 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
 
         private void OnGUI()
         {
-            if (!_xr || _xr.InSession) return;
+            if (SimpleWebXR.InSession) return;
 
             if (UInput.mouseScrollDelta.y != 0) _lastScrollTime = Time.time;
 

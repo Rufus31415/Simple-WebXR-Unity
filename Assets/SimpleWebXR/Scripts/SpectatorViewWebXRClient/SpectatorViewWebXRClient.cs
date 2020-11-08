@@ -25,8 +25,6 @@ namespace Rufus31415.WebXR.Demo
         private static string Prompt(string message, string defaultValue) { return defaultValue; }
 #endif
 
-        private SimpleWebXR _xr;
-
         WebSocket websocket;
 
         private async Task InitWebSocket()
@@ -90,8 +88,6 @@ namespace Rufus31415.WebXR.Demo
 
         private async void Start()
         {
-            _xr = SimpleWebXR.GetInstance();
-
             Host = PlayerPrefs.GetString("ip", "localhost");
 
             _lowQuality = PlayerPrefs.GetInt("Low quality", 1) != 0;
@@ -165,7 +161,7 @@ namespace Rufus31415.WebXR.Demo
                 PlayerPrefs.Save();
             }
 
-            if (_xr.InSession) return;
+            if (SimpleWebXR.InSession) return;
 
             var deltaTAvg = _deltaT.Average();
             var fps = deltaTAvg == 0 ? 0 : 1 / deltaTAvg;
@@ -218,12 +214,12 @@ namespace Rufus31415.WebXR.Demo
                     data.p = Camera.main.transform.position;
                     data.r = Camera.main.transform.eulerAngles;
                     data.m = Camera.main.projectionMatrix;
-                    data.f = !_xr.InSession && _followMode;
+                    data.f = !SimpleWebXR.InSession && _followMode;
 
 #if UNITY_EDITOR
                     data.t = SimulateTouch;
 #else
-                data.t = _xr.InSession && Input.touchCount > 0;
+                    data.t = SimpleWebXR.InSession && Input.touchCount > 0;
 #endif
 
                     var json = JsonUtility.ToJson(data);
@@ -247,7 +243,7 @@ namespace Rufus31415.WebXR.Demo
 #endif
 
 
-            if (_xr.InSession) return;
+            if (SimpleWebXR.InSession) return;
 
             var dt = Time.deltaTime;
 

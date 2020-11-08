@@ -1,11 +1,74 @@
+//                                                                                           .*#%@@@@@@&.                 
+//           ..                           ,                                        .,(%&@@@@@@@@@@@@@@@@#                 
+//           //////,                ./(((((/                                    %@@@@@@@@@@@@@@@@@@@@@@@@*                
+//           *//////////,      .*((((((((((,                                  *@@@@@@@@&#/,.  #@@@@@@@@@@&.               
+//           /////////////*,*/(((((((((((/                          .#@@@@@@@#/,.          ,&@@@@@*(@@@@@#               
+//            ////////*,,,,,,,,,,,*/((((((,                        /@@@@@@@&.              (@@@@@%   %@@@@@*              
+//            //*,,,,,,,,,,,,,,,,,,,,,,,//                      .%@@@@@@@(               ,&@@@@@*    ,@@@@@&.             
+//          ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,                 (@@@@@@@%.                (@@@@@%.      /@@@@@%             
+//       .,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,            ,&@@@@@@@/                 .&@@@@@/         #@@@@&.            
+//       ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.         #@@@@@@@@#((((((((((((((((((%@@@@@%.          .&@@(              
+//        ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,       ,&@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@/             *&.               
+//         ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,          ,%@@@@@@@@&%%%%%%%%%%%%%%%%%%&@@@@@#            &@@*              
+//          ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,              /@@@@@@@&,                 *@@@@@@,         (@@@@%.            
+//           ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.                 .%@@@@@@@#                 %@@@@@#       *@@@@@%             
+//            ,,,,,,,,,,,,,,,,,,,,,,,,,,,,.                     *&@@@@@@&,               *@@@@@@,    .&@@@@@,             
+//             ,,,,,,,,,,,,,,,,,,,,,,,,,,.                         #@@@@@@@#               %@@@@@#   %@@@@@/              
+//              ,,,,,,,,,,.  .,,,,,,,,,,.                            ,&@@@@@@&/,.           *@@@@@@,/@@@@@%               
+//               ,.,,,,,        ,,,,,,,.                                      /@@@@@@@%#/,.   %@@@@@@@@@@@.               
+//                ....            .,,,.                                        .&@@@@@@@@@@@@@@@@@@@@@@@@*                
+//                                                                                .*(%@@@@@@@@@@@@@@@@@@#                 
+//                                                                                          ,/#&@@@@@@@&.                 
+//                                                                                                   .*,                  
+//
+//                ███████╗██╗███╗   ███╗██████╗ ██╗     ███████╗██╗    ██╗███████╗██████╗ ██╗  ██╗██████╗ 
+//                ██╔════╝██║████╗ ████║██╔══██╗██║     ██╔════╝██║    ██║██╔════╝██╔══██╗╚██╗██╔╝██╔══██╗
+//                ███████╗██║██╔████╔██║██████╔╝██║     █████╗  ██║ █╗ ██║█████╗  ██████╔╝ ╚███╔╝ ██████╔╝
+//                ╚════██║██║██║╚██╔╝██║██╔═══╝ ██║     ██╔══╝  ██║███╗██║██╔══╝  ██╔══██╗ ██╔██╗ ██╔══██╗
+//                ███████║██║██║ ╚═╝ ██║██║     ███████╗███████╗╚███╔███╔╝███████╗██████╔╝██╔╝ ██╗██║  ██║
+//                ╚══════╝╚═╝╚═╝     ╚═╝╚═╝     ╚══════╝╚══════╝ ╚══╝╚══╝ ╚══════╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+//
+// 
+// -----------------------------------------------------------------------------
+//
+// SimpleWebXR - Unity
+//
+// https://github.com/Rufus31415/Simple-WebXR-Unity
+//
+// -----------------------------------------------------------------------------
+//
+// MIT License
+//
+// Copyright(c) 2020 Florent GIRAUD (Rufus31415)
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files(the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions :
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// -----------------------------------------------------------------------------
+
+
 /**
  * This script will be included in the generated WebAssembly.
- * It is used to manage the WebXR session by displaying the rendering and transferring the camera's characteristics and positions to Unity.
+ * It contains functions called by Unity and acts as a gateway between the WebXR javascript API and the Unity code.
  */
 
 mergeInto(LibraryManager.library, {
   /****************************************************************************/
-  // Makes the background of the canvas transparent (see : https://support.unity3d.com/hc/en-us/articles/208892946-How-can-I-make-the-canvas-transparent-on-WebGL-)
+  // Makes the background of the canvas transparent in AR (see : https://support.unity3d.com/hc/en-us/articles/208892946-How-can-I-make-the-canvas-transparent-on-WebGL-)
   glClear: function (mask) {
     if (GLctx.ARSessionStarted && mask == 0x00004000) {
       var v = GLctx.getParameter(GLctx.COLOR_WRITEMASK);
@@ -21,16 +84,21 @@ mergeInto(LibraryManager.library, {
     _isVrSupported = false;
     _isArSupported = false;
 
-    if (!navigator.xr) return;
+    if (!navigator.xr) {
+      document.dispatchEvent(new CustomEvent("SimpleWebXRInitialized", {success: false}));
+      return
+    };
 
     // Check if WebXR immersive VR is supported (check immersive-vr before immersive-ar to make it work on Oculus Quest Browser)
     navigator.xr.isSessionSupported('immersive-vr').then(function (supported) {
       _isVrSupported = supported;
+      document.dispatchEvent(new CustomEvent("SimpleWebXRSessionSupported", {xrSessionMode:'immersive-vr', supported: supported}));
     });
 
     // Check if WebXR immersive AR is supported
     navigator.xr.isSessionSupported('immersive-ar').then(function (supported) {
       _isArSupported = supported;
+      document.dispatchEvent(new CustomEvent("SimpleWebXRSessionSupported", {xrSessionMode:'immersive-ar', supported: supported}));
     });
 
     // Initialize pointers to shared arrays that contains data (projection matrix, position, orientation, input sources)
@@ -349,17 +417,19 @@ mergeInto(LibraryManager.library, {
         return oldBindFramebuffer.call(this, target, fbo);
       }
     }(GLctx.bindFramebuffer);
+
+    document.dispatchEvent(new CustomEvent("SimpleWebXRInitialized", {success: true}));
   },
 
   /****************************************************************************/
   // Return true if immersive AR is supported. InitWebXR must have been called first.
-  IsArSupported: function () {
+  InternalIsArSupported: function () {
     return _isArSupported;
   },
 
   /****************************************************************************/
   // Return true if immersive VR is supported. InitWebXR must have been called first.
-  IsVrSupported: function () {
+  InternalIsVrSupported: function () {
     return _isVrSupported;
   },
 
@@ -380,6 +450,8 @@ mergeInto(LibraryManager.library, {
       GLctx.ARSessionStarted = _isArSupported;
       session.isInSession = true; // add field in session to indicate that a session in running
 
+      document.dispatchEvent(new CustomEvent("SimpleWebXRSessionStarted", {session: session, GLctx: GLctx}));
+
       var glLayer = new XRWebGLLayer(session, GLctx);
 
       session.updateRenderState({ baseLayer: glLayer });
@@ -392,6 +464,7 @@ mergeInto(LibraryManager.library, {
         GLctx.canvas.width = _canvasWidth;
         GLctx.canvas.height = _canvasHeight;
         GLctx.ARSessionStarted = false;
+        document.dispatchEvent(new CustomEvent("SimpleWebXRSessionEnded"));
       });
 
       // handle input sources events
@@ -438,13 +511,15 @@ mergeInto(LibraryManager.library, {
     _orientationInfo[0] = 0;
 
     _onDeviceOrientation = function (event) {
+      if(_orientationInfo[0] == 0)  document.dispatchEvent(new CustomEvent("SimpleWebXRDeviceOrientationStarted"));
+
       _orientationInfo[0] = 1;
       _orientationArray[0] = event.alpha;
       _orientationArray[1] = event.beta;
       _orientationArray[2] = event.gamma;
     }
 
-    if (CustomEvent && DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function") {
+    if (DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function") {
       document.dispatchEvent(new CustomEvent("SimpleWebXRNeedMotionPermission"));
     }
 

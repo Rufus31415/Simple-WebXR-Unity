@@ -8,17 +8,11 @@ namespace Rufus31415.WebXR.Demo
 {
     public class HandDetectionExample : MonoBehaviour
     {
-        private SimpleWebXR _xr;
-
         private GameObject _left;
         private GameObject _right;
 
         void Start()
         {
-            _xr = SimpleWebXR.EnsureInstance();
-
-            if (!_xr) return;
-
             // Create spheres
             _left = CreateHand("Left");
             _right = CreateHand("Right");
@@ -28,7 +22,7 @@ namespace Rufus31415.WebXR.Demo
         {
             var hand = new GameObject(name);
             hand.transform.SetParent(this.transform);
-            for (int iJoint = 0; iJoint < _xr.LeftInput.Hand.Joints.Length; iJoint++)
+            for (int iJoint = 0; iJoint < SimpleWebXR.LeftInput.Hand.Joints.Length; iJoint++)
             {
                 var sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                 SphereCollider collider = sphere.GetComponent<SphereCollider>(); // reference to SphereCollider for IL2CPP
@@ -41,10 +35,10 @@ namespace Rufus31415.WebXR.Demo
 
         void Update()
         {
-            if (!_xr) return;
+            SimpleWebXR.UpdateWebXR();
 
-            UpdateHand(_left, _xr.LeftInput.Hand);
-            UpdateHand(_right, _xr.RightInput.Hand);
+            UpdateHand(_left, SimpleWebXR.LeftInput.Hand);
+            UpdateHand(_right, SimpleWebXR.RightInput.Hand);
         }
 
         private void UpdateHand(GameObject go, WebXRHand hand)
@@ -67,7 +61,7 @@ namespace Rufus31415.WebXR.Demo
 
         private void OnGUI()
         {
-            if (_xr.InSession) return;
+            if (SimpleWebXR.InSession) return;
 
             var style = new GUIStyle();
             style.alignment = TextAnchor.MiddleCenter;

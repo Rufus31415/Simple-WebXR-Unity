@@ -19,8 +19,6 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
 
         private readonly Dictionary<Handedness, SimpleWebXRController> inactiveControllerCache = new Dictionary<Handedness, SimpleWebXRController>();
 
-        private SimpleWebXR xr;
-
         public SimpleWebXRInputDeviceManager(
             IMixedRealityInputSystem inputSystem,
             string name = null,
@@ -32,23 +30,21 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
         public override void Enable()
         {
             base.Enable();
-            xr = SimpleWebXR.EnsureInstance();
 
-            xr.SessionStart.AddListener(OnSessionStart);
-            xr.SessionEnd.AddListener(OnSessionEnd);
+            // create SimpleWebXR component to display "Start AR" or "Start VR" button and call SimpleWebXR.UpdateWebXR() at each frame
+            SimpleWebXR.EnsureInstance();
+
+            SimpleWebXR.SessionStart.AddListener(OnSessionStart);
+            SimpleWebXR.SessionEnd.AddListener(OnSessionEnd);
         }
 
         public override void Disable()
         {
             base.Disable();
 
-            if (xr)
-            {
-                xr.EndSession();
-                xr.gameObject.SetActive(false);
-                xr.SessionStart.RemoveListener(OnSessionStart);
-                xr.SessionEnd.RemoveListener(OnSessionEnd);
-            }
+            SimpleWebXR.EndSession();
+            SimpleWebXR.SessionStart.RemoveListener(OnSessionStart);
+            SimpleWebXR.SessionEnd.RemoveListener(OnSessionEnd);
 
             RemoveAllControllerDevices();
             RemoveAllHandDevices();
@@ -99,13 +95,13 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
         {
             base.Update();
 
-            UpdateController(xr.LeftInput, Handedness.Left);
-            UpdateController(xr.RightInput, Handedness.Right);
+            UpdateController(SimpleWebXR.LeftInput, Handedness.Left);
+            UpdateController(SimpleWebXR.RightInput, Handedness.Right);
         }
 
         #region Controller Management
 
-        protected void UpdateController(WebXRInput controller, Handedness handedness)
+        protected void UpdateController(WebXRInputSource controller, Handedness handedness)
         {
             if (controller.Available && (controller.IsPositionTracked || controller.Hand.Available))
             {

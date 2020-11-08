@@ -5,8 +5,7 @@ namespace Rufus31415.WebXR.Demo
 {
     public class PenController : MonoBehaviour
     {
-        private SimpleWebXR _xr;
-        private WebXRInput _input;
+        private WebXRInputSource _input;
         private MeshRenderer _renderer;
 
         public LineRenderer LinePrefab;
@@ -15,11 +14,7 @@ namespace Rufus31415.WebXR.Demo
 
         void Start()
         {
-            _xr = SimpleWebXR.GetInstance();
-
-            if (!_xr) return;
-
-            _input = IsLeft ? _xr.LeftInput : _xr.RightInput;
+            _input = IsLeft ? SimpleWebXR.LeftInput : SimpleWebXR.RightInput;
 
             _input.SelectStart.AddListener(() => StartCoroutine(DrawCoroutine()));
             _input.SelectEnd.AddListener(StopAllCoroutines);
@@ -43,9 +38,9 @@ namespace Rufus31415.WebXR.Demo
 
         void LateUpdate()
         {
-            if (!_renderer || !_xr) return;
+            if (!_renderer) return;
 
-            _renderer.enabled = _xr.InSession && _input.Available && _input.IsPositionTracked;
+            _renderer.enabled = SimpleWebXR.InSession && _input.Available && _input.IsPositionTracked;
 
             transform.position = _input.Position;
             transform.rotation = _input.Rotation;
@@ -53,7 +48,7 @@ namespace Rufus31415.WebXR.Demo
 
         private void OnGUI()
         {
-            if (_xr.InSession && IsLeft) return;
+            if (SimpleWebXR.InSession || IsLeft) return;
 
             var style = new GUIStyle();
             style.alignment = TextAnchor.MiddleCenter;
