@@ -410,7 +410,7 @@ class WebXRHand {
 }
 ```
 
-<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/hand-layout.svg" width="100px"/>
+<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/hand-layout.svg"/>
 
 
 ### Members of class ```WebXRJoint```
