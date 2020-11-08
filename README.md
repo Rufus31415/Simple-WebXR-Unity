@@ -249,16 +249,190 @@ Camera rightEye = SimpleWebXR.RightEye; // == null on smartphones and tablets
 The ```SimpleWebXR.LeftInput``` and ```SimpleWebXR.RightInput``` fields represent left and right controllers. On smartphones either of these input sources can be used (it depends on the browser) and corresponds to the place where the user touched the screen.
 
 ``` cs
-WebXRInputSource leftInput = SimpleWebXR.LeftInput
-WebXRInputSource rightInput = SimpleWebXR.RightInput
+WebXRInputSource leftInput = SimpleWebXR.LeftInput;
+WebXRInputSource rightInput = SimpleWebXR.RightInput;
 ```
 
-WebXRInputSource
+### Members of class ```WebXRInputSource```
+
+``` cs
+class WebXRInputSource {
+
+  // ⚡️ Event triggered when the browser triggers a XRSession.selectend event, which means the input source has fully completed its primary action.
+  // On Oculus Quest : Back trigger button was pressed
+  // On Hololens 2 : A air tap has been was performed
+  // On smartphones : The screen was touched
+  public readonly UnityEvent Select;
+
+  // ⚡️ Event triggered when the browser triggers a XRSession.selectstart event, which means the input source begins its primary action.
+  public readonly UnityEvent SelectStart;
+
+  // ⚡️ Event triggered when the browser triggers a XRSession.selectend event, which means the input source ends its primary action.
+  public readonly UnityEvent SelectEnd;
+
+  // ⚡️ Event triggered when the browser triggers a XRSession.selectend event, which means the input source has fully completed its primary squeeze action.
+  // On Oculus Quest : Side grip button was pressed
+  public UnityEvent Squeeze;
+
+  // ⚡️ Event triggered when the browser triggers a XRSession.selectstart event, which means the input source begins its primary squeeze action.
+  public UnityEvent SqueezeStart;
+
+  // ⚡️ Event triggered when the browser triggers a XRSession.selectend event, which means the input source ends its primary squeeze action.
+  public UnityEvent SqueezeEnd;
+
+  // Indicates if the input source exists
+  public bool Available;
+
+  // Handedness of the input source
+  // WebXRHandedness.Left : left input source
+  // WebXRHandedness.Right : right input source
+  public WebXRHandedness Handedness;
+
+  // Indicates that the input source is detected and its position is tarcked
+  public bool IsPositionTracked;
+
+  // Current position of the input source if the position is tracked
+  public Vector3 Position;
+
+  // Current rotation of the input source if the position is tracked
+  public Quaternion Rotation;
+
+  // Number of axes available for this input source
+  public int AxesCount;
+
+  // Current value of each axes
+  public float[] Axes;
+
+  // Number of button for this input source
+  public int ButtonsCount = 0;
+
+  // Current state of each buttons
+  public readonly WebXRGamepadButton[] Buttons;
+
+  // Describes the method used to produce the target ray, and indicates how the application should present the target ray to the user if desired.
+  // WebXRTargetRayModes.None : No event has yet identified the target ray mode
+  // WebXRTargetRayModes.TrackedPointer : The target ray originates from either a handheld device or other hand-tracking mechanism and represents that the user is using their hands or the held device for pointing. The orientation of the target ray relative to the tracked object MUST follow platform-specific ergonomics guidelines when available. In the absence of platform-specific guidance, the target ray SHOULD point in the same direction as the user’s index finger if it was outstretched.
+  // WebXRTargetRayModes.Screen : The input source was an interaction with the canvas element associated with an inline session’s output context, such as a mouse click or touch event.
+  // WebXRTargetRayModes.Gaze : The target ray will originate at the viewer and follow the direction it is facing. (This is commonly referred to as a "gaze input" device in the context of head-mounted displays.)
+  public WebXRTargetRayModes TargetRayMode;
+
+  //The input source primary action is active
+  // On Oculus Quest : Back trigger button is pressed
+  // On Hololens 2 : A air tap is performed
+  // On smartphones : The screen is touched
+  public bool Selected;
+
+  // The input source primary squeeze action is active
+  // On Oculus Quest : Side grip button is pressed
+  public bool Squeezed;
+
+  // Constains hand joints poses, if hand tracking is enabled
+  public WebXRHand Hand; 
+}
+```
+
+Also, the events select, squeeze, ... can be handled at the ```SimpleWebXR``` class level via the following ```WebXRInputEvent``` static events where the first argument is the input source that raised it.
+``` cs
+⚡️ WebXRInputEvent SimpleWebXR.InputSourceSelect
+⚡️ WebXRInputEvent SimpleWebXR.InputSourceSelectStart
+⚡️ WebXRInputEvent SimpleWebXR.InputSourceSelectEnd
+⚡️ WebXRInputEvent SimpleWebXR.InputSourceSqueeze
+⚡️ WebXRInputEvent SimpleWebXR.InputSourceSqueezeStart
+⚡️ WebXRInputEvent SimpleWebXR.InputSourceSqueezeEnd
+
+// Event triggered when a input sources has been added or removed.
+⚡️ UnityEvent SimpleWebXR.InputSourcesChange
+```
 
 
-## More documentation is coming...
+### Members of class ```WebXRGamepadButton```
+```WebXRGamepadButton``` Describes a button, trigger, thumbstick, or touchpad data.
+``` cs
+class WebXRGamepadButton {
+
+  // The amount which the button has been pressed, between 0.0 and 1.0, for buttons that have an analog sensor
+  public float Value;
+
+  // The touched state of the button
+  public bool Touched;
+  
+  // The pressed state of the button
+  public bool Pressed;   
+}
+```
+
+### Members of class ```WebXRHand```
+```WebXRHand``` describes the poses of hand skeleton joints
+
+``` cs
+class WebXRHand {
+
+  // Indicates if hand tracking is available
+  public bool Available;
+
+  // Poses of hand skeleton joints
+  public WebXRJoint[] Joints;
+  
+  // 25 joints are tracked
+  public const int JOINT_COUNT = 25;
+  
+  // Index of each joint in Joints array :  
+  public const int WRIST = 0;
+
+  public const int THUMB_METACARPAL = 1;
+  public const int THUMB_PHALANX_PROXIMAL = 2;
+  public const int THUMB_PHALANX_DISTAL = 3;
+  public const int THUMB_PHALANX_TIP = 4;
+
+  public const int INDEX_METACARPAL = 5;
+  public const int INDEX_PHALANX_PROXIMAL = 6;
+  public const int INDEX_PHALANX_INTERMEDIATE = 7;
+  public const int INDEX_PHALANX_DISTAL = 8;
+  public const int INDEX_PHALANX_TIP = 9;
+
+  public const int MIDDLE_METACARPAL = 10;
+  public const int MIDDLE_PHALANX_PROXIMAL = 11;
+  public const int MIDDLE_PHALANX_INTERMEDIATE = 12;
+  public const int MIDDLE_PHALANX_DISTAL = 13;
+  public const int MIDDLE_PHALANX_TIP = 14;
+
+  public const int RING_METACARPAL = 15;
+  public const int RING_PHALANX_PROXIMAL = 16;
+  public const int RING_PHALANX_INTERMEDIATE = 17;
+  public const int RING_PHALANX_DISTAL = 18;
+  public const int RING_PHALANX_TIP = 19;
+
+  public const int LITTLE_METACARPAL = 20;
+  public const int LITTLE_PHALANX_PROXIMAL = 21;
+  public const int LITTLE_PHALANX_INTERMEDIATE = 22;
+  public const int LITTLE_PHALANX_DISTAL = 23;
+  public const int LITTLE_PHALANX_TIP = 24;
+}
+```
+
+<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/hand-layout.svg" width="100px"/>
+
+
+### Members of class ```WebXRJoint```
+```WebXRJoint``` describes a joint of a hand. Each hand is made up many bones, connected by joints.
+
+``` cs
+class WebXRJoint {
+
+  // Position of the joint
+  public Vector3 Position;
+  
+  // Rotatiuon of the joint
+  public Quaternion Rotation;
+
+  // Optional joint radius that can be used to represent the joint has a sphere.
+  // float.NaN if not supported
+  public float Radius;
+}
+```
+
 <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/bg.jpg"/>
-...
+
 
 # Useful WebXR content
 - [https://immersive-web.github.io/](https://immersive-web.github.io/) : Many useful examples
