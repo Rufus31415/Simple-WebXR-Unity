@@ -415,17 +415,44 @@ namespace Rufus31415.WebXR
         // Cameras created for each eyes ([0]:left, [1]:right)
         private static readonly Camera[] _cameras = new Camera[2];
 
+        // Indicates that main camera properties should be restored after sessions ends
+        private static bool _shouldRestoreMainCameraProperties;
+
+        // Remember main camera background color to restore value after sessions ends
+        private static Color _mainCameraBackgroundColor;
+
+        // Remember main camera clear flags to restore value after sessions ends
+        private static CameraClearFlags _mainCameraClearFlags;
+
+        private static Matrix4x4 _mainCameraProjectionMatrix;
+
+        private static Rect _mainCameraRect;
+
         // Create and update camera pose
         private static void UpdateCamera(WebXRViewEyes eye)
         {
-            var id = (int)eye - 1;
+            var id = (eye == WebXRViewEyes.Left) ? 0 : 1;
 
             // If the camera for this id should not exist
             if ((ViewEye & eye) != eye)
             {
                 if (_cameras[id])
                 {
-                    Destroy(_cameras[id].gameObject);
+                    if (eye == WebXRViewEyes.Left) // don't destroy main camera
+                    {
+                        if (_shouldRestoreMainCameraProperties)
+                        {
+                            Camera.main.backgroundColor = _mainCameraBackgroundColor;
+                            Camera.main.clearFlags = _mainCameraClearFlags;
+                            Camera.main.projectionMatrix = _mainCameraProjectionMatrix;
+                            Camera.main.rect = _mainCameraRect;
+                        }
+                    }
+                    else
+                    {
+                        Destroy(_cameras[id].gameObject);
+                    }
+
                     _cameras[id] = null;
                 }
 
@@ -437,18 +464,36 @@ namespace Rufus31415.WebXR
             {
                 if (id > 0)
                 {
-                    var camGameObject = new GameObject("WebXRCamera_" + id);
-                    _cameras[id] = camGameObject.AddComponent<Camera>();
+                    // clone main camera
+                    _cameras[id] = Instantiate(Camera.main);
+                    _cameras[id].name = "WebXRCamera_" + id;
                     _cameras[id].depth = Camera.main.depth - 1;
                 }
                 else
                 {
-                    _cameras[0] = Camera.main;
+                    _shouldRestoreMainCameraProperties = false;
+
+                    if (Camera.main)
+                    {
+                        _cameras[0] = Camera.main;
+                        _shouldRestoreMainCameraProperties = true;
+                        _mainCameraBackgroundColor = Camera.main.backgroundColor;
+                        _mainCameraClearFlags = Camera.main.clearFlags;
+                        _mainCameraProjectionMatrix = Camera.main.projectionMatrix;
+                        _mainCameraRect = Camera.main.rect;
+                    }
+                    else
+                    {
+                        var go = new GameObject("WebXRCamera_0");
+                        _cameras[0] = go.AddComponent<Camera>();
+                    }
                 }
-                _cameras[id].clearFlags = CameraClearFlags.SolidColor;
-                _cameras[id].backgroundColor = new Color(0, 0, 0, 0);
-                _cameras[id].nearClipPlane = 0.1f;
-                _cameras[id].farClipPlane = 1000;
+
+                if (IsArSupported())
+                {
+                    _cameras[id].clearFlags = CameraClearFlags.SolidColor;
+                    _cameras[id].backgroundColor = new Color(0, 0, 0, 0);
+                }
             }
 
             var floatStartId = id * 27;
