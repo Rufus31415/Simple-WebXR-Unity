@@ -450,6 +450,20 @@ class WebXRJoint {
 
 See the [license file](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/LICENSE) for details.
 
+# Sponsor 💛
+You are more than welcome to sponsor me !
+
+In order to maintain SimpleWebXR and ensure its proper functioning on all platforms, I have to acquire a lot of expensive equipment.
+
+I currently have: Microsoft Hololens 2, Oculus Quest 1 & 2, Acer WMR Headset, iPad and iPhone.
+
+What I would like to buy soon : Magic Leap, Android tablet and smartphone
+
+
+<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/xr-devices.jpg"/>
+
+
+
 # Any questions ?
 Feel free to contact me :
 - Slack : https://holodevelopers.slack.com/team/U0120CVDUCV
