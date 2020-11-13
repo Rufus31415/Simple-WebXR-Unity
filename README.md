@@ -480,11 +480,13 @@ What I would like to buy soon : Magic Leap, Android tablet and smartphone
     <td><a href="https://github.com/StephenHodgson"><img align="left" height="32" src="https://github.com/StephenHodgson.png?size=40"/> Stephen Hodgson</a></td>
     <td></td>
     </tr>
+<!---
    <tr>
     <td></td>
     <td><a href="https://intest.info"><img align="left" height="32" src="https://www.intest.info/wp-content/uploads/2019/03/favicon.png"/> InTest </a></td>
     <td></td>
     </tr>
+-->
   </tbody>
 </table>
 
