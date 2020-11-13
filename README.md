@@ -18,7 +18,7 @@ Works on :
 - [Chrome emulator](https://chrome.google.com/webstore/detail/webxr-api-emulator/mjddjgeghkdijejnciaefnkjmkafnnje) on desktop
 
 Work in progress for :
-- [Firefox Reality](https://www.oculus.com/experiences/quest/2180252408763702/?locale=fr_FR) on Oculus Quest
+- [Firefox Reality](https://www.oculus.com/experiences/quest/2180252408763702/) on Oculus Quest
 - [Helio Browser](https://developer.magicleap.com/en-us/learn/guides/webxr-overview) on Magic Leap
 - don't hesitate to tell me about browsers you've tried...
 
@@ -453,15 +453,44 @@ See the [license file](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/mas
 # Sponsor 💛
 You are more than welcome to sponsor me !
 
+| ![❤️ Sponsor](https://github.com/sponsors/Rufus31415/)  |
+|---|
+
 In order to maintain SimpleWebXR and ensure its proper functioning on all platforms, I have to acquire a lot of expensive equipment.
 
 I currently have: Microsoft Hololens 2, Oculus Quest 1 & 2, Acer WMR Headset, iPad and iPhone.
 
 What I would like to buy soon : Magic Leap, Android tablet and smartphone
 
+<table>
+  <tbody>
+    <tr>
+      <th align="center"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </th>
+     <th align="center">Sponsors<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </th>
+      <th align="center"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </th>
+    </tr>
+   <tr>
+    <td></td>
+    <td><a href="https://github.com/StephenHodgson"><img align="left" height="32" src="https://github.com/StephenHodgson.png?size=40"/> Stephen Hodgson</a></td>
+    <td></td>
+    </tr>
+   <tr>
+    <td></td>
+    <td><a href="https://intest.info"><img align="left" height="32" src="https://www.intest.info/wp-content/uploads/2019/03/favicon.png"/> InTest </a></td>
+    <td></td>
+    </tr>
+  </tbody>
+</table>
 
-<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/xr-devices.jpg"/>
-
+<p align="center">
+<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/xr-devices.jpg" width="50%"/>
+</p>
 
 
 # Any questions ?
