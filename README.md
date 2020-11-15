@@ -2,8 +2,15 @@
 
 
 # What is SimpleWebXR ?
-SimpleWebXR is a lightweight library that exposes the WebXR javascript API in your C# Unity code.
-Thus, after a Unity WebGL build, your app can do augmented or virtual reality in the browser.
+SimpleWebXR is a lightweight library that exposes the [WebXR](https://developer.mozilla.org/en-US/docs/Web/API/WebXR_Device_API) javascript API in your C# [Unity](https://unity.com/) code.
+Thus, after a Unity [WebGL build](https://docs.unity3d.com/Manual/webgl-gettingstarted.html), your app can do augmented or virtual reality in the browser.
+
+<p align="center">
+ <a href="https://github.com/Rufus31415/Simple-WebXR-Unity/stargazers"><b>⭐ Star if you like it !</b></a>
+</p>
+<p align="center">
+ <a href="https://github.com/Rufus31415/Simple-WebXR-Unity/watchers"><b>👁️ Watch to be notified of latest updates !</b></a>
+</p>
 
 ---
 
@@ -18,14 +25,13 @@ Works on :
 - [Chrome emulator](https://chrome.google.com/webstore/detail/webxr-api-emulator/mjddjgeghkdijejnciaefnkjmkafnnje) on desktop
 
 Work in progress for :
-- [Firefox Reality](https://www.oculus.com/experiences/quest/2180252408763702/?locale=fr_FR) on Oculus Quest
+- [Firefox Reality](https://www.oculus.com/experiences/quest/2180252408763702/) on Oculus Quest
 - [Helio Browser](https://developer.magicleap.com/en-us/learn/guides/webxr-overview) on Magic Leap
 - don't hesitate to tell me about browsers you've tried...
 
 ---
 
 # Integration examples
-All samples can be dowloaded as a zip file from here : [⏬ https://github.com/Rufus31415/rufus31415.github.io/tree/master/webxr](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Rufus31415/rufus31415.github.io/tree/master/webxr)
 
 ## MRTK
 [Mixed Reality Toolkit](https://github.com/microsoft/MixedRealityToolkit-Unity) is a Microsoft-driven project that provides a set of components and features, used to accelerate cross-platform MR app development in Unity. It supports Hololens, Windows Mixed Reality headset, OpenVR, Ultraleap, Mobile devices and now **WebXR** !
@@ -167,6 +173,11 @@ Just add these 3 files in your Unity Asset folder, then add SimpleWebXR MonoBeha
 - [SimpleWebXR.cs](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/Assets/SimpleWebXR/Plugins/SimpleWebXR.cs): Mono Behaviour that displays the "Start AR" button and communicates with javascript. This behavior should be in your scene.
 - [SimpleWebXR.jslib](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/Assets/SimpleWebXR/Plugins/SimpleWebXR.jslib): Javascript plugin that is included in the application and that makes the link between the Unity engine and the WebXR session. It displays the rendering and obtains the positions and characteristics of the camera.
 - [SimpleWebXR.jspre](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/Assets/SimpleWebXR/Plugins/SimpleWebXR.jspre): Javascript plugin executed before the application that initializes a number of things.
+
+# Samples
+You can use the examples provided in this repository as a starting point.
+
+All sample builds can be dowloaded as a zip file from here : [⏬ https://github.com/Rufus31415/rufus31415.github.io/tree/master/webxr](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Rufus31415/rufus31415.github.io/tree/master/webxr)
 
 # Compilation
 The project must be compiled in WebGL, otherwise SimpleWebXR will has no effect.
@@ -449,6 +460,51 @@ class WebXRJoint {
 [©Rufus31415](https://rufus31415.github.io)
 
 See the [license file](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/LICENSE) for details.
+
+# Sponsor 💛
+You are more than welcome to sponsor me !
+
+| ![❤️ Sponsor](https://github.com/sponsors/Rufus31415/)  |
+|---|
+
+In order to maintain SimpleWebXR and ensure its proper functioning on all platforms, I have to acquire a lot of expensive equipment.
+
+I currently have: Microsoft Hololens 2, Oculus Quest 1 & 2, Acer WMR Headset, iPad and iPhone.
+
+What I would like to buy soon : Magic Leap, Android tablet and smartphone
+
+<table>
+  <tbody>
+    <tr>
+      <th align="center"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </th>
+     <th align="center">Sponsors<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </th>
+      <th align="center"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </th>
+    </tr>
+   <tr>
+    <td></td>
+    <td><a href="https://github.com/StephenHodgson"><img align="left" height="32" src="https://github.com/StephenHodgson.png?size=40"/> Stephen Hodgson</a></td>
+    <td></td>
+    </tr>
+<!---
+   <tr>
+    <td></td>
+    <td><a href="https://intest.info"><img align="left" height="32" src="https://www.intest.info/wp-content/uploads/2019/03/favicon.png"/> InTest </a></td>
+    <td></td>
+    </tr>
+-->
+  </tbody>
+</table>
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/xr-devices.jpg" width="50%"/>
+</p>
+
 
 # Any questions ?
 Feel free to contact me :
