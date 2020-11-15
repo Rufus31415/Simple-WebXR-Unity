@@ -939,7 +939,7 @@ namespace Rufus31415.WebXR
                     sb.Append("    [");
                     sb.Append(i);
                     sb.Append("] : ");
-                    sb.Append(100 * (int)Axes[i]);
+                    sb.Append((int)(100 * Axes[i]));
                     sb.AppendLine("%");
                 }
             }
