@@ -5,6 +5,10 @@
 SimpleWebXR is a lightweight library that exposes the WebXR javascript API in your C# Unity code.
 Thus, after a Unity WebGL build, your app can do augmented or virtual reality in the browser.
 
+<p align="center">
+ <a href="https://github.com/Rufus31415/Simple-WebXR-Unity/stargazers"><b>⭐ Star if you like it !</b></a>
+ </p>
+
 ---
 
 # Compatible browsers
