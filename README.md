@@ -32,7 +32,6 @@ Work in progress for :
 ---
 
 # Integration examples
-All samples can be dowloaded as a zip file from here : [⏬ https://github.com/Rufus31415/rufus31415.github.io/tree/master/webxr](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Rufus31415/rufus31415.github.io/tree/master/webxr)
 
 ## MRTK
 [Mixed Reality Toolkit](https://github.com/microsoft/MixedRealityToolkit-Unity) is a Microsoft-driven project that provides a set of components and features, used to accelerate cross-platform MR app development in Unity. It supports Hololens, Windows Mixed Reality headset, OpenVR, Ultraleap, Mobile devices and now **WebXR** !
@@ -174,6 +173,11 @@ Just add these 3 files in your Unity Asset folder, then add SimpleWebXR MonoBeha
 - [SimpleWebXR.cs](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/Assets/SimpleWebXR/Plugins/SimpleWebXR.cs): Mono Behaviour that displays the "Start AR" button and communicates with javascript. This behavior should be in your scene.
 - [SimpleWebXR.jslib](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/Assets/SimpleWebXR/Plugins/SimpleWebXR.jslib): Javascript plugin that is included in the application and that makes the link between the Unity engine and the WebXR session. It displays the rendering and obtains the positions and characteristics of the camera.
 - [SimpleWebXR.jspre](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/Assets/SimpleWebXR/Plugins/SimpleWebXR.jspre): Javascript plugin executed before the application that initializes a number of things.
+
+# Samples
+You can use the examples provided in this repository as a starting point..
+
+All samples can be dowloaded as a zip file from here : [⏬ https://github.com/Rufus31415/rufus31415.github.io/tree/master/webxr](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Rufus31415/rufus31415.github.io/tree/master/webxr)
 
 # Compilation
 The project must be compiled in WebGL, otherwise SimpleWebXR will has no effect.
