@@ -175,9 +175,9 @@ Just add these 3 files in your Unity Asset folder, then add SimpleWebXR MonoBeha
 - [SimpleWebXR.jspre](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/Assets/SimpleWebXR/Plugins/SimpleWebXR.jspre): Javascript plugin executed before the application that initializes a number of things.
 
 # Samples
-You can use the examples provided in this repository as a starting point..
+You can use the examples provided in this repository as a starting point.
 
-All samples can be dowloaded as a zip file from here : [⏬ https://github.com/Rufus31415/rufus31415.github.io/tree/master/webxr](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Rufus31415/rufus31415.github.io/tree/master/webxr)
+All sample builds can be dowloaded as a zip file from here : [⏬ https://github.com/Rufus31415/rufus31415.github.io/tree/master/webxr](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Rufus31415/rufus31415.github.io/tree/master/webxr)
 
 # Compilation
 The project must be compiled in WebGL, otherwise SimpleWebXR will has no effect.
