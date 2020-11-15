@@ -7,7 +7,10 @@ Thus, after a Unity WebGL build, your app can do augmented or virtual reality in
 
 <p align="center">
  <a href="https://github.com/Rufus31415/Simple-WebXR-Unity/stargazers"><b>⭐ Star if you like it !</b></a>
- </p>
+</p>
+<p align="center">
+ <a href="https://github.com/Rufus31415/Simple-WebXR-Unity/watchers"><b>👁️ Watch to be notified of latest updates !</b></a>
+</p>
 
 ---
 
