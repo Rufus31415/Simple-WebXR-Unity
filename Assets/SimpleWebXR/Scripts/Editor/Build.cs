@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,7 +8,7 @@ using UnityEngine;
 
 public static class Build
 {
-    [MenuItem("WebXR/Build")]
+    [MenuItem("WebXR/Build examples")]
     public static void BuildAll()
     {
         ClearBuildFolder();
@@ -147,6 +145,43 @@ public static class Build
         output = outputBuilder.ToString().TrimEnd();
         errors = errorsBuilder.ToString().TrimEnd();
         return process.ExitCode;
+    }
+
+    private static readonly string[] ScenesForStore = new string[] { "PaintExample" };
+
+    [MenuItem("WebXR/Build asset store")]
+    public static void BuildAssetStore()
+    {
+        var storeDirectory = Path.Combine(Application.dataPath, "~", "AssetStore", "SimpleWebXR");
+
+        if (Directory.Exists(storeDirectory)) Directory.Delete(storeDirectory, true);
+        Directory.CreateDirectory(storeDirectory);
+
+        CopyDirectory(new DirectoryInfo(Path.Combine(Application.dataPath, "SimpleWebXR", "Plugins")), new DirectoryInfo(storeDirectory));
+
+       var storeScenesDirectory = Directory.CreateDirectory(Path.Combine(storeDirectory, "Examples", "Scenes"));
+
+        foreach (var scene in ScenesForStore)
+        {
+            foreach (var folder in new string[] { "Materials", "Prefabs", "Scripts" })
+            {
+                CopyDirectory(new DirectoryInfo(Path.Combine(Application.dataPath, "SimpleWebXR", folder, scene)), new DirectoryInfo(Path.Combine(storeDirectory, "Examples", folder)));
+            }
+
+            File.Copy(Path.Combine(Application.dataPath, "SimpleWebXR", "Scenes", scene + ".unity"), Path.Combine(storeScenesDirectory.FullName, scene + ".unity"));
+            File.Copy(Path.Combine(Application.dataPath, "SimpleWebXR", "Scenes", scene + ".unity.meta"), Path.Combine(storeScenesDirectory.FullName, scene + ".unity.meta"));
+        }
+
+    }
+    public static void CopyDirectory(DirectoryInfo sourceToCopy, DirectoryInfo copyIn, bool createRootDirectory = true)
+    {
+        if (!sourceToCopy.Exists) return;
+
+        if (createRootDirectory) copyIn = copyIn.CreateSubdirectory(sourceToCopy.Name);
+        foreach (DirectoryInfo dir in sourceToCopy.GetDirectories())
+            CopyDirectory(dir, copyIn.CreateSubdirectory(dir.Name), false);
+        foreach (FileInfo file in sourceToCopy.GetFiles())
+            file.CopyTo(Path.Combine(copyIn.FullName, file.Name));
     }
 }
 
