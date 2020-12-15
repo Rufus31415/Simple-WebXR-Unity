@@ -42,7 +42,10 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
         {
             if (!Enabled) return;
 
-            var pose = new MixedRealityPose(controller.Position, controller.Rotation);
+            var position  = MixedRealityPlayspace.TransformPoint(controller.Position);
+            var rotation  = MixedRealityPlayspace.Rotation * controller.Rotation;
+
+            var pose = new MixedRealityPose(position, rotation);
 
             for (int i = 0; i < Interactions?.Length; i++)
             {

@@ -59,11 +59,14 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
             for (int i = 0; i < WebXRHand.JOINT_COUNT; i++)
             {
                 var joint = controller.Hand.Joints[i];
-                jointPoses[(TrackedHandJoint)(i + 1)] = new MixedRealityPose(joint.Position, joint.Rotation);
+
+                var position = MixedRealityPlayspace.TransformPoint(joint.Position);
+                var rotation = MixedRealityPlayspace.Rotation * joint.Rotation;
+
+                jointPoses[(TrackedHandJoint)(i + 1)] = new MixedRealityPose(position, rotation);
             }
 
-            var indexJoint = controller.Hand.Joints[WebXRHand.INDEX_PHALANX_TIP];
-            var indexPose = new MixedRealityPose(indexJoint.Position, indexJoint.Rotation);
+            var indexPose = jointPoses[(TrackedHandJoint)WebXRHand.INDEX_PHALANX_TIP + 1];
 
             bool isSelecting;
             MixedRealityPose spatialPointerPose;
@@ -72,7 +75,7 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
             if (controller.IsPositionTracked)
             {
                 isSelecting = controller.Selected;
-                spatialPointerPose = new MixedRealityPose(controller.Position, controller.Rotation);
+                spatialPointerPose = new MixedRealityPose(MixedRealityPlayspace.TransformPoint(controller.Position), MixedRealityPlayspace.Rotation * controller.Rotation);
             }
             else
             {

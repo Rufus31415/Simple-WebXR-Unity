@@ -33,9 +33,6 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
 
             // create SimpleWebXR component to display "Start AR" or "Start VR" button and call SimpleWebXR.UpdateWebXR() at each frame
             SimpleWebXR.EnsureInstance();
-
-            SimpleWebXR.SessionStart.AddListener(OnSessionStart);
-            SimpleWebXR.SessionEnd.AddListener(OnSessionEnd);
         }
 
         public override void Disable()
@@ -43,33 +40,9 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
             base.Disable();
 
             SimpleWebXR.EndSession();
-            SimpleWebXR.SessionStart.RemoveListener(OnSessionStart);
-            SimpleWebXR.SessionEnd.RemoveListener(OnSessionEnd);
 
             RemoveAllControllerDevices();
             RemoveAllHandDevices();
-        }
-
-        // Touch pointer disabled at session start to prevent double interaction (Touch + WebXR Controller)
-        private TouchPointer _disabledTouchPointer;
-
-        private void OnSessionStart()
-        {
-            var touchPointer = CoreServices.InputSystem.DetectedInputSources.SelectMany((x) => x.Pointers).FirstOrDefault((x) => x.Controller is Microsoft.MixedReality.Toolkit.Input.UnityInput.UnityTouchController) as TouchPointer;
-            if (touchPointer && touchPointer.enabled)
-            {
-                touchPointer.enabled = false;
-                _disabledTouchPointer = touchPointer;
-            }
-        }
-
-        private void OnSessionEnd()
-        {
-            if (_disabledTouchPointer)
-            {
-                _disabledTouchPointer.enabled = true;
-                _disabledTouchPointer = null;
-            }
         }
 
         public override IMixedRealityController[] GetActiveControllers()

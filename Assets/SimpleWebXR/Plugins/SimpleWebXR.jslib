@@ -110,6 +110,12 @@ mergeInto(LibraryManager.library, {
 
     _rAFCB = null;
 
+    // flag that indicates first frame
+    _firstFrame = true;
+
+    // start y position that is substract to all y position so that start y is forced to 0
+    _yOffset = 0;
+
     // copy camera data in shared buffer
     _dataArraySetView = function (view, id) {
       var floatStartId = id * 27;
@@ -120,8 +126,10 @@ mergeInto(LibraryManager.library, {
       // Share position
       var position = view.transform.position;
 
+      if(_firstFrame) _yOffset = position.y;
+
       _dataArray[floatStartId + 16] = position.x;
-      _dataArray[floatStartId + 17] = position.y;
+      _dataArray[floatStartId + 17] = position.y - _yOffset;
       _dataArray[floatStartId + 18] = position.z;
 
       // Share orientation
@@ -164,7 +172,7 @@ mergeInto(LibraryManager.library, {
         if (targetRayPose) {
           _byteArray[byteStartId] = 1;
           _dataArray[floatStartId] = targetRayPose.transform.position.x;
-          _dataArray[floatStartId + 1] = targetRayPose.transform.position.y - (_useLocalSpaceForInput ? 0 : _dataArray[100]);
+          _dataArray[floatStartId + 1] = targetRayPose.transform.position.y - (_useLocalSpaceForInput ? 0 : _dataArray[100]) - _yOffset;
           _dataArray[floatStartId + 2] = targetRayPose.transform.position.z;
           _dataArray[floatStartId + 3] = targetRayPose.transform.orientation.x;
           _dataArray[floatStartId + 4] = targetRayPose.transform.orientation.y;
@@ -248,7 +256,7 @@ mergeInto(LibraryManager.library, {
             if (joint !== null) {
               var i = id * 200 + j * 8;
               _handArray[i] = joint.transform.position.x;
-              _handArray[i + 1] = joint.transform.position.y - delta;
+              _handArray[i + 1] = joint.transform.position.y - delta - _yOffset;
               _handArray[i + 2] = joint.transform.position.z;
               _handArray[i + 3] = joint.transform.orientation.x;
               _handArray[i + 4] = joint.transform.orientation.y;
@@ -354,6 +362,8 @@ mergeInto(LibraryManager.library, {
       // Set input validity
       _byteArray[44] = hasLeftInput;
       _byteArray[45] = hasRightInput;
+
+      _firstFrame = false;
     }
 
     // input source event handler
@@ -446,6 +456,8 @@ mergeInto(LibraryManager.library, {
       _arSession = session;
       _canvasWidth = GLctx.canvas.width;
       _canvasHeight = GLctx.canvas.height;
+
+      _firstFrame = true;
 
       GLctx.ARSessionStarted = _isArSupported;
       session.isInSession = true; // add field in session to indicate that a session in running

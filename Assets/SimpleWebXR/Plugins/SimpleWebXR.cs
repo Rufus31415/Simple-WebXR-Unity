@@ -465,7 +465,7 @@ namespace Rufus31415.WebXR
                 if (id > 0)
                 {
                     // clone main camera
-                    _cameras[id] = Instantiate(Camera.main);
+                    _cameras[id] = Instantiate(Camera.main, Camera.main.gameObject.transform.parent);
                     _cameras[id].name = "WebXRCamera_" + id;
                     _cameras[id].depth = Camera.main.depth - 1;
                 }
@@ -537,8 +537,8 @@ namespace Rufus31415.WebXR
             _cameras[id].projectionMatrix = pm;
 
             // Get position and rotation Z, RX and RY are inverted
-            _cameras[id].transform.position = ToUnityPosition(_dataArray[floatStartId + 16], _dataArray[floatStartId + 17], _dataArray[floatStartId + 18]);
-            _cameras[id].transform.rotation = ToUnityRotation(_dataArray[floatStartId + 19], _dataArray[floatStartId + 20], _dataArray[floatStartId + 21], _dataArray[floatStartId + 22]);
+            _cameras[id].transform.localPosition = ToUnityPosition(_dataArray[floatStartId + 16], _dataArray[floatStartId + 17], _dataArray[floatStartId + 18]);
+            _cameras[id].transform.localRotation = ToUnityRotation(_dataArray[floatStartId + 19], _dataArray[floatStartId + 20], _dataArray[floatStartId + 21], _dataArray[floatStartId + 22]);
         }
 
         // Update input source pose
