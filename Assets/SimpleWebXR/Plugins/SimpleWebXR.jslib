@@ -492,6 +492,8 @@ mergeInto(LibraryManager.library, {
         _inputSourcesChangeEvent = 1;
       });
 
+      GLctx.canvas.style.width = "auto";
+      GLctx.canvas.style.height = "auto";
       GLctx.canvas.width = glLayer.framebufferWidth;
       GLctx.canvas.height = glLayer.framebufferHeight;
 
