@@ -318,90 +318,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HideStartButton: 0
-  LeftInput:
-    Select:
-      m_PersistentCalls:
-        m_Calls: []
-    SelectStart:
-      m_PersistentCalls:
-        m_Calls: []
-    SelectEnd:
-      m_PersistentCalls:
-        m_Calls: []
-    Squeeze:
-      m_PersistentCalls:
-        m_Calls: []
-    SqueezeStart:
-      m_PersistentCalls:
-        m_Calls: []
-    SqueezeEnd:
-      m_PersistentCalls:
-        m_Calls: []
-    Available: 0
-    Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 0}
-    IsPositionTracked: 0
-    AxesCount: 0
-    ButtonsCount: 0
-    TargetRayMode: 0
-    Selected: 0
-    Squeezed: 0
-  RightInput:
-    Select:
-      m_PersistentCalls:
-        m_Calls: []
-    SelectStart:
-      m_PersistentCalls:
-        m_Calls: []
-    SelectEnd:
-      m_PersistentCalls:
-        m_Calls: []
-    Squeeze:
-      m_PersistentCalls:
-        m_Calls: []
-    SqueezeStart:
-      m_PersistentCalls:
-        m_Calls: []
-    SqueezeEnd:
-      m_PersistentCalls:
-        m_Calls: []
-    Available: 0
-    Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 0}
-    IsPositionTracked: 0
-    AxesCount: 0
-    ButtonsCount: 0
-    TargetRayMode: 0
-    Selected: 0
-    Squeezed: 0
-  InputSourceSelect:
-    m_PersistentCalls:
-      m_Calls: []
-  InputSourceSqueeze:
-    m_PersistentCalls:
-      m_Calls: []
-  InputSourceSelectStart:
-    m_PersistentCalls:
-      m_Calls: []
-  InputSourceSelectEnd:
-    m_PersistentCalls:
-      m_Calls: []
-  InputSourceSqueezeStart:
-    m_PersistentCalls:
-      m_Calls: []
-  InputSourceSqueezeEnd:
-    m_PersistentCalls:
-      m_Calls: []
-  InputSourcesChange:
-    m_PersistentCalls:
-      m_Calls: []
-  SimulationIsArSupported: 1
-  SimulationIsVrSupported: 0
-  SimulationRender2Eyes: 0
-  SimulationMode: 1
-  SimulationLeftSelect: 0
-  SimulationRightSelect: 0
-  SimulationUserHeight: 1.8
 --- !u!4 &1046721867
 Transform:
   m_ObjectHideFlags: 0
@@ -427,6 +343,7 @@ GameObject:
   - component: {fileID: 1853848092}
   - component: {fileID: 1853848091}
   - component: {fileID: 1853848090}
+  - component: {fileID: 1853848093}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -498,6 +415,15 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!45 &1853848093
+Skybox:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1853848089}
+  m_Enabled: 1
+  m_CustomSkybox: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!1 &1891910863
 GameObject:
   m_ObjectHideFlags: 0

@@ -758,6 +758,16 @@ namespace Rufus31415.WebXR
             return _orientationInfo[0] != 0;
         }
         #endregion
+
+        #region "Simulation"
+        public static float[] SimulatedDataArray => _dataArray;
+        public static byte[] SimulatedByteArray => _byteArray;
+
+        public static Quaternion SimulatedToUnityRotation(Quaternion q)
+        {
+            return ToUnityRotation(q.x, q.y, q.z, q.w);
+        }
+        #endregion
     }
 
     /// <summary>
