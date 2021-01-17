@@ -115,7 +115,7 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
                         }
                         break;
                     case DeviceInputType.Select:
-                        Interactions[i].BoolData = isSelecting;
+                        Interactions[i].BoolData = isSelecting || controller.TargetRayMode == WebXRTargetRayModes.Screen;
 
                         if (Interactions[i].Changed)
                         {
