@@ -21,7 +21,7 @@ Works on :
 - [Edge](https://docs.microsoft.com/en-us/hololens/hololens-insider#introducing-the-new-microsoft-edge) on Hololens 2
 - [Firefox Reality](https://www.microsoft.com/en-gb/p/firefox-reality/9npq78m7nb0r?activetab=pivot:overviewtab) on Hololens 2
 - [Mozilla WebXR Viewer](https://apps.apple.com/fr/app/webxr-viewer/id1295998056) on iOS  (:warning: WebGL 2.0 should be disabled, it's a Webkit experimental feature)
-- [Oculus Browser](https://developer.oculus.com/webxr/?locale=fr_FR) on Oculus Quest
+- [Oculus Browser](https://developer.oculus.com/webxr/?locale=fr_FR) on Oculus Quest 1 and 2
 - [Firefox emulator](https://addons.mozilla.org/fr/firefox/addon/webxr-api-emulator/) on desktop
 - [Chrome emulator](https://chrome.google.com/webstore/detail/webxr-api-emulator/mjddjgeghkdijejnciaefnkjmkafnnje) on desktop
 
