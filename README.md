@@ -59,8 +59,7 @@ Fun **simulation** features in browser, you can simulate your Hololens, like in 
 |<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-mouse.gif"> |  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-hand-simulation.gif">|<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/mrtk-move.gif">|
 
 
-Unity version : 2018.4.21f1
-MRTK version : 2.5
+MRTK version : 2.6.1
 
 ---
 
@@ -90,8 +89,6 @@ SpectatorViewHololens2Server.unity. To compile, this scene, do not use UWP SDK 1
 
 Unity scene for Mobile (WebGL) : [/Assets/SimpleWebXR/Scenes](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Assets/SimpleWebXR/Scenes)/
 SpectatorViewWebXRClient.unity
-
-Unity version : 2018.4.21f1
 
 | Mobile | Move in Hololens space with mouse/keyboard or Follow user head |
 |:-------------------------:|:-------------------------:|
@@ -126,8 +123,6 @@ LIVE DEMO : [▶️ https://rufus31415.github.io/webxr/PaintExample/](https://ru
 </p>
 
 Sources are [here](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/Assets/SimpleWebXR/Scripts/PaintExample/PenController.cs)
-
-Unity version : 2018.4.21f1
 
 ---
 
@@ -176,9 +171,7 @@ You can use the examples provided in this repository as a starting point.
 All sample builds can be dowloaded as a zip file from here : [⏬ https://github.com/Rufus31415/rufus31415.github.io/tree/master/webxr](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Rufus31415/rufus31415.github.io/tree/master/webxr)
 
 # Compilation
-The project must be compiled in WebGL, otherwise SimpleWebXR will has no effect.
-I've noticed that big scenes like MRTK don't work on mobile anymore when compiled with Unity 2019.4. That's why I recommend Unity 2018.4.
-I haven't dug into the reason yet.
+The project must be compiled in WebGL, otherwise SimpleWebXR will has no effect. You can use the "Demo" WebGL template that is provided, but you can also use de Default one. The project has been tested with Unity 2018.4 and Unity 2020.3.
 
 # Runtime
 When compiled as a WebGL app, if the browser is WebXR compatible, it will display a "Start AR" or "Start VR" button on your canvas.
