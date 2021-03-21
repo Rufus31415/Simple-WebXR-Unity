@@ -499,7 +499,7 @@ Feel free to contact me :
 - Discord : Rufus31415#2440
 - Twitter : https://twitter.com/rufus31415
 - Mail : rufus31415@gmail.com
-- Club : @fgi
+- Clubhouse : @fgi
 - Open issue : https://github.com/Rufus31415/Simple-WebXR-Unity/issues
 
 
