@@ -18,16 +18,12 @@ Thus, after a Unity [WebGL build](https://docs.unity3d.com/Manual/webgl-gettings
 Works on :
 - [Google Chrome](https://play.google.com/store/apps/details?id=com.android.chrome) on Android (:warning: a secure https connection is required)
 - [Edge](https://docs.microsoft.com/fr-fr/windows/mixed-reality/new-microsoft-edge) on Windows 10 for Mixed Reality Headsets
+- [Edge](https://docs.microsoft.com/en-us/hololens/hololens-insider#introducing-the-new-microsoft-edge) on Hololens 2
 - [Firefox Reality](https://www.microsoft.com/en-gb/p/firefox-reality/9npq78m7nb0r?activetab=pivot:overviewtab) on Hololens 2
 - [Mozilla WebXR Viewer](https://apps.apple.com/fr/app/webxr-viewer/id1295998056) on iOS  (:warning: WebGL 2.0 should be disabled, it's a Webkit experimental feature)
 - [Oculus Browser](https://developer.oculus.com/webxr/?locale=fr_FR) on Oculus Quest
 - [Firefox emulator](https://addons.mozilla.org/fr/firefox/addon/webxr-api-emulator/) on desktop
 - [Chrome emulator](https://chrome.google.com/webstore/detail/webxr-api-emulator/mjddjgeghkdijejnciaefnkjmkafnnje) on desktop
-
-Work in progress for :
-- [Firefox Reality](https://www.oculus.com/experiences/quest/2180252408763702/) on Oculus Quest
-- [Helio Browser](https://developer.magicleap.com/en-us/learn/guides/webxr-overview) on Magic Leap
-- don't hesitate to tell me about browsers you've tried...
 
 ---
 
