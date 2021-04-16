@@ -330,6 +330,18 @@ namespace Rufus31415.WebXR
         }
 
         /// <summary>
+        /// Applies haptic pulse feedback to a controller 
+        /// </summary>
+        /// <param name="hand">Controller to apply feedback</param>
+        /// <param name="intensity">Feedback strength between 0 and 1</param>
+        /// <param name="duration">Feedback duration in milliseconds</param>
+        public static void HapticPulse(WebXRHandedness hand, float intensity, float duration)
+        {
+            _dataArray[101 + (int)hand] = intensity;
+            _dataArray[103 + (int)hand] = duration;
+        }
+
+        /// <summary>
         /// A human-readable presentation of the WebXR session and capabilities
         /// </summary>
         public static string Stringify()
@@ -375,7 +387,11 @@ namespace Rufus31415.WebXR
         // [84] -> [91] : right input axes
         // [92] -> [99] : right gamepad value
         // [100] : user height
-        private static readonly float[] _dataArray = new float[101];
+        // [101] : left input haptic pulse value
+        // [102] : right input haptic pulse value
+        // [103] : left input haptic pulse duration
+        // [104] : right input haptic pulse duration
+        private static readonly float[] _dataArray = new float[105];
 
         // Shared float array with javascript.
         // [0] : number of views (0 : session is stopped)
@@ -911,6 +927,17 @@ namespace Rufus31415.WebXR
             Handedness = handedness;
             for (int i = 0; i < AXES_BUTTON_COUNT; i++) Buttons[i] = new WebXRGamepadButton();
         }
+
+        /// <summary>
+        /// Applies haptic pulse feedback 
+        /// </summary>
+        /// <param name="intensity">Feedback strength between 0 and 1</param>
+        /// <param name="duration">Feedback duration in milliseconds</param>
+        public void HapticPulse(float intensity, float duration)
+        {
+            SimpleWebXR.HapticPulse(Handedness, intensity, duration);
+        }
+
 
         /// <summary>
         /// Return a string that represent current input source state

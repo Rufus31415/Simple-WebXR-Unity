@@ -219,6 +219,12 @@ mergeInto(LibraryManager.library, {
         else {
           _byteArray[byteStartId + 3] = 0
         }
+
+        if(_dataArray[103+id]>0 && inputSource.gamepad.hapticActuators && inputSource.gamepad.hapticActuators.length>0){
+          // Trigger of haptic vibration pulse(intensity [0..1], duration in ms)
+          inputSource.gamepad.hapticActuators[0].pulse(_dataArray[101+id], _dataArray[103+id]);
+          _dataArray[103+id] = 0; // reset flag once it's done
+        }
       }
       else {
         _byteArray[byteStartId + 2] = 0;

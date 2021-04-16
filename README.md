@@ -327,6 +327,11 @@ class WebXRInputSource {
 
   // Constains hand joints poses, if hand tracking is enabled
   public WebXRHand Hand; 
+
+  // Applies haptic pulse feedback to a controller 
+  // intensity : Feedback strength between 0 and 1
+  // duration : Feedback duration in milliseconds
+  public void HapticPulse(float intensity, float duration)
 }
 ```
 
@@ -341,6 +346,16 @@ Also, the events select, squeeze, ... can be handled at the ```SimpleWebXR``` cl
 
 // Event triggered when a input sources has been added or removed.
 ⚡️ UnityEvent SimpleWebXR.InputSourcesChange
+```
+
+Similarly, haptic feedback on controllers can also be called at the static ```SimpleWebXR``` class level.
+
+``` cs
+  // Applies haptic pulse feedback to a controller 
+  // hand : Left or Right
+  // intensity : Feedback strength between 0 and 1
+  // duration : Feedback duration in milliseconds
+  public static void HapticPulse(WebXRHandedness hand, float intensity, float duration)
 ```
 
 
