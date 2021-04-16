@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/SimpleWebXR/Scenes/MRTK-Solver.unity
-    guid: b7e6ec70892fed94da0f98ec52e88cae
+    path: Assets/SimpleWebXR/Scenes/MRTK-HandInteraction.unity
+    guid: 97f89240430c7d34080cf9510ef5f278
   m_configObjects: {}

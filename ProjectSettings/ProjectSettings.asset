@@ -625,7 +625,7 @@ PlayerSettings:
   webGLDebugSymbols: 0
   webGLEmscriptenArgs: 
   webGLModulesDirectory: 
-  webGLTemplate: PROJECT:SimpleWebXR_Demo
+  webGLTemplate: PROJECT:SimpleWebXR_Demo_Unity2019AndBefore
   webGLAnalyzeBuildSize: 0
   webGLUseEmbeddedResources: 0
   webGLCompressionFormat: 1
