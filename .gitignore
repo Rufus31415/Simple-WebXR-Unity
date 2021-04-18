@@ -10,3 +10,7 @@
 /Builds
 /Assets/MixedRealityToolkit.Generated
 /Logs
+/Videos
+/Assets/MRTK
+/Assets/MRTK.meta
+/ProjectSettings/EditorBuildSettings.asset
