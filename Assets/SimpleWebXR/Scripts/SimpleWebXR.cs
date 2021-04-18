@@ -88,8 +88,23 @@ namespace Rufus31415.WebXR
         /// </summary>
         public bool HideStartButton;
 
+        /// <summary>
+        /// XR Space in which positions are returned
+        /// </summary>
+        public WebXRReferenceSpaces ReferenceSpace = WebXRReferenceSpaces.Viewer;
+
+        /// <summary>
+        /// Y axis offset to apply when local floor XR space is not supported
+        /// </summary>
+        public float FallbackUserHeight = 1.8f;
+
         /// Update cameras poses and trigger events
-        private void LateUpdate() => UpdateWebXR();
+        private void LateUpdate()
+        {
+            _referenceSpace = ReferenceSpace;
+            _fallbackUserHeight = FallbackUserHeight;
+            UpdateWebXR();
+        }
 
         /// <summary>
         /// A human-readable presentation of the WebXR session and capabilities
@@ -422,6 +437,12 @@ namespace Rufus31415.WebXR
         // [200] -> [399] : right wrist and fingers
         private static readonly float[] _handData = new float[8 * 25 * 2];
 
+        // static cache value of ReferenceSpace
+        private static WebXRReferenceSpaces _referenceSpace;
+
+        // static cache value of FallbackUserHeight
+        private static float _fallbackUserHeight;
+
         // Number of views (i.e. cameras)
         private static WebXRViewEyes ViewEye => (WebXRViewEyes)_byteArray[0];
 
@@ -646,7 +667,14 @@ namespace Rufus31415.WebXR
         // Converts a WebGL position coordinate to a Unity position coordinate
         private static Vector3 ToUnityPosition(float x, float y, float z)
         {
-            return new Vector3(x, y, -z);
+            float yOffset = 0;
+
+            if(_referenceSpace == WebXRReferenceSpaces.LocalFloor)
+            {
+                yOffset = UserHeight <= 0 ? _fallbackUserHeight : UserHeight;
+            }
+
+            return new Vector3(x, y + yOffset, -z);
         }
 
         // Converts a WebGL rotation to a Unity rotation
@@ -1054,6 +1082,22 @@ namespace Rufus31415.WebXR
         /// The target ray will originate at the viewer and follow the direction it is facing. (This is commonly referred to as a "gaze input" device in the context of head-mounted displays.)
         /// </summary>
         Gaze = 3,
+    }
+
+    /// <summary>
+    /// Describes spaces that application can use to establish a spatial relationship with the user’s physical environment
+    /// </summary>
+    public enum WebXRReferenceSpaces
+    {
+        /// <summary>
+        /// Represents a tracking space with a native origin which tracks the position and orientation of the viewer. The y axis equals 0 at head level when session starts.
+        /// </summary>
+        Viewer,
+
+        /// <summary>
+        /// Represents a tracking space with a native origin at the floor in a safe position for the user to stand. The y axis equals 0 at floor level, with the x and z position and orientation initialized based on the conventions of the underlying platform.
+        /// </summary>
+        LocalFloor
     }
 
     /// <summary>

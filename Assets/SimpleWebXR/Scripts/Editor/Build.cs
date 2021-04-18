@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -8,7 +9,7 @@ using UnityEngine;
 
 public static class Build
 {
-    [MenuItem("WebXR/Build examples")]
+    [MenuItem("SimpleWebXR/Build/Examples")]
     public static void BuildAll()
     {
         ClearBuildFolder();
@@ -101,6 +102,8 @@ public static class Build
                 BuildPipeline.BuildPlayer(opts);
             }
         }
+
+        BuildUnityPackages();
     }
 
     public static string BuildPath => Path.GetFullPath(Path.Combine(Application.dataPath, "..", "Builds"));
@@ -149,7 +152,7 @@ public static class Build
 
     private static readonly string[] ScenesForStore = new string[] { "PaintExample" };
 
-    [MenuItem("WebXR/Build asset store")]
+    [MenuItem("SimpleWebXR/Build/Asset store")]
     public static void BuildAssetStore()
     {
         var storeDirectory = Path.Combine(Application.dataPath, "~", "AssetStore", "SimpleWebXR");
@@ -159,7 +162,7 @@ public static class Build
 
         CopyDirectory(new DirectoryInfo(Path.Combine(Application.dataPath, "SimpleWebXR", "Plugins")), new DirectoryInfo(storeDirectory));
 
-       var storeScenesDirectory = Directory.CreateDirectory(Path.Combine(storeDirectory, "Examples", "Scenes"));
+        var storeScenesDirectory = Directory.CreateDirectory(Path.Combine(storeDirectory, "Examples", "Scenes"));
 
         foreach (var scene in ScenesForStore)
         {
@@ -182,6 +185,41 @@ public static class Build
             CopyDirectory(dir, copyIn.CreateSubdirectory(dir.Name), false);
         foreach (FileInfo file in sourceToCopy.GetFiles())
             file.CopyTo(Path.Combine(copyIn.FullName, file.Name));
+    }
+
+
+    [MenuItem("SimpleWebXR/Build/Unity packages")]
+    public static void BuildUnityPackages()
+    {
+        var assets = new List<String>();
+
+        // Basics
+        assets.Add("Assets/SimpleWebXR/Plugins");
+        assets.Add("Assets/SimpleWebXR/Scripts/SimpleWebXR.cs");
+
+        // Simulator
+        assets.Add("Assets/SimpleWebXR/Scripts/Editor/SimpleWebXRSimulator.cs");
+
+        // Examples
+        assets.Add("Assets/SimpleWebXR/Examples/Materials/PaintExample");
+        assets.Add("Assets/SimpleWebXR/Examples/Prefabs/PaintExample");
+        assets.Add("Assets/SimpleWebXR/Examples/Scripts/PaintExample");
+        assets.Add("Assets/SimpleWebXR/Examples/Scenes/PaintExample.unity");
+
+        assets.Add("Assets/SimpleWebXR/Examples/Scenes/HandDetectionExample.unity");
+        assets.Add("Assets/SimpleWebXR/Examples/Scripts/HandDetectionExample");
+
+        // Export basic
+        AssetDatabase.ExportPackage(assets.ToArray(), "Builds/SimpleWebXR.unitypackage", ExportPackageOptions.Recurse);
+
+        // MRTK implementation
+        assets.Add("Assets/SimpleWebXR/Scripts/MRTK");
+
+        // Add all examples
+        assets.Add("Assets/SimpleWebXR/Examples");
+
+        // Export with MRTK
+        AssetDatabase.ExportPackage(assets.ToArray(), "Builds/SimpleWebXR+MRTK.unitypackage", ExportPackageOptions.Recurse);
     }
 }
 

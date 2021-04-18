@@ -26,7 +26,8 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
             new MixedRealityInteractionMapping(2, "Select", AxisType.Digital, DeviceInputType.Select, new MixedRealityInputAction(1, "Select", AxisType.Digital)),
             new MixedRealityInteractionMapping(3, "Grab", AxisType.SingleAxis, DeviceInputType.TriggerPress, new MixedRealityInputAction(7, "Grip Press", AxisType.SingleAxis)),
             new MixedRealityInteractionMapping(4, "Index Finger Pose", AxisType.SixDof, DeviceInputType.IndexFinger,  new MixedRealityInputAction(13, "Index Finger Pose", AxisType.SixDof)),
-    };
+            new MixedRealityInteractionMapping(5, "Teleport Pose", AxisType.SixDof, DeviceInputType.Thumb,  new MixedRealityInputAction(14, "Teleport Pose", AxisType.SixDof)),
+        };
 
         public override MixedRealityInteractionMapping[] DefaultLeftHandedInteractions => DefaultInteractions;
 
@@ -42,8 +43,8 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
         {
             if (!Enabled) return;
 
-            var position  = MixedRealityPlayspace.TransformPoint(controller.Position);
-            var rotation  = MixedRealityPlayspace.Rotation * controller.Rotation;
+            var position = MixedRealityPlayspace.TransformPoint(controller.Position);
+            var rotation = MixedRealityPlayspace.Rotation * controller.Rotation;
 
             var pose = new MixedRealityPose(position, rotation);
 

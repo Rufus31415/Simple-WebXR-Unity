@@ -176,6 +176,8 @@ namespace Rufus31415.WebXR {
         [UnityEditor.MenuItem("SimpleWebXR/Simulation/Start")]
         public static void StartSimulation()
         {
+            if (!Application.isPlaying) return;
+
             if (FindObjectOfType<SimpleWebXRSimulator>()) return;
             var go = new GameObject("WebXR Simulation");
             go.AddComponent<SimpleWebXRSimulator>();
