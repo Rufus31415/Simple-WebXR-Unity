@@ -10,6 +10,7 @@
     }
   ],
   "dependencies": {
+    "com.rufus31415.simplewebxr": "file:../../com.rufus31415.simplewebxr",
     "com.microsoft.mixedreality.toolkit.examples": "2.6.1",
     "com.microsoft.mixedreality.toolkit.foundation": "2.6.1",
     "com.microsoft.mixedreality.toolkit.tools": "2.6.1",
