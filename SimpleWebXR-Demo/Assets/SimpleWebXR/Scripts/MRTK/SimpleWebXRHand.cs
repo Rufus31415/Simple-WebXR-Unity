@@ -28,6 +28,10 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
 
         #endregion IMixedRealityHand Implementation
 
+        private ArticulatedHandDefinition handDefinition;
+        private ArticulatedHandDefinition HandDefinition => handDefinition ?? (handDefinition = Definition as ArticulatedHandDefinition);
+
+
 
         public override MixedRealityInteractionMapping[] DefaultInteractions => new[]
         {
@@ -50,6 +54,15 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
 
         public override bool IsInPointingPose => true;
 
+        private MixedRealityPose GetJointMixedRealityPose(WebXRJoint joint)
+        {
+
+            var position = MixedRealityPlayspace.TransformPoint(joint.Position);
+            var rotation = MixedRealityPlayspace.Rotation * joint.Rotation;
+
+            return new MixedRealityPose(position, rotation);
+        }
+
         public void UpdateController(WebXRInputSource controller)
         {
             if (!Enabled) return;
@@ -57,17 +70,19 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
             IsPositionAvailable = IsRotationAvailable = controller.Hand.Available;
 
 
-            for (int i = 0; i < WebXRHand.JOINT_COUNT; i++)
+            jointPoses[TrackedHandJoint.Wrist] = GetJointMixedRealityPose(controller.Hand.Joints[WebXRHand.WRIST]);
+
+
+            for (int i = WebXRHand.THUMB_METACARPAL; i < WebXRHand.JOINT_COUNT; i++)
             {
                 var joint = controller.Hand.Joints[i];
 
-                var position = MixedRealityPlayspace.TransformPoint(joint.Position);
-                var rotation = MixedRealityPlayspace.Rotation * joint.Rotation;
-
-                jointPoses[(TrackedHandJoint)(i + 1)] = new MixedRealityPose(position, rotation);
+                jointPoses[(TrackedHandJoint)(i + 2)] = GetJointMixedRealityPose(joint);
             }
 
-            var indexPose = jointPoses[(TrackedHandJoint)WebXRHand.INDEX_PHALANX_TIP + 1];
+            jointPoses[TrackedHandJoint.Palm] = new MixedRealityPose((jointPoses[TrackedHandJoint.MiddleMetacarpal].Position + jointPoses[TrackedHandJoint.MiddleMetacarpal].Position)/2, jointPoses[TrackedHandJoint.MiddleMetacarpal].Rotation) ;
+
+            var indexPose = jointPoses[TrackedHandJoint.IndexTip];
 
             bool isSelecting;
             MixedRealityPose spatialPointerPose;
@@ -151,6 +166,9 @@ namespace Rufus31415.MixedReality.Toolkit.WebXR.Input
                         {
                             CoreServices.InputSystem?.RaisePoseInputChanged(InputSource, ControllerHandedness, Interactions[i].MixedRealityInputAction, Interactions[i].PoseData);
                         }
+                        break;
+                    case DeviceInputType.ThumbStick:
+                        HandDefinition?.UpdateCurrentTeleportPose(Interactions[i]);
                         break;
                 }
             }

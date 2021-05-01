@@ -85,20 +85,20 @@ mergeInto(LibraryManager.library, {
     _isArSupported = false;
 
     if (!navigator.xr) {
-      document.dispatchEvent(new CustomEvent("SimpleWebXRInitialized", {success: false}));
+      document.dispatchEvent(new CustomEvent("SimpleWebXRInitialized", { success: false }));
       return
     };
 
     // Check if WebXR immersive VR is supported (check immersive-vr before immersive-ar to make it work on Oculus Quest Browser)
     navigator.xr.isSessionSupported('immersive-vr').then(function (supported) {
       _isVrSupported = supported;
-      document.dispatchEvent(new CustomEvent("SimpleWebXRSessionSupported", {xrSessionMode:'immersive-vr', supported: supported}));
+      document.dispatchEvent(new CustomEvent("SimpleWebXRSessionSupported", { xrSessionMode: 'immersive-vr', supported: supported }));
     });
 
     // Check if WebXR immersive AR is supported
     navigator.xr.isSessionSupported('immersive-ar').then(function (supported) {
       _isArSupported = supported;
-      document.dispatchEvent(new CustomEvent("SimpleWebXRSessionSupported", {xrSessionMode:'immersive-ar', supported: supported}));
+      document.dispatchEvent(new CustomEvent("SimpleWebXRSessionSupported", { xrSessionMode: 'immersive-ar', supported: supported }));
     });
 
     // Initialize pointers to shared arrays that contains data (projection matrix, position, orientation, input sources)
@@ -126,7 +126,7 @@ mergeInto(LibraryManager.library, {
       // Share position
       var position = view.transform.position;
 
-      if(_firstFrame) _yOffset = position.y;
+      if (_firstFrame) _yOffset = position.y;
 
       _dataArray[floatStartId + 16] = position.x;
       _dataArray[floatStartId + 17] = position.y - _yOffset;
@@ -220,10 +220,10 @@ mergeInto(LibraryManager.library, {
           _byteArray[byteStartId + 3] = 0
         }
 
-        if(_dataArray[103+id]>0 && inputSource.gamepad.hapticActuators && inputSource.gamepad.hapticActuators.length>0){
+        if (_dataArray[103 + id] > 0 && inputSource.gamepad.hapticActuators && inputSource.gamepad.hapticActuators.length > 0) {
           // Trigger of haptic vibration pulse(intensity [0..1], duration in ms)
-          inputSource.gamepad.hapticActuators[0].pulse(_dataArray[101+id], _dataArray[103+id]);
-          _dataArray[103+id] = 0; // reset flag once it's done
+          inputSource.gamepad.hapticActuators[0].pulse(_dataArray[101 + id], _dataArray[103 + id]);
+          _dataArray[103 + id] = 0; // reset flag once it's done
         }
       }
       else {
@@ -253,30 +253,79 @@ mergeInto(LibraryManager.library, {
 
       // Hand detection
       // https://immersive-web.github.io/webxr-hand-input/#skeleton-joints-section
-      if (inputSource.hand && inputSource.hand.length == 25) {
-        _byteArray[46 + id] = 1; // hand supported
-        var delta = (_useLocalSpaceForInput ? 0 : _dataArray[100])
-        for (var j = 0; j < 25; j++) {
-          if (inputSource.hand[j] !== null) {
-            var joint = frame.getJointPose(inputSource.hand[j], _useLocalSpaceForInput ? _arSession.localSpace : _arSession.localFloorSpace);
-            if (joint !== null) {
-              var i = id * 200 + j * 8;
-              _handArray[i] = joint.transform.position.x;
-              _handArray[i + 1] = joint.transform.position.y - delta - _yOffset;
-              _handArray[i + 2] = joint.transform.position.z;
-              _handArray[i + 3] = joint.transform.orientation.x;
-              _handArray[i + 4] = joint.transform.orientation.y;
-              _handArray[i + 5] = joint.transform.orientation.z;
-              _handArray[i + 6] = joint.transform.orientation.w;
-              if (joint.radius !== null) {
-                _handArray[i + 7] = joint.radius;
+      if (inputSource.hand) {
+
+        // For browsers that support fillPoses
+        if (typeof frame.fillPoses === "function") {
+          _byteArray[46 + id] = 1; // hand supported
+
+          var delta = (_useLocalSpaceForInput ? 0 : _dataArray[100])
+
+          var refSpace = _useLocalSpaceForInput ? _arSession.localSpace : _arSession.localFloorSpace;
+
+          var radii = new Float32Array(25);
+          var poses = new Float32Array(16 * 25);
+
+          if (inputSource.hand.values) {
+            frame.fillPoses(inputSource.hand.values(), refSpace, poses);
+            frame.fillJointRadii(inputSource.hand.values(), radii);
+          } else {
+            frame.fillPoses(inputSource.hand, refSpace, poses);
+            frame.fillJointRadii(inputSource.hand, radii);
+          }
+
+          for (var j = 0; j < 25; j++) {
+            var jointIndex = j * 16;
+
+            var i = id * 200 + j * 8;
+            _handArray[i] = poses[jointIndex + 12];
+            _handArray[i + 1] = poses[jointIndex + 13] - delta - _yOffset;
+            _handArray[i + 2] = poses[jointIndex + 14];
+
+
+            _handArray[i + 7] = radii[j];
+
+            var quaternion = new Float32Array(4);
+
+            quaternion[3] = Math.sqrt(Math.max(0, 1 + poses[jointIndex + 0] + poses[jointIndex + 5] + poses[jointIndex + 10])) / 2;
+            quaternion[0] = Math.sqrt(Math.max(0, 1 + poses[jointIndex + 0] - poses[jointIndex + 5] - poses[jointIndex + 10])) / 2;
+            quaternion[1] = Math.sqrt(Math.max(0, 1 - poses[jointIndex + 0] + poses[jointIndex + 5] - poses[jointIndex + 10])) / 2;
+            quaternion[2] = Math.sqrt(Math.max(0, 1 - poses[jointIndex + 0] - poses[jointIndex + 5] + poses[jointIndex + 10])) / 2;
+            quaternion[0] *= Math.sign(quaternion[0] * (poses[jointIndex + 6] - poses[jointIndex + 9]));
+            quaternion[1] *= Math.sign(quaternion[1] * (poses[jointIndex + 8] - poses[jointIndex + 2]));
+            quaternion[2] *= Math.sign(quaternion[2] * (poses[jointIndex + 1] - poses[jointIndex + 4]));
+
+            _handArray[i + 3] = quaternion[0];
+            _handArray[i + 4] = quaternion[1];
+            _handArray[i + 5] = quaternion[2];
+            _handArray[i + 6] = quaternion[3];
+          }
+        }
+        else {
+          _byteArray[46 + id] = 1; // hand supported
+
+          for (var j = 0; j < 25; j++) {
+            if (inputSource.hand[j] !== null) {
+              var joint = frame.getJointPose(inputSource.hand[j], refSpace);
+              if (joint !== null) {
+                var i = id * 200 + j * 8;
+                _handArray[i] = joint.transform.position.x;
+                _handArray[i + 1] = joint.transform.position.y - delta - _yOffset;
+                _handArray[i + 2] = joint.transform.position.z;
+                _handArray[i + 3] = joint.transform.orientation.x;
+                _handArray[i + 4] = joint.transform.orientation.y;
+                _handArray[i + 5] = joint.transform.orientation.z;
+                _handArray[i + 6] = joint.transform.orientation.w;
+                if (joint.radius !== null) {
+                  _handArray[i + 7] = joint.radius;
+                }
+                else {
+                  _handArray[i + 7] = NaN;
+                }
               }
               else {
-                _handArray[i + 7] = NaN;
+                _byteArray[46 + id] = 0; // hand not fully supported
               }
-            }
-            else {
-              _byteArray[46 + id] = 0; // hand not fully supported
             }
           }
         }
@@ -434,7 +483,7 @@ mergeInto(LibraryManager.library, {
       }
     }(GLctx.bindFramebuffer);
 
-    document.dispatchEvent(new CustomEvent("SimpleWebXRInitialized", {success: true}));
+    document.dispatchEvent(new CustomEvent("SimpleWebXRInitialized", { success: true }));
   },
 
   /****************************************************************************/
@@ -468,7 +517,7 @@ mergeInto(LibraryManager.library, {
       GLctx.ARSessionStarted = _isArSupported;
       session.isInSession = true; // add field in session to indicate that a session in running
 
-      document.dispatchEvent(new CustomEvent("SimpleWebXRSessionStarted", {session: session, GLctx: GLctx}));
+      document.dispatchEvent(new CustomEvent("SimpleWebXRSessionStarted", { session: session, GLctx: GLctx }));
 
       var glLayer = new XRWebGLLayer(session, GLctx);
 
@@ -531,7 +580,7 @@ mergeInto(LibraryManager.library, {
     _orientationInfo[0] = 0;
 
     _onDeviceOrientation = function (event) {
-      if(_orientationInfo[0] == 0)  document.dispatchEvent(new CustomEvent("SimpleWebXRDeviceOrientationStarted"));
+      if (_orientationInfo[0] == 0) document.dispatchEvent(new CustomEvent("SimpleWebXRDeviceOrientationStarted"));
 
       _orientationInfo[0] = 1;
       _orientationArray[0] = event.alpha;
