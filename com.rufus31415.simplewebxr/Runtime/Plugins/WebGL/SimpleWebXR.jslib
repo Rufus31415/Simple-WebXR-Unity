@@ -116,6 +116,9 @@ mergeInto(LibraryManager.library, {
     // start y position that is substract to all y position so that start y is forced to 0
     _yOffset = 0;
 
+    // initialize hit test source variable
+    _xrHitTestSource = null;
+
     // copy camera data in shared buffer
     _dataArraySetView = function (view, id) {
       var floatStartId = id * 27;
@@ -287,10 +290,10 @@ mergeInto(LibraryManager.library, {
 
             var quaternion = new Float32Array(4);
 
-            quaternion[3] = Math.sqrt(Math.max(0, 1 + poses[jointIndex + 0] + poses[jointIndex + 5] + poses[jointIndex + 10])) / 2;
-            quaternion[0] = Math.sqrt(Math.max(0, 1 + poses[jointIndex + 0] - poses[jointIndex + 5] - poses[jointIndex + 10])) / 2;
-            quaternion[1] = Math.sqrt(Math.max(0, 1 - poses[jointIndex + 0] + poses[jointIndex + 5] - poses[jointIndex + 10])) / 2;
-            quaternion[2] = Math.sqrt(Math.max(0, 1 - poses[jointIndex + 0] - poses[jointIndex + 5] + poses[jointIndex + 10])) / 2;
+            quaternion[3] = Math.sqrt(Math.max(0, 1 + poses[jointIndex] + poses[jointIndex + 5] + poses[jointIndex + 10])) / 2;
+            quaternion[0] = Math.sqrt(Math.max(0, 1 + poses[jointIndex] - poses[jointIndex + 5] - poses[jointIndex + 10])) / 2;
+            quaternion[1] = Math.sqrt(Math.max(0, 1 - poses[jointIndex] + poses[jointIndex + 5] - poses[jointIndex + 10])) / 2;
+            quaternion[2] = Math.sqrt(Math.max(0, 1 - poses[jointIndex] - poses[jointIndex + 5] + poses[jointIndex + 10])) / 2;
             quaternion[0] *= Math.sign(quaternion[0] * (poses[jointIndex + 6] - poses[jointIndex + 9]));
             quaternion[1] *= Math.sign(quaternion[1] * (poses[jointIndex + 8] - poses[jointIndex + 2]));
             quaternion[2] *= Math.sign(quaternion[2] * (poses[jointIndex + 1] - poses[jointIndex + 4]));
@@ -417,6 +420,34 @@ mergeInto(LibraryManager.library, {
       // Set input validity
       _byteArray[44] = hasLeftInput;
       _byteArray[45] = hasRightInput;
+
+      // handle hit test
+      if (_xrHitTestSource) {
+        var hitTestResults = frame.getHitTestResults(_xrHitTestSource);
+        if (hitTestResults.length > 0) {
+          var delta = (_useLocalSpaceForInput ? 0 : _dataArray[100]);
+
+          var refSpace = _useLocalSpaceForInput ? _arSession.localSpace : _arSession.localFloorSpace;
+
+          var pose = hitTestResults[0].getPose(refSpace);
+
+          _byteArray[48] = 1; // hit test in progress
+
+          _dataArray[105] = pose.transform.position.x;
+          _dataArray[106] = pose.transform.position.y - delta - _yOffset;
+          _dataArray[107] = pose.transform.position.z;
+          _dataArray[108] = pose.transform.orientation.x;
+          _dataArray[109] = pose.transform.orientation.y;
+          _dataArray[110] = pose.transform.orientation.z;
+          _dataArray[111] = pose.transform.orientation.w;
+        }
+        else {
+          _byteArray[48] = 0;
+        }
+      }
+      else {
+        _byteArray[48] = 0;
+      }
 
       _firstFrame = false;
     }
@@ -552,6 +583,14 @@ mergeInto(LibraryManager.library, {
       GLctx.canvas.width = glLayer.framebufferWidth;
       GLctx.canvas.height = glLayer.framebufferHeight;
 
+      // Test if hit test is supported
+      if (typeof session.requestHitTestSource === "function") {
+        _byteArray[49] = 1;
+      }
+      else {
+        _byteArray[49] = 0;
+      }
+
       // get working reference space
       session.requestReferenceSpace('local-floor').then(function (space) {
         _arSession.localFloorSpace = space;
@@ -569,6 +608,36 @@ mergeInto(LibraryManager.library, {
   // Ends the session
   InternalEndSession: function () {
     if (_arSession) _arSession.end();
+  },
+
+  /****************************************************************************/
+  // Starts hit test
+  InternalHitTestStart: function () {
+    if (_arSession) {
+      if (typeof _arSession.requestHitTestSource === "function") {
+        _byteArray[49] = 1;
+
+        if (!_xrHitTestSource) { // if hit test is not still in progress
+          _arSession.requestReferenceSpace('viewer').then(function (refSpace) {
+            _arSession.requestHitTestSource({ space: refSpace }).then(function (hitTestSource) {
+              _xrHitTestSource = hitTestSource;
+            });
+          });
+        }
+      }
+      else {
+        _byteArray[49] = 0;
+      }
+    }
+  },
+
+  /****************************************************************************/
+  // Ends hit test
+  InternalHitTestCancel: function () {
+    if (_arSession && _xrHitTestSource) {
+      _xrHitTestSource.cancel();
+      _xrHitTestSource = null;
+    }
   },
 
   /****************************************************************************/

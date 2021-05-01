@@ -226,6 +226,27 @@ namespace Rufus31415.WebXR
         public static Camera RightEye => _cameras[1];
 
         /// <summary>
+        /// Indicates that a hit test is available in HitTestPosition and HitTestRotation
+        /// </summary>
+        public static bool HitTestInProgress => _byteArray[48] != 0;
+
+        /// <summary>
+        /// Indicates hit test is supported
+        /// The immersive session should be started to estimate this capability
+        /// </summary>
+        public static bool HitTestSupported => _byteArray[49] != 0;
+
+        /// <summary>
+        /// Position of the hit test between head ray and the real world
+        /// </summary>
+        public static Vector3 HitTestPosition;
+
+        /// <summary>
+        /// Orientation of the hit test normale between head ray and the real world
+        /// </summary>
+        public static Quaternion HitTestRotation;
+
+        /// <summary>
         /// Initialize the binding with the WebXR API, via shared arrays
         /// </summary>
         public static void Initialize()
@@ -307,7 +328,26 @@ namespace Rufus31415.WebXR
         public static void EndSession()
         {
             if (!InternalInSession) return;
+            InternalHitTestCancel();
             InternalEndSession();
+        }
+
+        /// <summary>
+        /// Starts hit test
+        /// </summary>
+        public static void HitTestStart()
+        {
+            Initialize();
+            InternalHitTestStart();
+        }
+
+        /// <summary>
+        /// Ends hit test
+        /// </summary>
+        public static void HitTestCancel()
+        {
+            Initialize();
+            InternalHitTestCancel();
         }
 
         /// <summary>
@@ -330,6 +370,8 @@ namespace Rufus31415.WebXR
                 InputSourcesChange.Invoke();
                 _byteArray[3] = 0;
             }
+
+            UpdateHitTest();
 
             // Session state changed invoked when all gamepads and cameras are updated
             if (InternalInSession && !InSession) //New session detected
@@ -406,7 +448,8 @@ namespace Rufus31415.WebXR
         // [102] : right input haptic pulse value
         // [103] : left input haptic pulse duration
         // [104] : right input haptic pulse duration
-        private static readonly float[] _dataArray = new float[105];
+        // [105] -> [111] : hit test x, y, z, rx, ry, rz, rw
+        private static readonly float[] _dataArray = new float[112];
 
         // Shared float array with javascript.
         // [0] : number of views (0 : session is stopped)
@@ -429,7 +472,9 @@ namespace Rufus31415.WebXR
         // [45] : Right controller active
         // [46] : Left hand active
         // [47] : Right hand active
-        private static readonly byte[] _byteArray = new byte[48];
+        // [48] : Hit test in progress
+        // [49] : Hit test supported
+        private static readonly byte[] _byteArray = new byte[50];
 
         // Hand data
         // [0] -> [7] : Left Wrist x, y, z, rx, ry, rz, zw, radius
@@ -664,6 +709,17 @@ namespace Rufus31415.WebXR
             }
         }
 
+
+        // Update the hit test infos
+        private static void UpdateHitTest()
+        {
+            if (HitTestInProgress)
+            {
+                HitTestPosition = ToUnityPosition(_dataArray[105], _dataArray[106], _dataArray[107]);
+                HitTestRotation = ToUnityRotation(_dataArray[108], _dataArray[109], _dataArray[110], _dataArray[111]);
+            }
+        }
+
         // Converts a WebGL position coordinate to a Unity position coordinate
         private static Vector3 ToUnityPosition(float x, float y, float z)
         {
@@ -701,6 +757,13 @@ namespace Rufus31415.WebXR
         private static extern bool InternalIsVrSupported();
 
         [DllImport("__Internal")]
+        private static extern void InternalHitTestStart();
+
+        [DllImport("__Internal")]
+        private static extern void InternalHitTestCancel();
+
+
+        [DllImport("__Internal")]
         private static extern void InternalGetDeviceOrientation(float[] orientationArray, byte[] orientationInfo);
 
 #else // if executed with Unity editor
@@ -715,10 +778,14 @@ namespace Rufus31415.WebXR
         private static bool InternalIsVrSupported() => false;
 
         private static void InternalGetDeviceOrientation(float[] orientationArray, byte[] orientationInfo) { }
+
+        private static void InternalHitTestStart() { }
+
+        private static void InternalHitTestCancel() { }
 #endif
 
 
-        [System.Flags]
+    [System.Flags]
         private enum WebXRViewEyes
         {
             None = 0,
