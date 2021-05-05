@@ -209,6 +209,17 @@ public static class Build
         assets.Add("Assets/SimpleWebXR/Examples/Scenes/HandDetectionExample.unity");
         assets.Add("Assets/SimpleWebXR/Examples/Scripts/HandDetectionExample");
 
+        var runtimeFrom = Path.Combine(Application.dataPath, "..", "..", "com.rufus31415.simplewebxr", "Runtime");
+        var runtimeTo = Path.Combine(Application.dataPath, "SimpleWebXR", "Runtime");
+
+        Directory.Move(runtimeFrom, runtimeTo);
+        File.Move(runtimeFrom + ".meta", runtimeTo + ".meta");
+
+
+        AssetDatabase.Refresh();
+
+        assets.Add("Assets/SimpleWebXR/Runtime");
+
         // Export basic
         AssetDatabase.ExportPackage(assets.ToArray(), "Builds/SimpleWebXR.unitypackage", ExportPackageOptions.Recurse);
 
@@ -220,6 +231,12 @@ public static class Build
 
         // Export with MRTK
         AssetDatabase.ExportPackage(assets.ToArray(), "Builds/SimpleWebXR+MRTK.unitypackage", ExportPackageOptions.Recurse);
+
+        Directory.Move(runtimeTo, runtimeFrom);
+        File.Move(runtimeTo + ".meta", runtimeFrom + ".meta");
+
+        AssetDatabase.Refresh();
+
     }
 }
 
