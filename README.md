@@ -147,7 +147,7 @@ LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-xrtk-solve
 |:-------------------------:|:-------------------------:|
 |<img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/xrtk-solvers-ios.gif" height="225px"> |  <img src="https://raw.githubusercontent.com/Rufus31415/Simple-WebXR-Unity/master/images/xrtk-solvers-simulator.gif" height="225px">|
 
-[work in progress...](https://github.com/Rufus31415/WebXR)
+[work in progress...](https://github.com/XRTK/WebXR)
 
 ---
 
@@ -158,12 +158,91 @@ Unity has a unified plug-in framework that enables direct integrations or XR for
 
 ---
 
-# How to use
+# Quick start
+
+## Import and build a sample scene
+
+First create a new 3D project
+
+![tuto_NewProject](https://user-images.githubusercontent.com/22075796/117204491-a5c77280-adf0-11eb-8b86-409dfe25424e.JPG)
+
+Download the latest release of SimpleWebXR : https://github.com/Rufus31415/Simple-WebXR-Unity/releases
+- ```SimpleWebXR.unitypackage```: contains only SimpleWebXR and its demo scenes
+- ```SimpleWebXR+MRTK.unitypackage``` : contains SimpleWebXR addon for MRTK. MRTK should be initialized in your project, see : https://docs.microsoft.com/fr-fr/windows/mixed-reality/mrtk-unity/
+
+
+Open the unitypackage file and import all resources : in tab ```Project```, right click on ```Assets > Import Package > Custom Package```
+
+![image](https://user-images.githubusercontent.com/22075796/117205332-c93eed00-adf1-11eb-8426-49f5773fa17f.png)
+
+From the directory ```Assets/SimpleWebXR/Example/Scenes```, just drag/drop a scene (for example the PaintExample) in the tab "Hierarchy"
+. You can play the scene, but it won't do anything (except if you are playing a MRTK sample).
+
+Then, build the scene : ```File > Build Settings...```. Remove all scenes from the list and click ```Add open scenes``` so that you only get the scene we are going to build.
+
+Select the WebGL plateform and click ```Switch platform```. Then click the ```Build``` button and create and select a ```Build``` directory next to Assets.
+
+![image](https://user-images.githubusercontent.com/22075796/117208767-ca721900-adf5-11eb-831f-14c16804052c.png)
+
+## Run your build locally in your browser
+
+Your browser should be compatible with WebXR. For a first try, you can install the emulator :
+- For Chrome : https://chrome.google.com/webstore/detail/webxr-api-emulator/mjddjgeghkdijejnciaefnkjmkafnnje
+- For Firefox : https://addons.mozilla.org/en-US/firefox/addon/webxr-api-emulator
+
+You now need a http server to serve you files. I recommend this one : https://www.npmjs.com/package/http-server
+- Just download node.js : https://nodejs.org/en/
+- install the server in your system with the command ```npm install --global http-server```
+
+
+You can now open a command line in your directory ```Build``` and run ```http-server```. Open your browser to the url : http://120.0.0.1:8080 then open the inspector and you should have a tab "WebXR" from where you can select your simulated device. You can move the controllers and the headset from here.
+
+Now click the button "Start VR" to enter in immersion. Congrats !
+
+![image](https://user-images.githubusercontent.com/22075796/117209832-32752f00-adf7-11eb-8c80-47a29058c1b4.png)
+
+
+## Run your build on your smartphone or headset
+
+You can continue to host the page on your PC and serve it to other devices. The difficulty is that most browsers require a secure context for WebXR, i.e. https or localhost.
+
+So it's a bit more complicated, but not impossible ;) ! First you need a certificate :
+- Download openssl. If you are on windows, download ```binaries``` from : http://gnuwin32.sourceforge.net/packages/openssl.htm
+- Extract and run the command : ```openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem -config **PATH_TO_OPENSSL**\share\openssl.cnf```where **PATH_TO_OPENSSL** is the absolute path to the directory you just extracted.
+- This will generate the files ```cert.pem```and ```key.pem```
+- Move these files in your Build directory
+
+To serve your files, you should now run ```http-server -S -C cert.pem``` in your Build directory. You will see in the console all the URLs where the build is accessible. In your smartphone or headset, type the one with the same subnetwork than your PC. Ensure that your firewall accepts the request. On your device, the browser will say the page is not secure, but anyway, you can continue ;)
+
+
+
 # Installation
 Just add these 3 files in your Unity Asset folder, then add SimpleWebXR MonoBehavior on a game object in your scene.
-- [SimpleWebXR.cs](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/Assets/SimpleWebXR/Plugins/SimpleWebXR.cs): Mono Behaviour that displays the "Start AR" button and communicates with javascript. This behavior should be in your scene.
-- [SimpleWebXR.jslib](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/Assets/SimpleWebXR/Plugins/SimpleWebXR.jslib): Javascript plugin that is included in the application and that makes the link between the Unity engine and the WebXR session. It displays the rendering and obtains the positions and characteristics of the camera.
-- [SimpleWebXR.jspre](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/Assets/SimpleWebXR/Plugins/SimpleWebXR.jspre): Javascript plugin executed before the application that initializes a number of things.
+- [SimpleWebXR.cs](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/com.rufus31415.simplewebxr/Runtime/Scripts/SimpleWebXR.cs): Mono Behaviour that displays the "Start AR" button and communicates with javascript. This behavior should be in your scene.
+- [SimpleWebXR.jslib](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/com.rufus31415.simplewebxr/Runtime/Plugins/WebGL/SimpleWebXR.jslib): Javascript plugin that is included in the application and that makes the link between the Unity engine and the WebXR session. It displays the rendering and obtains the positions and characteristics of the camera.
+- [SimpleWebXR.jspre](https://github.com/Rufus31415/Simple-WebXR-Unity/blob/master/com.rufus31415.simplewebxr/Runtime/Plugins/WebGL/SimpleWebXR.jslib): Javascript plugin executed before the application that initializes a number of things.
+
+## Download Unity Package
+Download the latest release of SimpleWebXR from : https://github.com/Rufus31415/Simple-WebXR-Unity/releases
+- ```SimpleWebXR.unitypackage```: contains only SimpleWebXR and its demo scenes
+- ```SimpleWebXR+MRTK.unitypackage``` : contains SimpleWebXR addon for MRTK. MRTK should be initialized in your project, see : https://docs.microsoft.com/fr-fr/windows/mixed-reality/mrtk-unity/
+
+## Add from Package Manager
+
+You can add the package ```com.rufus31415.simplewebxr```from the Package Manager. Go to ```Window > Package Manager``` Click the button ```+ > add package from git URL``` and enter ```https://github.com/Rufus31415/Simple-WebXR-Unity.git?path=/com.rufus31415.simplewebxr/```, after clicking on ```add``` it can take minutes even if Unity doesn't seem busy.
+
+## Edit ```manifest.json``` file
+
+For the bravest, you can edit the file ```Packages/manifest.json``` so that it contains the line :
+``` json
+{
+  "dependencies": {
+    "com.rufus31415.simplewebxr": "https://github.com/Rufus31415/Simple-WebXR-Unity.git?path=/com.rufus31415.simplewebxr/",
+    ...
+    ...
+  }
+}
+```
 
 # Samples
 You can use the examples provided in this repository as a starting point.
