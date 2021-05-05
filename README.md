@@ -231,6 +231,9 @@ Download the latest release of SimpleWebXR from : https://github.com/Rufus31415/
 
 You can add the package ```com.rufus31415.simplewebxr```from the Package Manager. Go to ```Window > Package Manager``` Click the button ```+ > add package from git URL``` and enter ```https://github.com/Rufus31415/Simple-WebXR-Unity.git?path=/com.rufus31415.simplewebxr/```, after clicking on ```add``` it can take minutes even if Unity doesn't seem busy.
 
+![image](https://user-images.githubusercontent.com/22075796/117214228-ceee0000-adfc-11eb-994a-0eab9048565d.png)
+
+
 ## Edit ```manifest.json``` file
 
 For the bravest, you can edit the file ```Packages/manifest.json``` so that it contains the line :
