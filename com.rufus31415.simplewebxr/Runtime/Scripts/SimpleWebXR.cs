@@ -757,11 +757,16 @@ namespace Rufus31415.WebXR
         private static extern bool InternalIsVrSupported();
 
         [DllImport("__Internal")]
+        private static extern bool InternalIsOVRMultiview2Supported();
+
+        [DllImport("__Internal")]
+        private static extern bool InternalIsOculusMultiviewSupported();
+
+        [DllImport("__Internal")]
         private static extern void InternalHitTestStart();
 
         [DllImport("__Internal")]
         private static extern void InternalHitTestCancel();
-
 
         [DllImport("__Internal")]
         private static extern void InternalGetDeviceOrientation(float[] orientationArray, byte[] orientationInfo);
@@ -776,6 +781,10 @@ namespace Rufus31415.WebXR
         private static bool InternalIsArSupported() => false;
 
         private static bool InternalIsVrSupported() => false;
+
+        private static bool InternalIsOVRMultiview2Supported() => false;
+
+        private static bool InternalIsOculusMultiviewSupported() => false;
 
         private static void InternalGetDeviceOrientation(float[] orientationArray, byte[] orientationInfo) { }
 
