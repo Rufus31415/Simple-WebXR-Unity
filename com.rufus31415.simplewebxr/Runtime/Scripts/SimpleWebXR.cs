@@ -313,6 +313,26 @@ namespace Rufus31415.WebXR
         }
 
         /// <summary>
+        /// Check if OVR Multiview2 extension is supported.
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsMultiview2Supported()
+        {
+            Initialize();
+            return InternalIsOVRMultiview2Supported();
+        }
+
+        /// <summary>
+        /// Check if Oculus Multiview with sampling is supported.
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsOculusMultiviewSampledSupported()
+        {
+            Initialize();
+            return InternalIsOculusMultiviewSupported();
+        }
+
+        /// <summary>
         /// Triggers the start of a WebXR immersive session 
         /// </summary>
         public static void StartSession()
