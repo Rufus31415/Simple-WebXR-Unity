@@ -80,13 +80,13 @@ mergeInto(LibraryManager.library, {
 
   /****************************************************************************/
   // Check if OVR_multiview2 extension is available
-  CheckOVRMultiview2: function() {
+  IsOVRMultiview2Supported: function() {
     return is_multiview2_available;
   }
 
   /****************************************************************************/
   // Check if OCULUS_multiview extension is available
-  CheckOculusMultiview: function() {
+  IsOculusMultiviewSupported: function() {
     return is_oculus_muliview_available;
   }
 
