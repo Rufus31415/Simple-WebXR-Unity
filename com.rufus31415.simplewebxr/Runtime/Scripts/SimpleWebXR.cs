@@ -315,7 +315,7 @@ namespace Rufus31415.WebXR
         /// <summary>
         /// Check if OVR Multiview2 extension is supported.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>True, if multiview2 is supported.</returns>
         public static bool IsMultiview2Supported()
         {
             Initialize();
@@ -325,7 +325,7 @@ namespace Rufus31415.WebXR
         /// <summary>
         /// Check if Oculus Multiview with sampling is supported.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>True, if Oculus multiview with sampling is supported.</returns>
         public static bool IsOculusMultiviewSampledSupported()
         {
             Initialize();
