@@ -79,18 +79,6 @@ mergeInto(LibraryManager.library, {
   },
 
   /****************************************************************************/
-  // Check if OVR_multiview2 extension is available
-  InternalIsOVRMultiview2Supported: function() {
-    return is_multiview2_available;
-  }
-
-  /****************************************************************************/
-  // Check if OCULUS_multiview extension is available
-  InternalIsOculusMultiviewSupported: function() {
-    return is_oculus_muliview_available;
-  }
-
-  /****************************************************************************/
   // Initialize WebXR features and check if browser is compatible
   InitWebXR: function (dataArray, dataArrayLength, byteArray, byteArrayLength, handDataArray, handDataArrayLength) {
     is_multiview2_available = false;
@@ -562,6 +550,18 @@ mergeInto(LibraryManager.library, {
   // Return true if immersive VR is supported. InitWebXR must have been called first.
   InternalIsVrSupported: function () {
     return _isVrSupported;
+  },
+
+  /****************************************************************************/
+  // Check if OVR_multiview2 extension is available
+  InternalIsOVRMultiview2Supported: function() {
+    return is_multiview2_available;
+  },
+
+  /****************************************************************************/
+  // Check if OCULUS_multiview extension is available
+  InternalIsOculusMultiviewSupported: function() {
+    return is_oculus_muliview_available;
   },
 
   /****************************************************************************/
