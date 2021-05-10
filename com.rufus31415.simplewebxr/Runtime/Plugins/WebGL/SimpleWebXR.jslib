@@ -81,26 +81,26 @@ mergeInto(LibraryManager.library, {
   /****************************************************************************/
   // Initialize WebXR features and check if browser is compatible
   InitWebXR: function (dataArray, dataArrayLength, byteArray, byteArrayLength, handDataArray, handDataArrayLength) {
-    is_multiview2_available = false;
-    is_oculus_muliview_available = false;
+    _isMultiview2Available = false;
+    _isOculusMuliviewAvailable = false;
 
     var ext = GLctx.getExtension('OCULUS_multiview');
 
     if (ext) {
       console.log("OCULUS_multiview extension is supported");
-      is_multiview2_available = true;
-      is_oculus_muliview_available = true;
+      _isMultiview2Available = true;
+      _isOculusMuliviewAvailable = true;
     }
     else {
       console.log("OCULUS_multiview extension is NOT supported");
       ext = GLctx.getExtension('OVR_multiview2');
       if (ext) {
         console.log("OVR_multiview2 extension is supported");
-        is_multiview2_available = true;
+        _isMultiview2Available = true;
       }
       else {
         console.log("Neither OCULUS_multiview nor OVR_multiview2 extensions are supported");
-        is_multiview2_available = false;
+        _isMultiview2Available = false;
       }
     }
 
@@ -555,13 +555,13 @@ mergeInto(LibraryManager.library, {
   /****************************************************************************/
   // Check if OVR_multiview2 extension is available
   InternalIsOVRMultiview2Supported: function() {
-    return is_multiview2_available;
+    return _isMultiview2Available;
   },
 
   /****************************************************************************/
   // Check if OCULUS_multiview extension is available
   InternalIsOculusMultiviewSupported: function() {
-    return is_oculus_muliview_available;
+    return _isOculusMuliviewAvailable;
   },
 
   /****************************************************************************/
