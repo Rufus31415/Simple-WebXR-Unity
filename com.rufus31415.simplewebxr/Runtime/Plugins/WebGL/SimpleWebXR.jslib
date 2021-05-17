@@ -1,34 +1,34 @@
-//                                                                                           .*#%@@@@@@&.                 
-//           ..                           ,                                        .,(%&@@@@@@@@@@@@@@@@#                 
-//           //////,                ./(((((/                                    %@@@@@@@@@@@@@@@@@@@@@@@@*                
-//           *//////////,      .*((((((((((,                                  *@@@@@@@@&#/,.  #@@@@@@@@@@&.               
-//           /////////////*,*/(((((((((((/                          .#@@@@@@@#/,.          ,&@@@@@*(@@@@@#               
-//            ////////*,,,,,,,,,,,*/((((((,                        /@@@@@@@&.              (@@@@@%   %@@@@@*              
-//            //*,,,,,,,,,,,,,,,,,,,,,,,//                      .%@@@@@@@(               ,&@@@@@*    ,@@@@@&.             
-//          ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,                 (@@@@@@@%.                (@@@@@%.      /@@@@@%             
-//       .,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,            ,&@@@@@@@/                 .&@@@@@/         #@@@@&.            
-//       ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.         #@@@@@@@@#((((((((((((((((((%@@@@@%.          .&@@(              
-//        ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,       ,&@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@/             *&.               
-//         ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,          ,%@@@@@@@@&%%%%%%%%%%%%%%%%%%&@@@@@#            &@@*              
-//          ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,              /@@@@@@@&,                 *@@@@@@,         (@@@@%.            
-//           ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.                 .%@@@@@@@#                 %@@@@@#       *@@@@@%             
-//            ,,,,,,,,,,,,,,,,,,,,,,,,,,,,.                     *&@@@@@@&,               *@@@@@@,    .&@@@@@,             
-//             ,,,,,,,,,,,,,,,,,,,,,,,,,,.                         #@@@@@@@#               %@@@@@#   %@@@@@/              
-//              ,,,,,,,,,,.  .,,,,,,,,,,.                            ,&@@@@@@&/,.           *@@@@@@,/@@@@@%               
-//               ,.,,,,,        ,,,,,,,.                                      /@@@@@@@%#/,.   %@@@@@@@@@@@.               
-//                ....            .,,,.                                        .&@@@@@@@@@@@@@@@@@@@@@@@@*                
-//                                                                                .*(%@@@@@@@@@@@@@@@@@@#                 
-//                                                                                          ,/#&@@@@@@@&.                 
-//                                                                                                   .*,                  
+//                                                                                           .*#%@@@@@@&.
+//           ..                           ,                                        .,(%&@@@@@@@@@@@@@@@@#
+//           //////,                ./(((((/                                    %@@@@@@@@@@@@@@@@@@@@@@@@*
+//           *//////////,      .*((((((((((,                                  *@@@@@@@@&#/,.  #@@@@@@@@@@&.
+//           /////////////*,*/(((((((((((/                          .#@@@@@@@#/,.          ,&@@@@@*(@@@@@#
+//            ////////*,,,,,,,,,,,*/((((((,                        /@@@@@@@&.              (@@@@@%   %@@@@@*
+//            //*,,,,,,,,,,,,,,,,,,,,,,,//                      .%@@@@@@@(               ,&@@@@@*    ,@@@@@&.
+//          ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,                 (@@@@@@@%.                (@@@@@%.      /@@@@@%
+//       .,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,            ,&@@@@@@@/                 .&@@@@@/         #@@@@&.
+//       ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.         #@@@@@@@@#((((((((((((((((((%@@@@@%.          .&@@(
+//        ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,       ,&@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@/             *&.
+//         ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,          ,%@@@@@@@@&%%%%%%%%%%%%%%%%%%&@@@@@#            &@@*
+//          ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,              /@@@@@@@&,                 *@@@@@@,         (@@@@%.
+//           ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.                 .%@@@@@@@#                 %@@@@@#       *@@@@@%
+//            ,,,,,,,,,,,,,,,,,,,,,,,,,,,,.                     *&@@@@@@&,               *@@@@@@,    .&@@@@@,
+//             ,,,,,,,,,,,,,,,,,,,,,,,,,,.                         #@@@@@@@#               %@@@@@#   %@@@@@/
+//              ,,,,,,,,,,.  .,,,,,,,,,,.                            ,&@@@@@@&/,.           *@@@@@@,/@@@@@%
+//               ,.,,,,,        ,,,,,,,.                                      /@@@@@@@%#/,.   %@@@@@@@@@@@.
+//                ....            .,,,.                                        .&@@@@@@@@@@@@@@@@@@@@@@@@*
+//                                                                                .*(%@@@@@@@@@@@@@@@@@@#
+//                                                                                          ,/#&@@@@@@@&.
+//                                                                                                   .*,
 //
-//                ███████╗██╗███╗   ███╗██████╗ ██╗     ███████╗██╗    ██╗███████╗██████╗ ██╗  ██╗██████╗ 
+//                ███████╗██╗███╗   ███╗██████╗ ██╗     ███████╗██╗    ██╗███████╗██████╗ ██╗  ██╗██████╗
 //                ██╔════╝██║████╗ ████║██╔══██╗██║     ██╔════╝██║    ██║██╔════╝██╔══██╗╚██╗██╔╝██╔══██╗
 //                ███████╗██║██╔████╔██║██████╔╝██║     █████╗  ██║ █╗ ██║█████╗  ██████╔╝ ╚███╔╝ ██████╔╝
 //                ╚════██║██║██║╚██╔╝██║██╔═══╝ ██║     ██╔══╝  ██║███╗██║██╔══╝  ██╔══██╗ ██╔██╗ ██╔══██╗
 //                ███████║██║██║ ╚═╝ ██║██║     ███████╗███████╗╚███╔███╔╝███████╗██████╔╝██╔╝ ██╗██║  ██║
 //                ╚══════╝╚═╝╚═╝     ╚═╝╚═╝     ╚══════╝╚══════╝ ╚══╝╚══╝ ╚══════╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
 //
-// 
+//
 // -----------------------------------------------------------------------------
 //
 // SimpleWebXR - Unity
@@ -81,6 +81,29 @@ mergeInto(LibraryManager.library, {
   /****************************************************************************/
   // Initialize WebXR features and check if browser is compatible
   InitWebXR: function (dataArray, dataArrayLength, byteArray, byteArrayLength, handDataArray, handDataArrayLength) {
+    _isMultiview2Available = false;
+    _isOculusMuliviewAvailable = false;
+
+    var ext = GLctx.getExtension('OCULUS_multiview');
+
+    if (ext) {
+      console.log("OCULUS_multiview extension is supported");
+      _isMultiview2Available = true;
+      _isOculusMuliviewAvailable = true;
+    }
+    else {
+      console.log("OCULUS_multiview extension is NOT supported");
+      ext = GLctx.getExtension('OVR_multiview2');
+      if (ext) {
+        console.log("OVR_multiview2 extension is supported");
+        _isMultiview2Available = true;
+      }
+      else {
+        console.log("Neither OCULUS_multiview nor OVR_multiview2 extensions are supported");
+        _isMultiview2Available = false;
+      }
+    }
+
     _isVrSupported = false;
     _isArSupported = false;
 
@@ -113,7 +136,7 @@ mergeInto(LibraryManager.library, {
     // flag that indicates first frame
     _firstFrame = true;
 
-    // start y position that is substract to all y position so that start y is forced to 0
+    // start y position that is subtract to all y position so that start y is forced to 0
     _yOffset = 0;
 
     // initialize hit test source variable
@@ -165,7 +188,7 @@ mergeInto(LibraryManager.library, {
 
         var targetRayPose = frame.getPose(inputSource.targetRaySpace, _useLocalSpaceForInput ? _arSession.localSpace : _arSession.localFloorSpace);
 
-        // On Firefox Reality on Hololens 2 targetRayPose is undefined so we use local-floor and substract UserHeight to position.y.
+        // On Firefox Reality on Hololens 2 targetRayPose is undefined so we use local-floor and subtract UserHeight to position.y.
         // We toggle _useLocalSpaceForInput so we only get one call to getPose() next time.
         if (!targetRayPose) {
           _useLocalSpaceForInput = false;
@@ -530,11 +553,22 @@ mergeInto(LibraryManager.library, {
   },
 
   /****************************************************************************/
+  // Check if OVR_multiview2 extension is available
+  InternalIsOVRMultiview2Supported: function() {
+    return _isMultiview2Available;
+  },
+
+  /****************************************************************************/
+  // Check if OCULUS_multiview extension is available
+  InternalIsOculusMultiviewSupported: function() {
+    return _isOculusMuliviewAvailable;
+  },
+
+  /****************************************************************************/
   // Starts the WebXR session.
   InternalStartSession: function () {
     if (!_isVrSupported && !_isArSupported) return;
     console.log("Start WebXR session...");
-
 
     // Request the WebXR session and create the WebGL layer
     // In first approach, AR is prioritary over VR
