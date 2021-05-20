@@ -253,7 +253,7 @@ You can use the examples provided in this repository as a starting point.
 All sample builds can be dowloaded as a zip file from here : [⏬ https://github.com/Rufus31415/rufus31415.github.io/tree/master/webxr](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Rufus31415/rufus31415.github.io/tree/master/webxr)
 
 # Compilation
-The project must be compiled in WebGL, otherwise SimpleWebXR will has no effect. You can use the "Demo" WebGL template that is provided, but you can also use de Default one. The project has been tested with Unity 2018.4 and Unity 2020.3.
+The project must be compiled in WebGL, otherwise SimpleWebXR will have no effect. You can use the "Demo" WebGL template that is provided, but you can also use the Default one. The project has been tested with Unity 2018.4 and Unity 2020.3.
 
 # Runtime
 When compiled as a WebGL app, if the browser is WebXR compatible, it will display a "Start AR" or "Start VR" button on your canvas.
