@@ -11,6 +11,8 @@ namespace Rufus31415.WebXR.Demo
         private GameObject _left;
         private GameObject _right;
 
+        public GameObject HandJointPrefab;
+
         void Start()
         {
             // Create spheres
@@ -22,13 +24,12 @@ namespace Rufus31415.WebXR.Demo
         {
             var hand = new GameObject(name);
             hand.transform.SetParent(this.transform);
-            for (int iJoint = 0; iJoint < SimpleWebXR.LeftInput.Hand.Joints.Length; iJoint++)
+            for (int iJoint = 0; iJoint < WebXRHand.JOINT_COUNT; iJoint++)
             {
-                var sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                SphereCollider collider = sphere.GetComponent<SphereCollider>(); // reference to SphereCollider for IL2CPP
-                sphere.transform.SetParent(hand.transform);
-                sphere.transform.localScale = Vector3.one * 0.02f;
-                sphere.SetActive(false);
+                var handJoint = Instantiate(HandJointPrefab);
+                handJoint.transform.SetParent(hand.transform);
+                handJoint.transform.localScale = Vector3.one * 0.004f;
+                handJoint.SetActive(false);
             }
             return hand;
         }
@@ -52,9 +53,10 @@ namespace Rufus31415.WebXR.Demo
 
                 // Move the sphere to joint position
                 sphere.position = hand.Joints[i].Position;
+                sphere.rotation = hand.Joints[i].Rotation;
 
                 // Set radius if supported
-                var radius = hand.Joints[i].Radius;
+                var radius = hand.Joints[i].Radius / 2;
                 if (!float.IsNaN(radius)) sphere.transform.localScale = new Vector3(radius, radius, radius);
             }
         }
