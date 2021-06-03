@@ -151,10 +151,20 @@ LIVE DEMO : [▶️ https://rufus31415.github.io/sandbox/simple-webxr-xrtk-solve
 
 ---
 
-## Unity XR Plugin
-Unity has a unified plug-in framework that enables direct integrations or XR for multiple platforms Why not adding WebXR...
+## HPTK
 
-[Later...]
+Hand Physics Toolkit (HPTK) is a toolkit to implement hand-driven interactions in a modular and scalable way. Platform-independent. Input-independent. Scale-independent.
+
+I am currently studying the implementation of WebXR in this framework.
+
+Original repo : https://github.com/jorgejgnz/HPTK-Sample
+
+My fork and WebXR implementation : https://github.com/Rufus31415/HPTK-Sample-WebXR
+
+LIVE DEMO : [▶️ https://rufus31415.github.io/webxr/HPTK/](https://rufus31415.github.io/webxr/HPTK/)
+
+(![hptk](https://user-images.githubusercontent.com/22075796/120713557-60b36080-c4c2-11eb-93b3-a09faf711758.jpg))
+
 
 ---
 
