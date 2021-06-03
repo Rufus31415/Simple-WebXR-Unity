@@ -1,28 +1,28 @@
 ﻿// SimpleWebXR - Unity
-//                                                                                           .*#%@@@@@@&.                 
-//           ..                           ,                                        .,(%&@@@@@@@@@@@@@@@@#                 
-//           //////,                ./(((((/                                    %@@@@@@@@@@@@@@@@@@@@@@@@*                
-//           *//////////,      .*((((((((((,                                  *@@@@@@@@&#/,.  #@@@@@@@@@@&.               
-//           /////////////*,*/(((((((((((/                          .#@@@@@@@#/,.          ,&@@@@@*(@@@@@#               
-//            ////////*,,,,,,,,,,,*/((((((,                        /@@@@@@@&.              (@@@@@%   %@@@@@*              
-//            //*,,,,,,,,,,,,,,,,,,,,,,,//                      .%@@@@@@@(               ,&@@@@@*    ,@@@@@&.             
-//          ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,                 (@@@@@@@%.                (@@@@@%.      /@@@@@%             
-//       .,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,            ,&@@@@@@@/                 .&@@@@@/         #@@@@&.            
-//       ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.         #@@@@@@@@#((((((((((((((((((%@@@@@%.          .&@@(              
-//        ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,       ,&@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@/             *&.               
-//         ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,          ,%@@@@@@@@&%%%%%%%%%%%%%%%%%%&@@@@@#            &@@*              
-//          ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,              /@@@@@@@&,                 *@@@@@@,         (@@@@%.            
-//           ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.                 .%@@@@@@@#                 %@@@@@#       *@@@@@%             
-//            ,,,,,,,,,,,,,,,,,,,,,,,,,,,,.                     *&@@@@@@&,               *@@@@@@,    .&@@@@@,             
-//             ,,,,,,,,,,,,,,,,,,,,,,,,,,.                         #@@@@@@@#               %@@@@@#   %@@@@@/              
-//              ,,,,,,,,,,.  .,,,,,,,,,,.                            ,&@@@@@@&/,.           *@@@@@@,/@@@@@%               
-//               ,.,,,,,        ,,,,,,,.                                      /@@@@@@@%#/,.   %@@@@@@@@@@@.               
-//                ....            .,,,.                                        .&@@@@@@@@@@@@@@@@@@@@@@@@*                
-//                                                                                .*(%@@@@@@@@@@@@@@@@@@#                 
-//                                                                                          ,/#&@@@@@@@&.                 
-//                                                                                                   .*,                  
+//                                                                                           .*#%@@@@@@&.
+//           ..                           ,                                        .,(%&@@@@@@@@@@@@@@@@#
+//           //////,                ./(((((/                                    %@@@@@@@@@@@@@@@@@@@@@@@@*
+//           *//////////,      .*((((((((((,                                  *@@@@@@@@&#/,.  #@@@@@@@@@@&.
+//           /////////////*,*/(((((((((((/                          .#@@@@@@@#/,.          ,&@@@@@*(@@@@@#
+//            ////////*,,,,,,,,,,,*/((((((,                        /@@@@@@@&.              (@@@@@%   %@@@@@*
+//            //*,,,,,,,,,,,,,,,,,,,,,,,//                      .%@@@@@@@(               ,&@@@@@*    ,@@@@@&.
+//          ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,                 (@@@@@@@%.                (@@@@@%.      /@@@@@%
+//       .,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,            ,&@@@@@@@/                 .&@@@@@/         #@@@@&.
+//       ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.         #@@@@@@@@#((((((((((((((((((%@@@@@%.          .&@@(
+//        ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,       ,&@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@/             *&.
+//         ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,          ,%@@@@@@@@&%%%%%%%%%%%%%%%%%%&@@@@@#            &@@*
+//          ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,              /@@@@@@@&,                 *@@@@@@,         (@@@@%.
+//           ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,.                 .%@@@@@@@#                 %@@@@@#       *@@@@@%
+//            ,,,,,,,,,,,,,,,,,,,,,,,,,,,,.                     *&@@@@@@&,               *@@@@@@,    .&@@@@@,
+//             ,,,,,,,,,,,,,,,,,,,,,,,,,,.                         #@@@@@@@#               %@@@@@#   %@@@@@/
+//              ,,,,,,,,,,.  .,,,,,,,,,,.                            ,&@@@@@@&/,.           *@@@@@@,/@@@@@%
+//               ,.,,,,,        ,,,,,,,.                                      /@@@@@@@%#/,.   %@@@@@@@@@@@.
+//                ....            .,,,.                                        .&@@@@@@@@@@@@@@@@@@@@@@@@*
+//                                                                                .*(%@@@@@@@@@@@@@@@@@@#
+//                                                                                          ,/#&@@@@@@@&.
+//                                                                                                   .*,
 //
-//                ███████╗██╗███╗   ███╗██████╗ ██╗     ███████╗██╗    ██╗███████╗██████╗ ██╗  ██╗██████╗ 
+//                ███████╗██╗███╗   ███╗██████╗ ██╗     ███████╗██╗    ██╗███████╗██████╗ ██╗  ██╗██████╗
 //                ██╔════╝██║████╗ ████║██╔══██╗██║     ██╔════╝██║    ██║██╔════╝██╔══██╗╚██╗██╔╝██╔══██╗
 //                ███████╗██║██╔████╔██║██████╔╝██║     █████╗  ██║ █╗ ██║█████╗  ██████╔╝ ╚███╔╝ ██████╔╝
 //                ╚════██║██║██║╚██╔╝██║██╔═══╝ ██║     ██╔══╝  ██║███╗██║██╔══╝  ██╔══██╗ ██╔██╗ ██╔══██╗
@@ -211,7 +211,7 @@ namespace Rufus31415.WebXR
 
         /// <summary>
         /// Event triggered when the browser triggers a XRSession.inputsourceschange event, which means a input sources has been added or removed.
-        /// </summary> 
+        /// </summary>
         public static readonly UnityEvent InputSourcesChange = new UnityEvent();
 
 
@@ -242,7 +242,7 @@ namespace Rufus31415.WebXR
         public static Vector3 HitTestPosition;
 
         /// <summary>
-        /// Orientation of the hit test normale between head ray and the real world
+        /// Orientation of the hit test normal between head ray and the real world
         /// </summary>
         public static Quaternion HitTestRotation;
 
@@ -267,9 +267,9 @@ namespace Rufus31415.WebXR
         }
 
         /// <summary>
-        /// Returns the instance of the gameobject SimpleWebXR in current scene.
+        /// Returns the instance of the GameObject SimpleWebXR in current scene.
         /// </summary>
-        /// <remarks>Return null is no gameobject was found</remarks>
+        /// <remarks>Return null is no GameObject was found</remarks>
         public static SimpleWebXR GetInstance()
         {
             return FindObjectOfType<SimpleWebXR>();
@@ -277,7 +277,7 @@ namespace Rufus31415.WebXR
 
         /// <summary>
         /// Ensures that a SimpleWebXR instance is available in the current scene.
-        /// If no instance was found, a "WebXR" gameobject is created as a root gameobject with a SimpleWebXR component.
+        /// If no instance was found, a "WebXR" GameObject is created as a root GameObject with a SimpleWebXR component.
         /// </summary>
         /// <returns>The existing or newly created SimpleWebXR instance</returns>
         public static SimpleWebXR EnsureInstance()
@@ -291,7 +291,7 @@ namespace Rufus31415.WebXR
         }
 
         /// <summary>
-        /// Check if Augmented Reality (AR) is supported 
+        /// Check if Augmented Reality (AR) is supported
         /// </summary>
         /// <remarks>It returns the result of navigator.xr.isSessionSupported('immersive-ar')</remarks>
         /// <returns>True if AR is supported</returns>
@@ -302,7 +302,7 @@ namespace Rufus31415.WebXR
         }
 
         /// <summary>
-        /// Check if Virtual Reality (VR) is supported 
+        /// Check if Virtual Reality (VR) is supported
         /// </summary>
         /// <remarks>It returns the result of navigator.xr.isSessionSupported('immersive-vr')</remarks>
         /// <returns>True if VR is supported</returns>
@@ -310,6 +310,26 @@ namespace Rufus31415.WebXR
         {
             Initialize();
             return InternalIsVrSupported();
+        }
+
+        /// <summary>
+        /// Check if OVR Multiview2 extension is supported.
+        /// </summary>
+        /// <returns>True, if multiview2 is supported.</returns>
+        public static bool IsMultiview2Supported()
+        {
+            Initialize();
+            return InternalIsOVRMultiview2Supported();
+        }
+
+        /// <summary>
+        /// Check if Oculus Multiview with sampling is supported.
+        /// </summary>
+        /// <returns>True, if Oculus multiview with sampling is supported.</returns>
+        public static bool IsOculusMultiviewSampledSupported()
+        {
+            Initialize();
+            return InternalIsOculusMultiviewSupported();
         }
 
         /// <summary>
@@ -387,7 +407,7 @@ namespace Rufus31415.WebXR
         }
 
         /// <summary>
-        /// Applies haptic pulse feedback to a controller 
+        /// Applies haptic pulse feedback to a controller
         /// </summary>
         /// <param name="hand">Controller to apply feedback</param>
         /// <param name="intensity">Feedback strength between 0 and 1</param>
@@ -725,7 +745,7 @@ namespace Rufus31415.WebXR
         {
             float yOffset = 0;
 
-            if(_referenceSpace == WebXRReferenceSpaces.LocalFloor)
+            if (_referenceSpace == WebXRReferenceSpaces.LocalFloor)
             {
                 yOffset = UserHeight <= 0 ? _fallbackUserHeight : UserHeight;
             }
@@ -757,11 +777,16 @@ namespace Rufus31415.WebXR
         private static extern bool InternalIsVrSupported();
 
         [DllImport("__Internal")]
+        private static extern bool InternalIsOVRMultiview2Supported();
+
+        [DllImport("__Internal")]
+        private static extern bool InternalIsOculusMultiviewSupported();
+
+        [DllImport("__Internal")]
         private static extern void InternalHitTestStart();
 
         [DllImport("__Internal")]
         private static extern void InternalHitTestCancel();
-
 
         [DllImport("__Internal")]
         private static extern void InternalGetDeviceOrientation(float[] orientationArray, byte[] orientationInfo);
@@ -777,6 +802,10 @@ namespace Rufus31415.WebXR
 
         private static bool InternalIsVrSupported() => false;
 
+        private static bool InternalIsOVRMultiview2Supported() => false;
+
+        private static bool InternalIsOculusMultiviewSupported() => false;
+
         private static void InternalGetDeviceOrientation(float[] orientationArray, byte[] orientationInfo) { }
 
         private static void InternalHitTestStart() { }
@@ -785,7 +814,7 @@ namespace Rufus31415.WebXR
 #endif
 
 
-    [System.Flags]
+        [System.Flags]
         private enum WebXRViewEyes
         {
             None = 0,
@@ -824,7 +853,6 @@ namespace Rufus31415.WebXR
         }
         #endregion
 
-
         #region Device orientation sensor
 
         // Orientation float data (shared array with javascript)
@@ -841,7 +869,7 @@ namespace Rufus31415.WebXR
         private static bool _orientationDeviceStarted = false;
 
         /// <summary>
-        /// Get the orientation of the device. This feature is independent of WebXR and can be used as a fallback if WebXR is not supported. 
+        /// Get the orientation of the device. This feature is independent of WebXR and can be used as a fallback if WebXR is not supported.
         /// </summary>
         /// <remarks>
         /// Values come from the javascript event "deviceorientation" obtained by : window.addEventListener("deviceorientation", _onDeviceOrientation);
@@ -849,7 +877,7 @@ namespace Rufus31415.WebXR
         /// The y axis is in the plane of the screen and is positive toward the top and negative toward the bottom.
         /// The z axis is perpendicular to the screen or keyboard, and is positive extending outward from the screen.
         /// </remarks>
-        /// <see cref="https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Orientation_and_motion_data_explained#About_rotation"/>
+        /// <see href="https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Orientation_and_motion_data_explained#About_rotation"/>
         /// <param name="alpha">Rotation around the z axis -- that is, twisting the device -- causes the alpha rotation angle to change. The alpha angle is 0° when top of the device is pointed directly toward the Earth's north pole, and increases as the device is rotated toward the left</param>
         /// <param name="beta">Rotation around the x axis -- that is, tipping the device away from or toward the user -- causes the beta rotation angle to change. The beta angle is 0° when the device's top and bottom are the same distance from the Earth's surface; it increases toward 180° as the device is tipped forward toward the user, and it decreases toward -180° as the device is tipped backward away from the user.</param>
         /// <param name="gamma">Rotation around the y axis -- that is, tilting the device toward the left or right -- causes the gamma rotation angle to change.The gamma angle is 0° when the device's left and right sides are the same distance from the surface of the Earth, and increases toward 90° as the device is tipped toward the right, and toward -90° as the device is tipped toward the left.</param>
@@ -870,15 +898,18 @@ namespace Rufus31415.WebXR
         }
         #endregion
 
-        #region "Simulation"
+        #region Simulation
+
         public static float[] SimulatedDataArray => _dataArray;
+
         public static byte[] SimulatedByteArray => _byteArray;
 
         public static Quaternion SimulatedToUnityRotation(Quaternion q)
         {
             return ToUnityRotation(q.x, q.y, q.z, q.w);
         }
-        #endregion
+
+        #endregion Simulation
     }
 
     /// <summary>
@@ -949,7 +980,7 @@ namespace Rufus31415.WebXR
         public readonly WebXRHandedness Handedness;
 
         /// <summary>
-        /// Indicates that the input source is detected and its position is tarcked
+        /// Indicates that the input source is detected and its position is tracked
         /// </summary>
         public bool IsPositionTracked = false;
 
@@ -960,6 +991,7 @@ namespace Rufus31415.WebXR
 
         /// <summary>
         /// Current rotation of the input source if the position is tracked
+        /// </summary>
         public Quaternion Rotation;
 
         /// <summary>
@@ -1006,7 +1038,7 @@ namespace Rufus31415.WebXR
         public bool Squeezed;
 
         /// <summary>
-        /// Constains hand joints poses, if hand tracking is enabled
+        /// Contains hand joints poses, if hand tracking is enabled
         /// </summary>
         public readonly WebXRHand Hand = new WebXRHand();
         #endregion
@@ -1024,7 +1056,7 @@ namespace Rufus31415.WebXR
         }
 
         /// <summary>
-        /// Applies haptic pulse feedback 
+        /// Applies haptic pulse feedback
         /// </summary>
         /// <param name="intensity">Feedback strength between 0 and 1</param>
         /// <param name="duration">Feedback duration in milliseconds</param>
@@ -1096,7 +1128,7 @@ namespace Rufus31415.WebXR
     }
 
     /// <summary>
-    /// Describes a button, trigger, thumbstick, or touchpad data 
+    /// Describes a button, trigger, thumbstick, or touchpad data
     /// </summary>
     public class WebXRGamepadButton
     {
@@ -1184,7 +1216,7 @@ namespace Rufus31415.WebXR
         public Vector3 Position;
 
         /// <summary>
-        /// Rotatiuon of the joint
+        /// Rotation of the joint
         /// </summary>
         public Quaternion Rotation;
 

@@ -350,15 +350,21 @@ PlayerSettings:
     m_Automatic: 1
   m_BuildTargetVRSettings:
   - m_BuildTarget: Standalone
-    m_Enabled: 1
+    m_Enabled: 0
     m_Devices:
     - Oculus
     - OpenVR
+    - MockHMD
+    - stereo
+    - None
   - m_BuildTarget: WebGL
     m_Enabled: 1
-    m_Devices: []
+    m_Devices:
+    - MockHMD
+    - stereo
+    - None
   - m_BuildTarget: Windows Store Apps
-    m_Enabled: 1
+    m_Enabled: 0
     m_Devices:
     - WindowsMR
   openGLRequireES31: 0

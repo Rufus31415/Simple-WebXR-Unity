@@ -67,6 +67,8 @@
 // A workaround to make it work under Firefox Reality that does not implement isContextLost()
 if(!WebGLRenderingContext.prototype.isContextLost) WebGLRenderingContext.prototype.isContextLost = function() {return false;}
 
+// override low DPI rendering on high DPI displays
+Module.devicePixelRatio = 1;
 
  // The following code was developed by Mozilla and provides a pointer to the internal Unity Browser directly from the modules.
  // It also allows to add the XRCompatible attribute to true. (we could also do this via makeXRCompatible())

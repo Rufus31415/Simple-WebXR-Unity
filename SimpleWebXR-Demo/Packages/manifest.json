@@ -10,10 +10,10 @@
     }
   ],
   "dependencies": {
-    "com.rufus31415.simplewebxr": "file:../../com.rufus31415.simplewebxr",
     "com.microsoft.mixedreality.toolkit.examples": "2.6.1",
     "com.microsoft.mixedreality.toolkit.foundation": "2.6.1",
     "com.microsoft.mixedreality.toolkit.tools": "2.6.1",
+    "com.rufus31415.simplewebxr": "file:../../com.rufus31415.simplewebxr",
     "com.unity.collab-proxy": "1.2.16",
     "com.unity.ide.rider": "1.1.4",
     "com.unity.ide.vscode": "1.2.3",
