@@ -17,12 +17,12 @@ Thus, after a Unity [WebGL build](https://docs.unity3d.com/Manual/webgl-gettings
 # Compatible browsers
 Works on :
 - [Google Chrome](https://play.google.com/store/apps/details?id=com.android.chrome) on Android (:warning: a secure https connection is required)
-- [Edge](https://docs.microsoft.com/fr-fr/windows/mixed-reality/new-microsoft-edge) on Windows 10 for Mixed Reality Headsets
-- [Edge](https://docs.microsoft.com/en-us/hololens/hololens-insider#introducing-the-new-microsoft-edge) on Hololens 2
-- [Firefox Reality](https://www.microsoft.com/en-gb/p/firefox-reality/9npq78m7nb0r?activetab=pivot:overviewtab) on Hololens 2
-- [Mozilla WebXR Viewer](https://apps.apple.com/fr/app/webxr-viewer/id1295998056) on iOS  (:warning: WebGL 2.0 should be disabled, it's a Webkit experimental feature)
-- [Oculus Browser](https://developer.oculus.com/webxr/?locale=fr_FR) on Oculus Quest 1 and 2
-- [Firefox emulator](https://addons.mozilla.org/fr/firefox/addon/webxr-api-emulator/) on desktop
+- [Edge](https://docs.microsoft.com/windows/mixed-reality/new-microsoft-edge) on Windows 10 for Mixed Reality Headsets
+- [Edge](https://docs.microsoft.com/hololens/hololens-insider#introducing-the-new-microsoft-edge) on Hololens 2
+- [Firefox Reality](https://www.microsoft.com/p/firefox-reality/9npq78m7nb0r?activetab=pivot:overviewtab) on Hololens 2
+- [Mozilla WebXR Viewer](https://apps.apple.com/app/webxr-viewer/id1295998056) on iOS  (:warning: WebGL 2.0 should be disabled, it's a Webkit experimental feature)
+- [Oculus Browser](https://developer.oculus.com/webxr/) on Oculus Quest 1 and 2
+- [Firefox emulator](https://addons.mozilla.org/firefox/addon/webxr-api-emulator/) on desktop
 - [Chrome emulator](https://chrome.google.com/webstore/detail/webxr-api-emulator/mjddjgeghkdijejnciaefnkjmkafnnje) on desktop
 
 ---
@@ -178,7 +178,7 @@ First create a new 3D project
 
 Download the latest release of SimpleWebXR : https://github.com/Rufus31415/Simple-WebXR-Unity/releases
 - ```SimpleWebXR.unitypackage```: contains only SimpleWebXR and its demo scenes
-- ```SimpleWebXR+MRTK.unitypackage``` : contains SimpleWebXR addon for MRTK. MRTK should be initialized in your project, see : https://docs.microsoft.com/fr-fr/windows/mixed-reality/mrtk-unity/
+- ```SimpleWebXR+MRTK.unitypackage``` : contains SimpleWebXR addon for MRTK. MRTK should be initialized in your project, see : https://docs.microsoft.com/windows/mixed-reality/mrtk-unity/
 
 
 Open the unitypackage file and import all resources : in tab ```Project```, right click on ```Assets > Import Package > Custom Package```
@@ -198,10 +198,10 @@ Select the WebGL plateform and click ```Switch platform```. Then click the ```Bu
 
 Your browser should be compatible with WebXR. For a first try, you can install the emulator :
 - For Chrome : https://chrome.google.com/webstore/detail/webxr-api-emulator/mjddjgeghkdijejnciaefnkjmkafnnje
-- For Firefox : https://addons.mozilla.org/en-US/firefox/addon/webxr-api-emulator
+- For Firefox : https://addons.mozilla.org/firefox/addon/webxr-api-emulator
 
 You now need a http server to serve you files. I recommend this one : https://www.npmjs.com/package/http-server
-- Just download node.js : https://nodejs.org/en/
+- Just download node.js : https://nodejs.org/
 - install the server in your system with the command ```npm install --global http-server```
 
 
@@ -235,7 +235,7 @@ Just add these 3 files in your Unity Asset folder, then add SimpleWebXR MonoBeha
 ## Download Unity Package
 Download the latest release of SimpleWebXR from : https://github.com/Rufus31415/Simple-WebXR-Unity/releases
 - ```SimpleWebXR.unitypackage```: contains only SimpleWebXR and its demo scenes
-- ```SimpleWebXR+MRTK.unitypackage``` : contains SimpleWebXR addon for MRTK. MRTK should be initialized in your project, see : https://docs.microsoft.com/fr-fr/windows/mixed-reality/mrtk-unity/
+- ```SimpleWebXR+MRTK.unitypackage``` : contains SimpleWebXR addon for MRTK. MRTK should be initialized in your project, see : https://docs.microsoft.com/windows/mixed-reality/mrtk-unity/
 
 ## Add from Package Manager
 
