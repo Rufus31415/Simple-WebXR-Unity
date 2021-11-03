@@ -30,11 +30,13 @@ Works on :
 # Integration examples
 
 ## MRTK
+
 [Mixed Reality Toolkit](https://github.com/microsoft/MixedRealityToolkit-Unity) is a Microsoft-driven project that provides a set of components and features, used to accelerate cross-platform MR app development in Unity. It supports Hololens, Windows Mixed Reality headset, OpenVR, Ultraleap, Mobile devices and now **WebXR** !
 
-The files in directory [/Assets/SimpleWebXR/Scripts/MRTK-Providers](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/Assets/SimpleWebXR/Scripts/MRTK-Providers) add WebXR capabilities to MRTK with the following functions: controller tracking, **hand** tracking, hand ray, index pointer, grip pointer and spatial pointer. Teleportation could be added.
+The files in directory [/SimpleWebXR-Demo/Assets/SimpleWebXR/Scripts/MRTK](https://github.com/Rufus31415/Simple-WebXR-Unity/tree/master/SimpleWebXR-Demo/Assets/SimpleWebXR/Scripts/MRTK) add WebXR capabilities to MRTK with the following functions: controller tracking, **hand** tracking, hand ray, index pointer, grip pointer and spatial pointer. Teleportation could be added.
 
-LIVE DEMO : 
+LIVE DEMO:
+
 - Hand interaction : [▶️ https://rufus31415.github.io/webxr/MRTK-HandInteraction](https://rufus31415.github.io/webxr/MRTK-HandInteraction/)
 - Color picker : [▶️ https://rufus31415.github.io/webxr/MRTK-ColorPicker](https://rufus31415.github.io/webxr/MRTK-ColorPicker/)
 - Elastic menus : [▶️ https://rufus31415.github.io/webxr/MRTK-ElasticSystem](https://rufus31415.github.io/webxr/MRTK-ElasticSystem/)
