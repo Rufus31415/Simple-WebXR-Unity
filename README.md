@@ -12,6 +12,11 @@ Thus, after a Unity [WebGL build](https://docs.unity3d.com/Manual/webgl-gettings
  <a href="https://github.com/Rufus31415/Simple-WebXR-Unity/watchers"><b>👁️ Watch to be notified of latest updates !</b></a>
 </p>
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Rufus31415/Simple-WebXR-Unity&type=Date)](https://star-history.com/#Rufus31415/Simple-WebXR-Unity&Date)
+
+
 ---
 
 # Compatible browsers
